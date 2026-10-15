@@ -38,6 +38,8 @@ def create_rst_file(module, cls):
             f"    .. automethod:: {method}\n"
             for method in sorted(methods)
             if not (method.startswith("_") or method in excluded)
+            # Class constants are not methods
+            and callable(getattr(cls, method, None))
         ]
         f.writelines(
             [
@@ -267,6 +269,7 @@ autodoc_type_aliases = {
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "numpy": ("https://numpy.org/doc/stable", None),
+    "openmm": ("https://docs.openmm.org/latest/api-python", None),
 }
 
 # Bibliography file

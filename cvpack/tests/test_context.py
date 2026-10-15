@@ -4,6 +4,7 @@ Tests for evaluating collective variables in OpenMM contexts and reporting them.
 
 import io
 
+import numpy as np
 import openmm
 import pytest
 from openmm import app, unit
@@ -66,6 +67,39 @@ def test_inner_effective_masses_follow_current_positions(dipeptide):
         inner = meta.getInnerEffectiveMasses(context)["phi"]
         expected = direct.getEffectiveMass(context)
         assert inner / inner.unit == pytest.approx(expected / expected.unit)
+
+
+def test_inner_effective_masses_with_virtual_sites_follow_the_context():
+    system = particle_system(5)
+    for atom, mass in enumerate([12.0, 1.0, 16.0, 1.0, 0.0]):
+        system.setParticleMass(atom, mass)
+    system.setVirtualSite(4, openmm.TwoParticleAverageSite(0, 2, 0.3, 0.7))
+    inner = cvpack.AtomicFunction(
+        "k*distance(p1, p2)", unit.nanometer, [[3, 4]], k=1.0, name="d"
+    )
+    meta = cvpack.MetaCollectiveVariable("2*d", [inner], unit.nanometer, name="meta")
+    meta.addToSystem(system)
+    direct = cvpack.AtomicFunction(
+        "k*distance(p1, p2)", unit.nanometer, [[3, 4]], k=1.0, name="direct"
+    )
+    direct.addToSystem(system)
+    positions = np.array(
+        [[0, 0, 0], [0.1, 0, 0], [0.12, 0.1, 0], [0.3, 0.2, 0.1], [0, 0, 0]]
+    )
+    context = make_context(system, positions)
+    masses = []
+    for shift, k in [(0.0, 1.0), (0.05, 1.0), (0.05, 2.0)]:
+        context.setParameter("k", k)
+        moved = positions.copy()
+        moved[3] += shift
+        context.setPositions(moved)
+        mass = meta.getInnerEffectiveMasses(context)["d"]
+        expected = direct.getEffectiveMass(context)
+        assert mass / mass.unit == pytest.approx(expected / expected.unit)
+        masses.append(mass / mass.unit)
+    # The context with virtual sites is built once and reused
+    assert meta._virtual_site_context[1] is meta._virtual_site_context[1]
+    assert masses[2] == pytest.approx(masses[1] / 4)
 
 
 def test_evaluate_in_context_uses_context_parameters():
