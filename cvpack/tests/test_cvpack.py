@@ -65,7 +65,7 @@ def perform_common_tests(
     for _, annotation in args.items():
         assert annotation is not inspect.Parameter.empty
 
-    # Yaml tag must be defined and start with "!cvpack."
+    # YAML tag must be defined and start with "!cvpack."
     assert hasattr(collectiveVariable, "yaml_tag")
     assert collectiveVariable.yaml_tag.startswith("!cvpack.")
 
@@ -365,7 +365,7 @@ def test_composite_rmsd():
 
 def test_helix_torsion_content():
     """
-    Test whether a helix ramachandran content is computed correctly.
+    Test whether a helix Ramachandran content is computed correctly.
 
     """
     model = testsystems.LysozymeImplicit()
