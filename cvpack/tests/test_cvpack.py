@@ -229,6 +229,35 @@ def test_radius_of_gyration_squared():
     perform_common_tests(rg_sq, context)
 
 
+@pytest.mark.parametrize(
+    "cv_class", [cvpack.RadiusOfGyration, cvpack.RadiusOfGyrationSq]
+)
+def test_radius_of_gyration_with_massless_atoms(cv_class):
+    """
+    Test whether a radius of gyration can be computed for a group containing massless
+    particles (e.g., virtual sites or rigid-body members).
+
+    """
+    model = testsystems.AlanineDipeptideVacuum()
+    num_atoms = model.system.getNumParticles()
+    while model.system.getNumConstraints() > 0:
+        model.system.removeConstraint(0)
+    for atom in range(0, num_atoms, 2):
+        model.system.setParticleMass(atom, 0)
+    positions = model.positions.value_in_unit(unit.nanometers)
+    rgsq = np.sum((positions - positions.mean(axis=0)) ** 2) / num_atoms
+    cv = cv_class(range(num_atoms))
+    cv.addToSystem(model.system)
+    integrator = openmm.CustomIntegrator(0)
+    platform = openmm.Platform.getPlatformByName("Reference")
+    context = openmm.Context(model.system, integrator, platform)
+    context.setPositions(model.positions)
+    value = value_in_md_units(cv.getValue(context))
+    if cv_class is cvpack.RadiusOfGyration:
+        value = value**2
+    assert value == pytest.approx(rgsq)
+
+
 def test_number_of_contacts():
     """
     Test whether a number of contacts is computed correctly.

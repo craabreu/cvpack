@@ -29,7 +29,7 @@ class BaseRadiusOfGyration(CollectiveVariable, openmm.CustomCentroidBondForce):
     ) -> None:
         super().__init__(num_groups, expression)
         for atom in group:
-            self.addGroup([atom])
+            self.addGroup([atom], [1])
         if weighByMass:
             self.addGroup(group)
         else:
