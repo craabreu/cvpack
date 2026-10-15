@@ -30,7 +30,7 @@ class ShortestDistance(CollectiveVariable, openmm.CustomCVForce):
 
         S_{rw}({\bf r}) = r_c e^{-\beta} +
             \sum_{i \in {\bf g}_1} \sum_{j \in {\bf g}_2 \atop r_{ij} < r_c}
-                r_{ij} e^{-\beta \frac{r_{ij}}{r_c}}
+                r_{ij} \left(e^{-\beta \frac{r_{ij}}{r_c}} - e^{-\beta}\right)
 
     and
 
@@ -38,7 +38,7 @@ class ShortestDistance(CollectiveVariable, openmm.CustomCVForce):
 
         S_w({\bf r}) = e^{-\beta} +
             \sum_{i \in {\bf g}_1} \sum_{j \in {\bf g}_2 \atop r_{ij} < r_c}
-                e^{-\beta \frac{r_{ij}}{r_c}}
+                \left(e^{-\beta \frac{r_{ij}}{r_c}} - e^{-\beta}\right)
 
     where :math:`r_{ij} = \|{\bf r}_j - {\bf r}_i\|` is the distance between atoms
     :math:`i` and :math:`j`, :math:`{\bf g}_1` and :math:`{\bf g}_2` are the sets of
@@ -52,12 +52,15 @@ class ShortestDistance(CollectiveVariable, openmm.CustomCVForce):
 
     The terms outside the summations guarantee that shortest distance is well-defined
     even when there are no atom pairs within the cutoff distance. In this case, the
-    collective variable evaluates to the cutoff distance.
+    collective variable evaluates to the cutoff distance. Shifting each weight by
+    :math:`e^{-\beta}` makes the contribution of a pair vanish at the cutoff distance,
+    so the collective variable is continuous when a pair crosses it.
 
     .. note::
 
         Atoms are allowed to be in both groups. In this case, terms for which
-        :math:`i = j` are ignored.
+        :math:`i = j` are ignored, and each pair of distinct atoms contributes a
+        single term, even if both atoms are in both groups.
 
     Parameters
     ----------
@@ -120,7 +123,7 @@ class ShortestDistance(CollectiveVariable, openmm.CustomCVForce):
         rc = cutoffDistance
         if mmunit.is_quantity(rc):
             rc = rc.value_in_unit(mmunit.nanometers)
-        weight = f"exp(-{beta / rc}*r)"
+        weight = f"(exp(-{beta / rc}*r)-{np.exp(-beta)})"
         forces = {
             "wrsum": openmm.CustomNonbondedForce(f"{weight}*r"),
             "wsum": openmm.CustomNonbondedForce(weight),

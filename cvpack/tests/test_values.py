@@ -11,7 +11,12 @@ from openmmtools import testsystems
 import cvpack
 from cvpack.attraction_strength import ONE_4PI_EPS0
 from cvpack.base_rmsd_content import BaseRMSDContent
-from cvpack.tests.helpers import make_context, particle_system, single_atom_topology
+from cvpack.tests.helpers import (
+    make_context,
+    particle_system,
+    shortest_distance_reference,
+    single_atom_topology,
+)
 
 
 @pytest.mark.parametrize("group", [[0, 2], [5, 6, 7], [7, 1, 4, 3]])
@@ -81,6 +86,59 @@ def test_shortest_distance_defaults_to_no_pbc():
     context = make_context(system, [[0, 0, 0], [1.9, 0, 0]])
     # No pair within the 1 nm cutoff, so the CV evaluates to the cutoff distance
     assert cv.getValue(context).value_in_unit(cv.getUnit()) == pytest.approx(1.0)
+
+
+def _shortest_distance_value(positions, group1, group2, box=None, **kwargs):
+    system = particle_system(len(positions))
+    if box is not None:
+        system.setDefaultPeriodicBoxVectors(*(box * np.eye(3)))
+    cv = cvpack.ShortestDistance(group1, group2, len(positions), **kwargs)
+    cv.addToSystem(system)
+    context = make_context(system, positions)
+    return cv.getValue(context).value_in_unit(cv.getUnit())
+
+
+# Small beta values make pairs beyond the nearest one, the cutoff and the terms
+# outside the summations contribute measurably to the CV.
+@pytest.mark.parametrize("beta", [3, 10, 100])
+def test_shortest_distance_matches_formula(beta):
+    positions = np.random.default_rng(2).uniform(0, 2, (12, 3))
+    group1, group2 = list(range(6)), list(range(6, 12))
+    value = _shortest_distance_value(positions, group1, group2, beta=beta)
+    expected = shortest_distance_reference(positions, group1, group2, beta, 1.0)
+    assert value == pytest.approx(expected)
+
+
+@pytest.mark.parametrize("cutoff", [0.8, 0.8 * unit.nanometers, 8 * unit.angstroms])
+def test_shortest_distance_converts_cutoff_units(cutoff):
+    positions = np.random.default_rng(3).uniform(0, 2, (12, 3))
+    group1, group2 = list(range(6)), list(range(6, 12))
+    value = _shortest_distance_value(
+        positions, group1, group2, beta=3, cutoffDistance=cutoff
+    )
+    expected = shortest_distance_reference(positions, group1, group2, 3, 0.8)
+    assert value == pytest.approx(expected)
+
+
+def test_shortest_distance_counts_overlapping_pairs_once():
+    positions = np.random.default_rng(4).uniform(0, 2, (6, 3))
+    group1, group2 = [0, 1, 2, 3], [2, 3, 4, 5]
+    value = _shortest_distance_value(
+        positions, group1, group2, beta=3, cutoffDistance=2.0
+    )
+    expected = shortest_distance_reference(positions, group1, group2, 3, 2.0)
+    assert value == pytest.approx(expected)
+
+
+def test_shortest_distance_explicit_pbc_wraps():
+    positions = [[0.05, 0, 0], [1.95, 0, 0], [1.0, 0.4, 0]]
+    group1, group2 = [0], [1, 2]
+    value = _shortest_distance_value(
+        positions, group1, group2, box=2.0, beta=3, pbc=True
+    )
+    expected = shortest_distance_reference(positions, group1, group2, 3, 1.0, box=2.0)
+    assert value == pytest.approx(expected)
+    assert value < 0.5
 
 
 def test_angle_is_not_periodic():
@@ -190,3 +248,14 @@ def test_atomic_and_centroid_functions_default_to_no_pbc():
     context = make_context(system, [[0, 0, 0], [1.9, 0, 0]])
     for cv in (atomic, centroid):
         assert cv.getValue(context).value_in_unit(cv.getUnit()) == pytest.approx(1.9)
+
+
+@pytest.mark.parametrize("beta", [3, 100])
+def test_shortest_distance_is_continuous_at_cutoff(beta):
+    values = [
+        _shortest_distance_value(
+            [[0, 0, 0], [1 + delta, 0, 0], [0, 0.5, 0]], [0], [1, 2], beta=beta
+        )
+        for delta in (-1e-9, 1e-9)
+    ]
+    assert values[0] == pytest.approx(values[1], abs=1e-8)
