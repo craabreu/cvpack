@@ -144,7 +144,7 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
             raise ValueError("Array `groups` cannot have more than 2 dimensions")
         super().__init__(atoms_per_group, function)
         overalls, perbonds = self._extractParameters(num_groups, **parameters)
-        self._addParameters(overalls, perbonds, groups, pbc, unit)
+        self._addParameters(overalls, perbonds, groups, pbc)
         groups = [[int(atom) for atom in group] for group in groups]
         self._registerCV(
             name,

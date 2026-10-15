@@ -189,7 +189,7 @@ class CentroidFunction(BaseCustomFunction, openmm.CustomCentroidBondForce):
         for group in groups:
             self.addGroup(group, *([] if weighByMass else [[1] * len(group)]))
         overalls, perbonds = self._extractParameters(num_collections, **parameters)
-        self._addParameters(overalls, perbonds, collections, pbc, unit)
+        self._addParameters(overalls, perbonds, collections, pbc)
         collections = [[int(atom) for atom in collection] for collection in collections]
         self._registerCV(
             name,
