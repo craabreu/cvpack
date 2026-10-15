@@ -41,6 +41,8 @@ This directory contains OS agnostic helper scripts which don't fall in any of th
 - [ ] Create the PR, referencing the issue
 - [ ] Debug the PR as needed until tests pass
 - [ ] Get the PR merged in
+- [ ] Commit `cvpack/_version.py` with `__version__ = "X.Y.Z"` on `main`, so that the tagged
+      tree is clean and the package builds report the exact release version
 - [ ] Publish a GitHub Release from `main` with a new tag `vX.Y.Z`
    *  `gh release create vX.Y.Z --target main --generate-notes`
    *  Publishing the release deploys the docs, PyPI, and conda packages; prereleases are not deployed
