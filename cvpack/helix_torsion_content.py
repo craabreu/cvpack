@@ -155,6 +155,7 @@ class HelixTorsionContent(CollectiveVariable, openmm.CustomTorsionForce):
             psiReference=psiReference,
             tolerance=tolerance,
             halfExponent=halfExponent,
+            normalize=normalize,
         )
 
 

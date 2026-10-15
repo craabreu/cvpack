@@ -30,7 +30,8 @@ class CollectiveVariable(Serializable):
     _periodic_bounds: Quantity | None = None
 
     def __getstate__(self) -> dict[str, t.Any]:
-        return self._args
+        # The force group is not serialized: addToSystem assigns it
+        return {**self._args, "name": self.getName()}
 
     def __setstate__(self, keywords: dict[str, t.Any]) -> None:
         self.__init__(**keywords)
