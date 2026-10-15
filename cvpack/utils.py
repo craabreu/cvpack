@@ -115,6 +115,27 @@ def check_contiguous_residues(residues: t.Sequence) -> None:
             )
 
 
+def find_unused_force_group(system: openmm.System) -> int:
+    """
+    Return the lowest force group not used by any force in a system.
+
+    Parameters
+    ----------
+    system
+        The system to search for unused force groups.
+
+    Raises
+    ------
+    RuntimeError
+        If all force groups are already in use
+    """
+    used_groups = {force.getForceGroup() for force in system.getForces()}
+    for group in range(32):
+        if group not in used_groups:
+            return group
+    raise RuntimeError("All force groups are already in use.")
+
+
 def get_single_force_state(
     force: openmm.Force,
     context: openmm.Context,
@@ -162,12 +183,14 @@ def get_single_force_state(
         return context.getState(groups=1 << self_group, **kwargs)
     if not allowReinitialization:
         raise ValueError("Context reinitialization required, but not allowed.")
-    new_group = force._setUnusedForceGroup(context.getSystem())
-    context.reinitialize(preserveState=True)
-    state = context.getState(groups=1 << new_group, **kwargs)
-    force.setForceGroup(self_group)
-    context.reinitialize(preserveState=True)
-    return state
+    new_group = find_unused_force_group(context.getSystem())
+    force.setForceGroup(new_group)
+    try:
+        context.reinitialize(preserveState=True)
+        return context.getState(groups=1 << new_group, **kwargs)
+    finally:
+        force.setForceGroup(self_group)
+        context.reinitialize(preserveState=True)
 
 
 def compute_effective_mass(
