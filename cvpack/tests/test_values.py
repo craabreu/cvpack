@@ -157,3 +157,21 @@ def test_helix_torsion_content_reference_is_periodic():
     value1 = cv1.getValue(context).value_in_unit(cv1.getUnit())
     value2 = cv2.getValue(context).value_in_unit(cv2.getUnit())
     assert value2 == pytest.approx(value1)
+
+
+@pytest.mark.parametrize("step_function", ["exp(-x^2)", "max(0, 1-x)"])
+def test_rmsd_content_step_function_with_named_functions(step_function):
+    model = testsystems.LysozymeImplicit()
+    residues = [r for r in model.topology.residues() if 59 <= r.index <= 66]
+    cv = cvpack.HelixRMSDContent(
+        residues, model.system.getNumParticles(), stepFunction=step_function
+    )
+    cv.addToSystem(model.system)
+    context = make_context(model.system, model.positions)
+    # 8 residues give 3 blocks (<= CHUNK_SIZE), so the inner CVs are the block RMSDs
+    x = np.array(cv.getCollectiveVariableValues(context)) / 0.08
+    if step_function.startswith("exp"):
+        expected = np.sum(np.exp(-(x**2)))
+    else:
+        expected = np.sum(np.maximum(0, 1 - x))
+    assert cv.getValue(context).value_in_unit(cv.getUnit()) == pytest.approx(expected)

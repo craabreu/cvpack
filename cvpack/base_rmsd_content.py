@@ -7,6 +7,7 @@
 
 """
 
+import re
 from importlib import resources
 
 import numpy as np
@@ -53,7 +54,7 @@ class BaseRMSDContent(CollectiveVariable, openmm.CustomCVForce):
             summands = []
             definitions = []
             for i in range(start, min(start + CHUNK_SIZE, num_residue_blocks)):
-                summands.append(stepFunction.replace("x", f"x{i}"))
+                summands.append(re.sub(r"\bx\b", f"x{i}", stepFunction))
                 definitions.append(f"x{i}=rmsd{i}/{value_in_md_units(thresholdRMSD)}")
             summation = "+".join(summands)
             if normalize:
