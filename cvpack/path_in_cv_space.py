@@ -19,6 +19,18 @@ from .units.units import MatrixQuantity, ScalarQuantity, value_in_md_units
 from .utils import convert_to_matrix
 
 
+def _milestone_values(milestones: MatrixQuantity) -> t.Any:
+    """Strip units from milestones given as a Quantity or as rows of Quantities."""
+    if mmunit.is_quantity(milestones):
+        return value_in_md_units(milestones)
+    return [
+        [value_in_md_units(value) for value in row]
+        if isinstance(row, t.Iterable)
+        else row
+        for row in milestones
+    ]
+
+
 class PathInCVSpace(BasePathCV):
     r"""
     A metric of the system's progress (:math:`s`) or deviation (:math:`z`) with
@@ -126,15 +138,16 @@ class PathInCVSpace(BasePathCV):
         metric: Metric,
         variables: t.Iterable[CollectiveVariable],
         milestones: MatrixQuantity,
-        sigma: float,
+        sigma: ScalarQuantity,
         scales: t.Iterable[ScalarQuantity] | None = None,
         name: str | None = None,
     ) -> None:
         name = self._generateName(metric, name, "cv")
         variables = list(variables)
-        scales = None if scales is None else list(scales)
+        scales = None if scales is None else [value_in_md_units(s) for s in scales]
         cv_scales = [1.0] * len(variables) if scales is None else scales
-        milestones, n, numvars = convert_to_matrix(milestones)
+        sigma = value_in_md_units(sigma)
+        milestones, n, numvars = convert_to_matrix(_milestone_values(milestones))
         if numvars != len(variables):
             raise ValueError("Wrong number of columns in the milestones matrix.")
         if n < 2:  # noqa: PLR2004
