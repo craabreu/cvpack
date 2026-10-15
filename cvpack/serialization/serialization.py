@@ -39,9 +39,7 @@ class SerializableAtom(Serializable):
     A serializable version of OpenMM's Atom class.
     """
 
-    def __init__(  # pylint: disable=super-init-not-called
-        self, atom: t.Union[mmapp.topology.Atom, "SerializableAtom"]
-    ) -> None:
+    def __init__(self, atom: t.Union[mmapp.topology.Atom, "SerializableAtom"]) -> None:
         self.name = atom.name
         self.index = atom.index
         if isinstance(atom, mmapp.topology.Atom):
@@ -52,10 +50,10 @@ class SerializableAtom(Serializable):
             self._residue_index = atom._residue_index
         self.id = atom.id
 
-    def __getstate__(self) -> t.Dict[str, t.Any]:
+    def __getstate__(self) -> dict[str, t.Any]:
         return self.__dict__
 
-    def __setstate__(self, keywords: t.Dict[str, t.Any]) -> None:
+    def __setstate__(self, keywords: dict[str, t.Any]) -> None:
         self.__dict__.update(keywords)
 
     @property
@@ -70,7 +68,7 @@ SerializableAtom.registerTag("!cvpack.Atom")
 class SerializableResidue(Serializable):
     r"""A serializable version of OpenMM's Residue class."""
 
-    def __init__(  # pylint: disable=super-init-not-called
+    def __init__(
         self, residue: t.Union[mmapp.topology.Residue, "SerializableResidue"]
     ) -> None:
         self.name = residue.name
@@ -82,10 +80,10 @@ class SerializableResidue(Serializable):
         self.id = residue.id
         self._atoms = list(map(SerializableAtom, residue.atoms()))
 
-    def __getstate__(self) -> t.Dict[str, t.Any]:
+    def __getstate__(self) -> dict[str, t.Any]:
         return self.__dict__
 
-    def __setstate__(self, keywords: t.Dict[str, t.Any]) -> None:
+    def __setstate__(self, keywords: dict[str, t.Any]) -> None:
         self.__dict__.update(keywords)
 
     def __len__(self) -> int:
@@ -102,7 +100,7 @@ SerializableResidue.registerTag("!cvpack.Residue")
 class SerializableForce(openmm.Force, Serializable):
     """A serializable version of OpenMM's Force class."""
 
-    def __init__(  # pylint: disable=super-init-not-called
+    def __init__(
         self,
         force: openmm.Force,
     ) -> None:
@@ -112,10 +110,10 @@ class SerializableForce(openmm.Force, Serializable):
     def __getattr__(self, name: str) -> t.Any:
         return getattr(self.force, name)
 
-    def __getstate__(self) -> t.Dict[str, str]:
+    def __getstate__(self) -> dict[str, str]:
         return {"xml_code": openmm.XmlSerializer.serialize(self)}
 
-    def __setstate__(self, keywords: t.Dict[str, str]) -> None:
+    def __setstate__(self, keywords: dict[str, str]) -> None:
         self.__init__(openmm.XmlSerializer.deserialize(keywords["xml_code"]))
 
 

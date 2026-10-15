@@ -26,12 +26,10 @@ from .serialization import (
 )
 from .units import Quantity, Unit, value_in_md_units
 
-# pylint: disable=protected-access,c-extension-no-member
-
 
 def evaluate_in_context(
-    forces: t.Union[openmm.Force, t.Iterable[openmm.Force]], context: openmm.Context
-) -> t.Union[float, t.List[float]]:
+    forces: openmm.Force | t.Iterable[openmm.Force], context: openmm.Context
+) -> float | list[float]:
     """Evaluate the potential energies of OpenMM Forces in a given context.
 
     Parameters
@@ -62,14 +60,12 @@ def evaluate_in_context(
     context.setPeriodicBoxVectors(*state.getPeriodicBoxVectors())
     energies = []
     for i in range(len(forces)):
-        state = context.getState(  # pylint: disable=unexpected-keyword-arg
-            getEnergy=True, groups=1 << i
-        )
+        state = context.getState(getEnergy=True, groups=1 << i)
         energies.append(value_in_md_units(state.getPotentialEnergy()))
     return energies[0] if is_single else tuple(energies)
 
 
-def convert_to_matrix(array: npt.ArrayLike) -> t.Tuple[np.ndarray, int, int]:
+def convert_to_matrix(array: npt.ArrayLike) -> tuple[np.ndarray, int, int]:
     """Convert a 1D or 2D array-like object to a 2D numpy array.
 
     Parameters
@@ -216,7 +212,7 @@ def preprocess_args(func: t.Callable) -> t.Callable:
     """
     signature = inspect.signature(func)
 
-    def convert(data: t.Any) -> t.Any:  # pylint: disable=too-many-return-statements
+    def convert(data: t.Any) -> t.Any:  # noqa: PLR0911
         if isinstance(data, np.integer):
             return int(data)
         if isinstance(data, np.floating):
@@ -233,7 +229,7 @@ def preprocess_args(func: t.Callable) -> t.Callable:
             return SerializableForce(data)
         if isinstance(data, t.Sequence) and not isinstance(data, str):
             return type(data)(map(convert, data))
-        if isinstance(data, t.Dict):
+        if isinstance(data, dict):
             return type(data)((key, convert(value)) for key, value in data.items())
         return data
 

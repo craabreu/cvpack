@@ -167,12 +167,12 @@ class CentroidFunction(BaseCustomFunction, openmm.CustomCentroidBondForce):
         function: str,
         unit: mmunit.Unit,
         groups: t.Iterable[t.Iterable[int]],
-        collections: t.Optional[ArrayLike] = None,
-        periodicBounds: t.Optional[VectorQuantity] = None,
+        collections: ArrayLike | None = None,
+        periodicBounds: VectorQuantity | None = None,
         pbc: bool = True,
         weighByMass: bool = True,
         name: str = "centroid_function",
-        **parameters: t.Union[ScalarQuantity, VectorQuantity],
+        **parameters: ScalarQuantity | VectorQuantity,
     ) -> None:
         groups = [[int(atom) for atom in group] for group in groups]
         num_groups = len(groups)

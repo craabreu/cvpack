@@ -7,8 +7,6 @@
 
 """
 
-import typing as t
-
 import openmm as mm
 
 from ..collective_variable import CollectiveVariable
@@ -75,7 +73,7 @@ class CVWriter(CustomWriter):
     1000,1.680...,0.03749...,2.9692...,0.04450...
     """
 
-    def __init__(  # pylint: disable=dangerous-default-value
+    def __init__(
         self,
         variable: CollectiveVariable,
         value: bool = False,
@@ -89,7 +87,7 @@ class CVWriter(CustomWriter):
         self._value = value
         self._emass = emass
 
-    def getHeaders(self) -> t.List[str]:
+    def getHeaders(self) -> list[str]:
         headers = []
         if self._value:
             headers.append(f"{self._cv.getName()} ({self._cv.getUnit().get_symbol()})")
@@ -99,7 +97,7 @@ class CVWriter(CustomWriter):
             )
         return headers
 
-    def getValues(self, simulation: mm.app.Simulation) -> t.List[float]:
+    def getValues(self, simulation: mm.app.Simulation) -> list[float]:
         context = simulation.context
         values = []
         if self._value:

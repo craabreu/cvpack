@@ -17,11 +17,11 @@ from openmm import unit as mmunit
 
 from ..serialization import Serializable
 
-ScalarQuantity = t.Union[mmunit.Quantity, Real]
-VectorQuantity = t.Union[mmunit.Quantity, np.ndarray, openmm.Vec3]
-MatrixQuantity = t.Union[
-    mmunit.Quantity, np.ndarray, t.Sequence[openmm.Vec3], t.Sequence[np.ndarray]
-]
+ScalarQuantity = mmunit.Quantity | Real
+VectorQuantity = mmunit.Quantity | np.ndarray | openmm.Vec3
+MatrixQuantity = (
+    mmunit.Quantity | np.ndarray | t.Sequence[openmm.Vec3] | t.Sequence[np.ndarray]
+)
 
 
 class Unit(mmunit.Unit, Serializable, ast.NodeTransformer):
@@ -34,11 +34,11 @@ class Unit(mmunit.Unit, Serializable, ast.NodeTransformer):
         The data to be used to create the unit.
     """
 
-    def __init__(self, data: t.Union[str, mmunit.Unit, dict]) -> None:
+    def __init__(self, data: str | mmunit.Unit | dict) -> None:
         if isinstance(data, str):
             expression = self.visit(ast.parse(data, mode="eval"))
             code = compile(ast.fix_missing_locations(expression), "", mode="eval")
-            data = eval(code)  # pylint: disable=eval-used
+            data = eval(code)
         if isinstance(data, mmunit.Unit):
             data = dict(data.iter_base_or_scaled_units())
         super().__init__(data)
@@ -46,15 +46,13 @@ class Unit(mmunit.Unit, Serializable, ast.NodeTransformer):
     def __repr__(self) -> str:
         return self.get_symbol()
 
-    def __getstate__(self) -> t.Dict[str, str]:
+    def __getstate__(self) -> dict[str, str]:
         return {"data": str(self)}
 
-    def __setstate__(self, keywords: t.Dict[str, str]) -> None:
+    def __setstate__(self, keywords: dict[str, str]) -> None:
         self.__init__(keywords["data"])
 
-    def visit_Name(  # pylint: disable=invalid-name
-        self, node: ast.Name
-    ) -> ast.Attribute:
+    def visit_Name(self, node: ast.Name) -> ast.Attribute:
         """
         Visit a Name node and transform it into an Attribute node.
 
@@ -85,10 +83,10 @@ class Quantity(mmunit.Quantity, Serializable):
     def __repr__(self):
         return str(self)
 
-    def __getstate__(self) -> t.Dict[str, t.Any]:
+    def __getstate__(self) -> dict[str, t.Any]:
         return {"value": self.value, "unit": str(self.unit)}
 
-    def __setstate__(self, keywords: t.Dict[str, t.Any]) -> None:
+    def __setstate__(self, keywords: dict[str, t.Any]) -> None:
         self.__init__(keywords["value"], Unit(keywords["unit"]))
 
     @property
@@ -96,7 +94,7 @@ class Quantity(mmunit.Quantity, Serializable):
         """The value of the quantity."""
         return self._value
 
-    def in_md_units(self) -> t.Any:  # pylint: disable=invalid-name
+    def in_md_units(self) -> t.Any:
         """The value of the quantity in MD units."""
         return self.value_in_unit_system(mmunit.md_unit_system)
 
@@ -105,7 +103,7 @@ Quantity.registerTag("!cvpack.Quantity")
 
 
 def in_md_units(
-    quantity: t.Union[ScalarQuantity, VectorQuantity, MatrixQuantity]
+    quantity: ScalarQuantity | VectorQuantity | MatrixQuantity,
 ) -> Quantity:
     """
     Return a quantity in the MD unit system (e.g. mass in Da, distance in
@@ -130,7 +128,7 @@ def in_md_units(
 
 
 def value_in_md_units(
-    quantity: t.Union[ScalarQuantity, VectorQuantity, MatrixQuantity]
+    quantity: ScalarQuantity | VectorQuantity | MatrixQuantity,
 ) -> t.Any:
     """
     Return the value of a quantity in the MD unit system (e.g. mass in Da, distance in

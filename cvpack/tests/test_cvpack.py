@@ -118,7 +118,7 @@ def test_distance():
     context = openmm.Context(model.system, integrator, platform)
     context.setPositions(model.positions)
     value1 = distance.getValue(context).value_in_unit(distance.getUnit())
-    value2 = np.sqrt(np.sum(((model.positions[atom1] - model.positions[atom2]) ** 2)))
+    value2 = np.sqrt(np.sum((model.positions[atom1] - model.positions[atom2]) ** 2))
     assert value1 == pytest.approx(value2)
     perform_common_tests(distance, context)
 
@@ -349,9 +349,7 @@ def test_rmsd():
     context.setPositions(model.positions)
     context.setVelocitiesToTemperature(300 * unit.kelvin, 1234)
     context.getIntegrator().step(10000)
-    state = context.getState(  # pylint: disable=unexpected-keyword-arg
-        getPositions=True
-    )
+    state = context.getState(getPositions=True)
     coordinates = state.getPositions(asNumpy=True).value_in_unit(unit.nanometers)
     for pass_vec3 in [False, True]:
         for pass_group_only in [False, True]:
@@ -526,7 +524,6 @@ def test_helix_rmsd_content(normalize: bool):
     )
     ref = copy.deepcopy(traj)
     positions = cvpack.helix_rmsd_content.ALPHA_POSITIONS
-    # pylint: enable=protected-access
 
     def compute_cv_value(atoms):
         computed_value = 0
@@ -646,7 +643,7 @@ def test_atomic_function():
     num_atoms = model.system.getNumParticles()
     atoms = np.arange(num_atoms)
     np.random.shuffle(atoms)
-    function = "+".join(f"distance(p{i+1}, p{i+2})" for i in range(num_atoms - 1))
+    function = "+".join(f"distance(p{i + 1}, p{i + 2})" for i in range(num_atoms - 1))
     with pytest.raises(ValueError) as excinfo:
         colvar = cvpack.AtomicFunction(function, unit.angstrom, atoms)
     assert (
@@ -683,7 +680,7 @@ def test_centroid_function():
     np.random.shuffle(atoms)
     num_groups = num_atoms // 3
     groups = np.reshape(atoms[: 3 * num_groups], (num_groups, 3))
-    function = "+".join(f"distance(g{i+1}, g{i+2})" for i in range(num_groups - 1))
+    function = "+".join(f"distance(g{i + 1}, g{i + 2})" for i in range(num_groups - 1))
     with pytest.raises(ValueError) as excinfo:
         colvar = cvpack.CentroidFunction(function, unit.angstrom, groups)
     assert (
@@ -743,7 +740,7 @@ def test_attraction_strength():
                         * (1 / x + (x**2 - 3) / 2)
                     )
     system = openmm.System()
-    for i in range(num_particles):
+    for _ in range(num_particles):
         system.addParticle(1.0)
     force = openmm.NonbondedForce()
     for params in zip(charges, sigmas, epsilons):
@@ -871,9 +868,7 @@ def test_path_in_rmsd_space(metric: cvpack.path.Metric):
     for _ in range(10):
         integrator.step(1000)
         frame = mdtraj.Trajectory(
-            context.getState(  # pylint: disable=unexpected-keyword-arg
-                getPositions=True
-            )
+            context.getState(getPositions=True)
             .getPositions(asNumpy=True)
             .value_in_unit(unit.nanometer),
             model.mdtraj_topology,
@@ -907,7 +902,7 @@ def test_openmm_force_wrapper():
     platform = openmm.Platform.getPlatformByName("Reference")
     context = openmm.Context(model.system, integrator, platform)
     context.setPositions(model.positions)
-    state = context.getState(  # pylint: disable=unexpected-keyword-arg
+    state = context.getState(
         getEnergy=True,
         groups={cv.getForceGroup() + 1},
     )
@@ -940,9 +935,7 @@ def test_shortest_distance():
     context.setPositions(model.positions)
     for _ in range(10):
         integrator.step(100)
-        state = context.getState(  # pylint: disable=unexpected-keyword-arg
-            getPositions=True
-        )
+        state = context.getState(getPositions=True)
         coords = state.getPositions(asNumpy=True).value_in_unit(unit.nanometers)
         cv_value = min_dist.getValue(context) / unit.nanometer
         distances = np.linalg.norm(

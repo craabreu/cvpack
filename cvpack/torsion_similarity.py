@@ -85,7 +85,7 @@ class TorsionSimilarity(CollectiveVariable, openmm.CustomCompoundBondForce):
     ) -> None:
         firstList = [list(map(int, first)) for first in firstList]
         secondList = [list(map(int, second)) for second in secondList]
-        function = f"0.5*(1 + cos(min(delta, {2*np.pi} - delta)))"
+        function = f"0.5*(1 + cos(min(delta, {2 * np.pi} - delta)))"
         definition = "delta = dihedral(p1, p2, p3, p4) - dihedral(p5, p6, p7, p8)"
         super().__init__(8, f"{function}; {definition}")
         for first, second in zip(firstList, secondList):

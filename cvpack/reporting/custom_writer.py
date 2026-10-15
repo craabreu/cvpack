@@ -29,13 +29,13 @@ class CustomWriter(t.Protocol):
             The simulation object.
         """
 
-    def getHeaders(self) -> t.List[str]:
+    def getHeaders(self) -> list[str]:
         """
         Gets a list of strigs containing the headers to be added to the report.
         """
         raise NotImplementedError("Method 'getHeaders' not implemented")
 
-    def getValues(self, simulation: mmapp.Simulation) -> t.List[float]:
+    def getValues(self, simulation: mmapp.Simulation) -> list[float]:
         """
         Gets a list of floats containing the values to be added to the report.
 

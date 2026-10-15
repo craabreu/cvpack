@@ -116,7 +116,7 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
         function: str,
         variables: t.Iterable[CollectiveVariable],
         unit: mmunit.Unit,
-        periodicBounds: t.Optional[VectorQuantity] = None,
+        periodicBounds: VectorQuantity | None = None,
         name: str = "meta_collective_variable",
         **parameters: ScalarQuantity,
     ) -> None:
@@ -140,7 +140,7 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
         if periodicBounds is not None:
             self._registerPeriodicBounds(*periodicBounds)
 
-    def getInnerVariables(self) -> t.Tuple[CollectiveVariable]:
+    def getInnerVariables(self) -> tuple[CollectiveVariable]:
         """
         Get the collective variables on which the meta-collective variable depends.
 
@@ -151,7 +151,7 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
         """
         return self._cvs
 
-    def getInnerValues(self, context: openmm.Context) -> t.Dict[str, Quantity]:
+    def getInnerValues(self, context: openmm.Context) -> dict[str, Quantity]:
         """
         Get the values of the collective variables on which the meta-collective variable
         depends. The values are returned as a dictionary with the names of the
@@ -174,7 +174,7 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
             for cv, value in zip(self._cvs, values)
         }
 
-    def getInnerEffectiveMasses(self, context: openmm.Context) -> t.Dict[str, Quantity]:
+    def getInnerEffectiveMasses(self, context: openmm.Context) -> dict[str, Quantity]:
         """
         Get the effective masses of the collective variables on which the
         meta-collective variable depends. The effective masses are calculated from the
@@ -201,7 +201,7 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
             for cv, mass in zip(self._cvs, masses)
         }
 
-    def getParameterDefaultValues(self) -> t.Dict[str, Quantity]:
+    def getParameterDefaultValues(self) -> dict[str, Quantity]:
         """
         Get the default values of the named parameters of this meta-collective variable.
 
@@ -213,7 +213,7 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
         """
         return self._parameters.copy()
 
-    def getParameterValues(self, context: openmm.Context) -> t.Dict[str, Quantity]:
+    def getParameterValues(self, context: openmm.Context) -> dict[str, Quantity]:
         """
         Get the values of the named parameters of this meta-collective variable. The
         values are returned as a dictionary with the names of the parameters as keys.
@@ -238,7 +238,7 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
         self,
         context: openmm.Context,
         allowReinitialization: bool = False,
-    ) -> t.Dict[str, Quantity]:
+    ) -> dict[str, Quantity]:
         """
         Get the derivatives of the named parameters of this meta-collective variable.
 

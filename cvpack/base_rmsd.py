@@ -7,8 +7,6 @@
 
 """
 
-import typing as t
-
 import numpy as np
 
 from .collective_variable import CollectiveVariable
@@ -22,10 +20,10 @@ class BaseRMSD(CollectiveVariable):
 
     def _getDefinedCoords(
         self,
-        referencePositions: t.Union[MatrixQuantity, t.Dict[int, VectorQuantity]],
-        group: t.List[int],
+        referencePositions: MatrixQuantity | dict[int, VectorQuantity],
+        group: list[int],
     ) -> None:
-        if isinstance(referencePositions, t.Dict):
+        if isinstance(referencePositions, dict):
             positions = {
                 atom: value_in_md_units(coords)
                 for atom, coords in referencePositions.items()
@@ -35,7 +33,7 @@ class BaseRMSD(CollectiveVariable):
         return {atom: [float(x) for x in positions[atom]] for atom in group}
 
     def _getAllCoords(
-        self, definedCoords: t.Dict[int, t.List[float]], numAtoms: int
+        self, definedCoords: dict[int, list[float]], numAtoms: int
     ) -> np.ndarray:
         all_coords = np.zeros((numAtoms, 3))
         for atom, coords in definedCoords.items():

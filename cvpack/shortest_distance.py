@@ -119,12 +119,12 @@ class ShortestDistance(CollectiveVariable, openmm.CustomCVForce):
         rc = cutoffDistance
         if mmunit.is_quantity(rc):
             rc = rc.value_in_unit(mmunit.nanometers)
-        weight = f"exp(-{beta/rc}*r)"
+        weight = f"exp(-{beta / rc}*r)"
         forces = {
             "wrsum": openmm.CustomNonbondedForce(f"{weight}*r"),
             "wsum": openmm.CustomNonbondedForce(weight),
         }
-        super().__init__(f"({rc*np.exp(-beta)}+wrsum)/({np.exp(-beta)}+wsum)")
+        super().__init__(f"({rc * np.exp(-beta)}+wrsum)/({np.exp(-beta)}+wsum)")
         for cv, force in forces.items():
             force.setNonbondedMethod(
                 force.CutoffPeriodic if pbc else force.CutoffNonPeriodic

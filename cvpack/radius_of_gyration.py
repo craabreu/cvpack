@@ -84,7 +84,7 @@ class RadiusOfGyration(BaseRadiusOfGyration):
         num_atoms = len(group)
         num_groups = num_atoms + 1
         sum_dist_sq = "+".join(
-            [f"distance(g{i+1}, g{num_atoms + 1})^2" for i in range(num_atoms)]
+            [f"distance(g{i + 1}, g{num_atoms + 1})^2" for i in range(num_atoms)]
         )
         super().__init__(
             num_groups, f"sqrt(({sum_dist_sq})/{num_atoms})", group, pbc, weighByMass

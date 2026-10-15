@@ -121,14 +121,14 @@ class PathInCVSpace(BasePathCV):
     0.2... dimensionless
     """
 
-    def __init__(  # pylint: disable=too-many-branches
+    def __init__(
         self,
         metric: Metric,
         variables: t.Iterable[CollectiveVariable],
         milestones: MatrixQuantity,
         sigma: float,
-        scales: t.Optional[t.Iterable[ScalarQuantity]] = None,
-        name: t.Optional[str] = None,
+        scales: t.Iterable[ScalarQuantity] | None = None,
+        name: str | None = None,
     ) -> None:
         name = self._generateName(metric, name, "cv")
         variables = list(variables)
@@ -136,7 +136,7 @@ class PathInCVSpace(BasePathCV):
         milestones, n, numvars = convert_to_matrix(milestones)
         if numvars != len(variables):
             raise ValueError("Wrong number of columns in the milestones matrix.")
-        if n < 2:
+        if n < 2:  # noqa: PLR2004
             raise ValueError("At least two rows are required in the milestones matrix.")
         squared_distances = []
         periods = {}
@@ -144,7 +144,7 @@ class PathInCVSpace(BasePathCV):
             values = variable.getPeriodicBounds()
             if values is not None:
                 periods[i] = value_in_md_units(values[1] - values[0])
-        for i, values in enumerate(milestones):
+        for values in milestones:
             deltas = [f"({value}-cv{j})" for j, value in enumerate(values)]
             for j, period in periods.items():
                 deltas[j] = f"min(abs{deltas[j]},{period}-abs{deltas[j]})"
