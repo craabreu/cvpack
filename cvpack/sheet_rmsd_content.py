@@ -37,7 +37,7 @@ class SheetRMSDContent(BaseRMSDContent):
     :math:`d_{\rm min}` is the minimum distance between integers i and j,
     :math:`{\bf g}_{\rm ref}` represents the coordinates of the same atoms in an
     ideal beta-sheet configuration, :math:`r_{\rm rmsd}({\bf g}, {\bf g}_{\rm ref})`
-    is the root-mean-square distance (RMSD) between groups :math:`{\bf g}` and
+    is the root-mean-square deviation (RMSD) between groups :math:`{\bf g}` and
     :math:`{\bf g}_{\rm ref}`, :math:`r_0` is a threshold RMSD value, and
     :math:`S(x)` is a smooth step function whose default form is
 
@@ -47,10 +47,10 @@ class SheetRMSDContent(BaseRMSDContent):
     The sequence of residues must be a contiguous subset of a protein chain, ordered
     from the N-terminus to the C-terminus. The beta-sheet RMSD content is defined for
     both antiparallel and parallel beta sheets, with different ideal configurations
-    :math:`{\bf g}_{\rm ref}` and minimim distances :math:`d_{\rm min}` in each case.
+    :math:`{\bf g}_{\rm ref}` and minimum distances :math:`d_{\rm min}` in each case.
 
     Every group :math:`{\bf g}_{i,j}` is formed by the N, :math:`{\rm C}_\alpha`,
-    :math:`{\rm C}_\beta`, C, and O atoms of the six residues involvend, thus
+    :math:`{\rm C}_\beta`, C, and O atoms of the six residues involved, thus
     comprising 30 atoms in total. In the case of glycine, the missing
     :math:`{\rm C}_\beta` atom is replaced by the corresponding H atom. The RMSD is
     then defined as
@@ -103,9 +103,9 @@ class SheetRMSDContent(BaseRMSDContent):
 
     This collective variable was introduced in Ref. :cite:`Pietrucci_2009`. The default
     step function shown above is identical to the one in the original paper, but written
-    in a numerically safe form. The ideal beta-sheet configurations are the same used
-    for the collective variable `ANTIBETARMSD`_ and `PARABETARMSD`_ in `PLUMED v2.8.1
-    <https://github.com/plumed/plumed2>`_ .
+    in a numerically safe form. The ideal beta-sheet configurations are the same as
+    those used for the collective variables `ANTIBETARMSD`_ and `PARABETARMSD`_ in
+    `PLUMED v2.8.1 <https://github.com/plumed/plumed2>`_.
 
     .. _ANTIBETARMSD:
         https://www.plumed.org/doc-v2.8/user-doc/html/_a_n_t_i_b_e_t_a_r_m_s_d.html

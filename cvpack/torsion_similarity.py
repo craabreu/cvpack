@@ -1,5 +1,5 @@
 """
-.. class:: DihedralSimilarity
+.. class:: TorsionSimilarity
    :platform: Linux, MacOS, Windows
    :synopsis: The degree of similarity between pairs of torsion angles.
 

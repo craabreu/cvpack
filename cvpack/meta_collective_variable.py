@@ -61,8 +61,8 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
         The unit of measurement of the collective variable. It must be compatible
         with the MD unit system (mass in `daltons`, distance in `nanometers`, time
         in `picoseconds`, temperature in `kelvin`, energy in `kilojoules_per_mol`,
-        angle in `radians`). If the collective variables does not have a unit, use
-        `unit.dimensionless`
+        angle in `radians`). If the collective variable does not have a unit, use
+        `unit.dimensionless`.
     periodicBounds
         The periodic bounds of the collective variable if it is periodic, or `None` if
         it is not periodic.

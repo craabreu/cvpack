@@ -20,7 +20,7 @@ from .units import ScalarQuantity, VectorQuantity
 
 class CentroidFunction(BaseCustomFunction, openmm.CustomCentroidBondForce):
     r"""
-    A generic function of the centroids of :math:`m \times n` atoms groups split
+    A generic function of the centroids of :math:`m \times n` atom groups split
     into `m` collections of `n` groups:
 
     .. math::
@@ -82,7 +82,7 @@ class CentroidFunction(BaseCustomFunction, openmm.CustomCentroidBondForce):
         The unit of measurement of the collective variable. It must be compatible
         with the MD unit system (mass in `daltons`, distance in `nanometers`, time
         in `picoseconds`, temperature in `kelvin`, energy in `kilojoules_per_mol`,
-        angle in `radians`). If the collective variables does not have a unit, use
+        angle in `radians`). If the collective variable does not have a unit, use
         `dimensionless`.
     groups
         The groups of atoms to be used in the function. Each group must be specified
@@ -90,8 +90,8 @@ class CentroidFunction(BaseCustomFunction, openmm.CustomCentroidBondForce):
     collections
         The indices of the groups in each collection, passed as a 2D array-like object
         of shape `(m, n)`, where `m` is the number of collections and `n` is the number
-        groups per collection. If a 1D object is passed, it is assumed that `m` is 1 and
-        `n` is the length of the object.
+        of groups per collection. If a 1D object is passed, it is assumed that `m` is 1
+        and `n` is the length of the object.
     periodicBounds
         The periodic bounds of the collective variable if it is periodic, or `None` if
         it is not.

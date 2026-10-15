@@ -51,7 +51,7 @@ class RMSD(BaseRMSD, openmm.RMSDForce):
         The reference coordinates, which can be either a coordinate matrix or a mapping
         from atom indices to coordinate vectors. It must contain all atoms in ``group``,
         and does not need to contain all atoms in the system. See ``numAtoms`` below.
-    groups
+    group
         A sequence of atom indices.
     numAtoms
         The total number of atoms in the system, including those that are not in

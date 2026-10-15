@@ -64,7 +64,7 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
         The unit of measurement of the collective variable. It must be compatible
         with the MD unit system (mass in `daltons`, distance in `nanometers`, time
         in `picoseconds`, temperature in `kelvin`, energy in `kilojoules_per_mol`,
-        angle in `radians`). If the collective variables does not have a unit, use
+        angle in `radians`). If the collective variable does not have a unit, use
         `unit.dimensionless`.
     periodicBounds
         The lower and upper bounds of the collective variable if it is periodic, or
@@ -173,7 +173,7 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
         pbc: bool = False,
     ) -> AtomicFunction:
         """
-        Create a :class:`AtomicFunction` from an object of :openmm:`CustomBondForce`,
+        Create an :class:`AtomicFunction` from an object of :openmm:`CustomBondForce`,
         :openmm:`CustomAngleForce`, :openmm:`CustomTorsionForce`, or
         :openmm:`CustomCompoundBondForce` class.
         """
@@ -225,7 +225,7 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
         pbc: bool = False,
     ) -> AtomicFunction:
         """
-        Create a :class:`AtomicFunction` from an :OpenMM:`HarmonicBondForce`.
+        Create an :class:`AtomicFunction` from a :OpenMM:`HarmonicBondForce`.
         """
         parameters = {"r0": [], "k": []}
         atoms = []
@@ -251,7 +251,7 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
         pbc: bool = False,
     ) -> AtomicFunction:
         """
-        Create a :class:`AtomicFunction` from an :OpenMM:`HarmonicAngleForce`.
+        Create an :class:`AtomicFunction` from a :OpenMM:`HarmonicAngleForce`.
         """
         parameters = {"theta0": [], "k": []}
         atoms = []
@@ -277,7 +277,7 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
         pbc: bool = False,
     ) -> AtomicFunction:
         """
-        Create a :class:`AtomicFunction` from an :OpenMM:`PeriodicTorsionForce`.
+        Create an :class:`AtomicFunction` from a :OpenMM:`PeriodicTorsionForce`.
         """
         parameters = {"periodicity": [], "phase": [], "k": []}
         atoms = []
@@ -315,7 +315,7 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
             The unit of measurement of the collective variable. It must be
             compatible with the MD unit system (mass in `daltons`, distance in
             `nanometers`, time in `picoseconds`, temperature in `kelvin`, energy in
-            `kilojoules_per_mol`, angle in `radians`). If the collective variables
+            `kilojoules_per_mol`, angle in `radians`). If the collective variable
             does not have a unit, use `unit.dimensionless`.
         periodicBounds
             The lower and upper bounds of the collective variable if it is periodic,

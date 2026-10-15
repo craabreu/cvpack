@@ -37,7 +37,7 @@ class HelixAngleContent(CollectiveVariable, openmm.CustomAngleForce):
         B_m(x) = \frac{1}{1 + x^{2m}}
 
     where :math:`m` is an integer parameter that controls its steepness. Note that
-    :math:`x` needs to be elevated to an even power for :math:`B_m(x)` to be an even
+    :math:`x` needs to be raised to an even power for :math:`B_m(x)` to be an even
     function.
 
     Optionally, this collective variable can be normalized to the range :math:`[0, 1]`.

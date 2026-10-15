@@ -31,7 +31,7 @@ class ResidueCoordination(CollectiveVariable, openmm.CustomCentroidBondForce):
     :math:`{\bf R}_i` is the centroid of the residue :math:`i`, :math:`r_0` is the
     threshold distance for defining a contact and :math:`S(x)` is a step function equal
     to :math:`1` if a contact is made or equal to :math:`0` otherwise. For trajectory
-    analysis, it is fine to make :math:`S(x) = H(1-x)`, where `H` is the `Heaviside step
+    analysis, it is fine to set :math:`S(x) = H(1-x)`, where `H` is the `Heaviside step
     function <https://en.wikipedia.org/wiki/Heaviside_step_function>`_. For molecular
     dynamics, however, :math:`S(x)` should be a continuous approximation of
     :math:`H(1-x)` for :math:`x \geq 0`. By default :cite:`Iannuzzi_2003`, the

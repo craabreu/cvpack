@@ -1,7 +1,7 @@
 """
 .. class:: CollectiveVariable
    :platform: Linux, MacOS, Windows
-   :synopsis: An abstract class with common attributes and method for all CVs
+   :synopsis: An abstract class with common attributes and methods for all CVs
 
 .. moduleauthor:: Charlles Abreu <craabreu@gmail.com>
 
@@ -26,7 +26,7 @@ from .utils import (
 
 class CollectiveVariable(Serializable):
     r"""
-    An abstract class with common attributes and method for all CVs.
+    An abstract class with common attributes and methods for all CVs.
     """
 
     _unit: Unit = Unit("dimensionless")
@@ -91,7 +91,7 @@ class CollectiveVariable(Serializable):
         """
         Register the periodic bounds of this collective variable.
 
-        This method must called from Subclass.__init__ if the collective variable is
+        This method must be called from Subclass.__init__ if the collective variable is
         periodic.
 
         Parameters
@@ -191,7 +191,7 @@ class CollectiveVariable(Serializable):
         """
         Evaluate this collective variable at a given :OpenMM:`Context`.
 
-        If this collective variable share the force group with other forces, then its
+        If this collective variable shares the force group with other forces, then its
         evaluation requires reinitializing the :OpenMM:`Context` twice at each call.
         This is inefficient and should be avoided. To allow this behavior, the
         ``allowReinitialization`` parameter must be set to True.
@@ -268,7 +268,7 @@ class CollectiveVariable(Serializable):
                 \sum_{i=1}^N \frac{1}{m_i} \left\| \frac{dq}{d{\bf r}_i} \right\|^2
             \right)^{-1}
 
-        If this collective variable share the force group with other forces, then
+        If this collective variable shares the force group with other forces, then
         evaluating its effective mass requires reinitializing the :OpenMM:`Context`
         twice at each call. This is inefficient and should be avoided. To allow this
         behavior, the ``allowReinitialization`` parameter must be set to True.
