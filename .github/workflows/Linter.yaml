@@ -15,10 +15,10 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.10"]
+        python-version: ["3.12"]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Additional info about the build
         shell: bash
@@ -27,7 +27,7 @@ jobs:
           df -h
           ulimit -a
 
-      - uses: mamba-org/setup-micromamba@v1
+      - uses: mamba-org/setup-micromamba@v2
         with:
           environment-file: devtools/conda-envs/lint_env.yaml
           environment-name: linter
@@ -41,18 +41,10 @@ jobs:
           python -m pip install . --no-deps
           micromamba list
 
-      - name: Run flake8
+      - name: Run ruff check
         shell: bash -l {0}
-        run: flake8 cvpack
+        run: ruff check cvpack
 
-      - name: Run black
+      - name: Run ruff format
         shell: bash -l {0}
-        run: black --diff --color cvpack
-
-      - name: Run isort
-        shell: bash -l {0}
-        run: isort --check-only cvpack
-
-      - name: Run pylint
-        shell: bash -l {0}
-        run: pylint cvpack
+        run: ruff format --check --diff cvpack
