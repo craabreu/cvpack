@@ -238,3 +238,26 @@ def test_unit_rejects_unsafe_or_invalid_expressions(text):
         Unit(text)
     with pytest.raises(ValueError):
         yaml.safe_load(f'!cvpack.Unit {{data: "{text}"}}')
+
+
+def test_residue_coordination_numpy_reference_value_round_trips(lysozyme):
+    groups = [
+        list(it.islice(lysozyme.topology.residues(), start, end))
+        for start, end in [(125, 142), (142, 156)]
+    ]
+    cv = cvpack.ResidueCoordination(*groups)
+    cv.setReferenceValue(np.float64(7.0))
+    clone = copy.deepcopy(cv)
+    assert clone.getReferenceValue() == cv.getReferenceValue()
+
+
+@pytest.mark.parametrize(
+    "mm_unit, expected",
+    [
+        (unit.dalton, "dalton"),
+        (unit.kilojoule_per_mole, "mole**-1*md_kilojoule"),
+        (unit.nanometer**2, "nanometer**2"),
+    ],
+)
+def test_units_serialize_with_their_own_names(mm_unit, expected):
+    assert Unit(mm_unit).__getstate__()["data"] == expected

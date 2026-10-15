@@ -187,7 +187,7 @@ class ResidueCoordination(CollectiveVariable, openmm.CustomCentroidBondForce):
                 The reference value.
         """
         expression = self.getEnergyFunction()
-        value = value_in_md_units(value)
+        value = float(value_in_md_units(value))
         self.setEnergyFunction(
             expression.replace(f"refval={self._ref_val}", f"refval={value}")
         )

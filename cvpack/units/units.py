@@ -53,7 +53,10 @@ def _unit_names() -> dict[t.Any, str]:
         if isinstance(value, mmunit.Unit):
             components = list(value.iter_base_or_scaled_units())
             if len(components) == 1 and components[0][1] == 1:
-                names.setdefault(components[0][0], attribute)
+                component = components[0][0]
+                # Prefer the attribute named like the unit itself (e.g. kilojoule)
+                if component not in names or attribute == component.name:
+                    names[component] = attribute
     return names
 
 
