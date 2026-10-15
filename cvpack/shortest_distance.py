@@ -50,11 +50,11 @@ class ShortestDistance(CollectiveVariable, openmm.CustomCVForce):
     shortest distance. However, an excessively large value may lead to numerical
     instability.
 
-    The terms outside the summations guarantee that shortest distance is well-defined
-    even when there are no atom pairs within the cutoff distance. In this case, the
-    collective variable evaluates to the cutoff distance. Shifting each weight by
-    :math:`e^{-\beta}` makes the contribution of a pair vanish at the cutoff distance,
-    so the collective variable is continuous when a pair crosses it.
+    The terms outside the summations guarantee that the shortest distance is
+    well-defined even when there are no atom pairs within the cutoff distance. In this
+    case, the collective variable evaluates to the cutoff distance. Shifting each weight
+    by :math:`e^{-\beta}` makes the contribution of a pair vanish at the cutoff
+    distance, so the collective variable is continuous when a pair crosses it.
 
     .. note::
 

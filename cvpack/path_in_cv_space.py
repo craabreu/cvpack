@@ -63,8 +63,8 @@ class PathInCVSpace(BasePathCV):
 
         \|{\bf x}\|^2 = {\bf x}^T {\bf D}^{-2} {\bf x}
 
-    where :math:`{\bf D}` is a diagonal matrix whose each diagonal element is the
-    characteristic scale of the corresponding collective variable, which makes
+    where :math:`{\bf D}` is a diagonal matrix whose diagonal elements are the
+    characteristic scales of the corresponding collective variables, which makes
     :math:`\|{\bf x}\|^2` dimensionless. Appropriate boundary conditions are used for
     periodic CVs.
 

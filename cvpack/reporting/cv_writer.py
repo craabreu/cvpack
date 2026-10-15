@@ -58,7 +58,7 @@ class CVWriter(CustomWriter):
     ...     2 * unit.femtosecond,
     ... )
     >>> integrator.setRandomNumberSeed(1234)
-    >>> # Integrate only the physical forces, so that phi and psi do not bias dynamics
+    >>> # Integrate only the physical forces, so phi and psi do not bias the dynamics
     >>> integrator.setIntegrationForceGroups({0})
     >>> simulation = app.Simulation(model.topology, model.system, integrator)
     >>> simulation.context.setPositions(model.positions)
@@ -88,7 +88,7 @@ class CVWriter(CustomWriter):
         if not isinstance(variable, CollectiveVariable):
             raise TypeError("variable must be a CollectiveVariable object")
         if not (value or emass):
-            raise ValueError("At least one of value or effective_mass must be True")
+            raise ValueError("At least one of value or emass must be True")
         self._cv = variable
         self._value = value
         self._emass = emass

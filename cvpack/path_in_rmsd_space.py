@@ -41,7 +41,7 @@ class PathInRMSDSpace(BasePathCV):
         \right)
 
     where :math:`d_{\rm rms}({\bf r},{\bf r}^{\rm ref}_i)` is the root-mean-square
-    distance between the current system state and the :math:`i`-th reference structure
+    deviation between the current system state and the :math:`i`-th reference structure
     and :math:`\sigma` sets the width of the kernels.
 
     .. note::
@@ -71,7 +71,7 @@ class PathInRMSDSpace(BasePathCV):
     Raises
     ------
     ValueError
-        The number of milestones is less than 2
+        If the number of milestones is less than 2
     ValueError
         If the metric is not `cvpack.path.progress` or `cvpack.path.deviation`
 

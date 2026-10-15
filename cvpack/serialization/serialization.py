@@ -134,7 +134,7 @@ def serialize(obj: t.Any, iostream: t.IO) -> None:
         A text stream in write mode
 
     Example
-    =======
+    -------
     >>> import cvpack
     >>> import io
     >>> from cvpack import serialization

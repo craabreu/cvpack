@@ -1,7 +1,6 @@
 """
 .. class:: RadiusOfGyrationSq
    :platform: Linux, MacOS, Windows
-
    :synopsis: The square of the radius of gyration of a group of atoms
 
 .. classauthor:: Charlles Abreu <craabreu@gmail.com>

@@ -27,7 +27,7 @@ class NumberOfContacts(CollectiveVariable, openmm.CustomNonbondedForce):
 
     where :math:`r_0` is the threshold distance for defining a contact and :math:`S(x)`
     is a step function equal to :math:`1` if a contact is made or equal to :math:`0`
-    otherwise. For trajectory analysis, it is fine to make :math:`S(x) = H(1-x)`, where
+    otherwise. For trajectory analysis, it is fine to set :math:`S(x) = H(1-x)`, where
     `H` is the `Heaviside step function
     <https://en.wikipedia.org/wiki/Heaviside_step_function>`_. For molecular dynamics,
     however, :math:`S(x)` should be a continuous approximation of :math:`H(1-x)` for
@@ -66,7 +66,7 @@ class NumberOfContacts(CollectiveVariable, openmm.CustomNonbondedForce):
         taken.
     reference
         A dimensionless reference value to which the collective variable should be
-        normalized. One can also provide an :OpenMM:`Context` object from which to
+        normalized. One can also provide a :OpenMM:`Context` object from which to
         obtain the reference number of contacts.
     stepFunction
         The function "step(1-x)" (for analysis only) or a continuous approximation

@@ -33,7 +33,7 @@ class HelixRMSDContent(BaseRMSDContent):
     :math:`i` to :math:`i+5` of the sequence, :math:`{\bf g}_{\rm ref}` represents
     the same atoms in an ideal alpha-helix configuration,
     :math:`r_{\rm rmsd}({\bf g}, {\bf g}_{\rm ref})` is the root-mean-square
-    distance (RMSD) between groups :math:`{\bf g}` and :math:`{\bf g}_{\rm ref}`,
+    deviation (RMSD) between groups :math:`{\bf g}` and :math:`{\bf g}_{\rm ref}`,
     :math:`r_0` is a threshold RMSD value, and :math:`S(x)` is a smooth step function
     whose default form is
 
@@ -44,7 +44,7 @@ class HelixRMSDContent(BaseRMSDContent):
     the N-terminus to the C-terminus.
 
     Every group :math:`{\bf g}_{i,j}` is formed by the N, :math:`{\rm C}_\alpha`,
-    :math:`{\rm C}_\beta`, C, and O atoms of the six residues involvend, thus
+    :math:`{\rm C}_\beta`, C, and O atoms of the six residues involved, thus
     comprising 30 atoms in total. In the case of glycine, the missing
     :math:`{\rm C}_\beta` atom is replaced by the corresponding H atom. The RMSD is
     then defined as
@@ -68,9 +68,9 @@ class HelixRMSDContent(BaseRMSDContent):
 
     This collective variable was introduced in Ref. :cite:`Pietrucci_2009`. The default
     step function shown above is identical to the one in the original paper, but written
-    in a numerically safe form. The ideal alpha-helix configuration is the same used for
-    the collective variable `ALPHARMSD`_ in `PLUMED v2.8.1
-    <https://github.com/plumed/plumed2>`_ .
+    in a numerically safe form. The ideal alpha-helix configuration is the same as that
+    used for the collective variable `ALPHARMSD`_ in `PLUMED v2.8.1
+    <https://github.com/plumed/plumed2>`_.
 
     .. note::
 

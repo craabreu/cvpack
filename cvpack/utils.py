@@ -1,7 +1,7 @@
 """
 .. class:: Utils
    :platform: Linux, MacOS, Windows
-   :synopsis: Utility functions and classes for CVpack
+   :synopsis: Utility functions and classes for CVPack
 
 .. classauthor:: Charlles Abreu <craabreu@gmail.com>
 
@@ -37,12 +37,13 @@ def evaluate_in_context(
         forces
             The forces to be evaluated.
         context
-            The context in which the force will be evaluated.
+            The context in which the forces will be evaluated.
 
     Returns
     -------
-        float
-            The potential energy of the force in the given context.
+        float | tuple[float, ...]
+            The potential energy of a single force, or a tuple with the potential
+            energies of multiple forces, in the given context.
     """
     is_single = isinstance(forces, openmm.Force)
     forces = [forces] if is_single else list(forces)

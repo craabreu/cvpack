@@ -23,7 +23,7 @@ class CustomWriter(t.Protocol):
 
     def getHeaders(self) -> list[str]:
         """
-        Gets a list of strigs containing the headers to be added to the report.
+        Gets a list of strings containing the headers to be added to the report.
         """
         raise NotImplementedError("Method 'getHeaders' not implemented")
 

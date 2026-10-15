@@ -61,7 +61,7 @@ class AttractionStrength(CollectiveVariable, openmm.CustomNonbondedForce):
         Groups :math:`{\bf g}_1` and :math:`{\bf g}_2` can overlap or even be the
         same, in which case the collective variable will measure the strength of
         the self-attraction of :math:`{\bf g}_1`. On the other hand, the contrast
-        group :math:`{\bf g}_3` cannot overlap with neither :math:`{\bf g}_1` nor
+        group :math:`{\bf g}_3` cannot overlap with either :math:`{\bf g}_1` or
         :math:`{\bf g}_2`.
 
     The function :math:`u_{\rm disp}(x)` is a Lennard-Jones-like reduced potential with
@@ -85,14 +85,14 @@ class AttractionStrength(CollectiveVariable, openmm.CustomNonbondedForce):
 
     .. note::
 
-        Only attractive electrostatic interactions are considered (:math:`q_i q_i < 0`),
+        Only attractive electrostatic interactions are considered (:math:`q_i q_j < 0`),
         which gives :math:`S_{\rm attr}({\bf r})` a lower bound of zero. The upper
-        bound will depends on the system details, the chosen groups of atoms, and the
+        bound depends on the system details, the chosen groups of atoms, and the
         adopted reference value.
 
     The Lennard-Jones parameters, atomic charges, cutoff distance, boundary conditions,
     as well as whether to use a switching function and its corresponding switching
-    distance, are taken from :openmm:`NonbondedForce` object.
+    distance, are taken from the :openmm:`NonbondedForce` object.
 
     .. note::
         Any non-exclusion exceptions involving an atom in :math:`{\bf g}_1` and an atom
@@ -114,7 +114,7 @@ class AttractionStrength(CollectiveVariable, openmm.CustomNonbondedForce):
         and :math:`{\bf g}_3`.
     reference
         A reference value (in energy units per mole) to which the collective variable
-        should be normalized. One can also provide an :OpenMM:`Context` object from
+        should be normalized. One can also provide a :OpenMM:`Context` object from
         which to extract a reference attraction strength. The extracted value will be
         :math:`S_{1,2}({\bf r})` for :math:`E_{\rm ref} = 1`, regardless of whether
         `contrastGroup` is provided or not.
