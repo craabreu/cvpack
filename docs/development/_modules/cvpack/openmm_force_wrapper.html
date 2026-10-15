@@ -86,10 +86,10 @@
 <span class="sd">    &gt;&gt;&gt; from openmm import unit</span>
 <span class="sd">    &gt;&gt;&gt; from openmmtools import testsystems</span>
 <span class="sd">    &gt;&gt;&gt; model = testsystems.AlanineDipeptideVacuum()</span>
-<span class="sd">    &gt;&gt;&gt; angle = openmm.CustomAngleForce("theta")</span>
-<span class="sd">    &gt;&gt;&gt; _ = angle.addAngle(0, 1, 2)</span>
+<span class="sd">    &gt;&gt;&gt; torsion = openmm.CustomTorsionForce("theta")</span>
+<span class="sd">    &gt;&gt;&gt; _ = torsion.addTorsion(4, 6, 8, 14)</span>
 <span class="sd">    &gt;&gt;&gt; cv = cvpack.OpenMMForceWrapper(</span>
-<span class="sd">    ...     angle,</span>
+<span class="sd">    ...     torsion,</span>
 <span class="sd">    ...     unit.radian,</span>
 <span class="sd">    ...     periodicBounds=[-np.pi, np.pi] * unit.radian,</span>
 <span class="sd">    ... )</span>
@@ -99,9 +99,9 @@
 <span class="sd">    &gt;&gt;&gt; context = openmm.Context(model.system, integrator, platform)</span>
 <span class="sd">    &gt;&gt;&gt; context.setPositions(model.positions)</span>
 <span class="sd">    &gt;&gt;&gt; cv.getValue(context)</span>
-<span class="sd">    1.911... rad</span>
+<span class="sd">    -3.1415... rad</span>
 <span class="sd">    &gt;&gt;&gt; cv.getEffectiveMass(context)</span>
-<span class="sd">    0.00538... nm**2 Da/(rad**2)</span>
+<span class="sd">    0.04795... nm**2 Da/(rad**2)</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>

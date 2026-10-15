@@ -66,7 +66,8 @@ positions of atom <span class="math notranslate nohighlight">\(i\)</span> in the
 group <span class="math notranslate nohighlight">\(j\)</span>, defined analogously to <span class="math notranslate nohighlight">\({\bf c}_j\)</span>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>To use this class, you must install the <a class="reference external" href="https://anaconda.org/mdtools/openmm-cpp-forces">openmm-cpp-forces</a> conda package.</p>
+<p>To use this class, you must install the <a class="reference external" href="https://anaconda.org/mdtools/openmm-cpp-forces">openmm-cpp-forces</a> package,
+version 0.2.0 or later.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -84,7 +85,8 @@ contain all atoms in the system.</p></li>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>ImportError</strong> – If the <a class="reference external" href="https://anaconda.org/mdtools/openmm-cpp-forces">openmm-cpp-forces</a> conda package is not installed.</p></li>
+<li><p><strong>ImportError</strong> – If the <a class="reference external" href="https://anaconda.org/mdtools/openmm-cpp-forces">openmm-cpp-forces</a> package (version 0.2.0 or later) is not
+    installed.</p></li>
 <li><p><strong>ValueError</strong> – If <code class="docutils literal notranslate"><span class="pre">groups</span></code> is not a sequence of disjoint atom groups.</p></li>
 <li><p><strong>ValueError</strong> – If referencePositions is a dict and numAtoms is not given</p></li>
 </ul>

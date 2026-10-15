@@ -51,18 +51,38 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.base_rmsd</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseRMSD</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">MatrixQuantity</span><span class="p">,</span> <span class="n">VectorQuantity</span>
 
+<span class="c1"># Earlier versions compute wrong forces for groups of different sizes</span>
+<span class="n">MIN_OPENMM_CPP_FORCES_VERSION</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
-<span class="k">class</span><span class="w"> </span><span class="nc">_Stub</span><span class="p">:</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-            <span class="s2">"CompositeRMSD requires the mdtools::openmm-cpp-forces conda package"</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_stub</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">:</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Stub</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Stub</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_force_class</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Return CompositeRMSDForce, or a stub that raises an informative ImportError."""</span>
+    <span class="n">requirement</span> <span class="o">=</span> <span class="s2">"openmm-cpp-forces 0.2.0 or later (mdtools conda channel or PyPI)"</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">openmmcppforces</span>  <span class="c1"># noqa: PLC0415</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_stub</span><span class="p">(</span><span class="sa">f</span><span class="s2">"CompositeRMSD requires </span><span class="si">{</span><span class="n">requirement</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">openmmcppforces</span><span class="p">,</span> <span class="s2">"__version__"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">numbers</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">part</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="p">(</span><span class="n">version</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span> <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">numbers</span> <span class="o">&lt;</span> <span class="n">MIN_OPENMM_CPP_FORCES_VERSION</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_stub</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"CompositeRMSD requires </span><span class="si">{</span><span class="n">requirement</span><span class="si">}</span><span class="s2">, because earlier versions compute "</span>
+            <span class="sa">f</span><span class="s2">"wrong forces, but version </span><span class="si">{</span><span class="n">version</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">'unknown'</span><span class="si">}</span><span class="s2"> is installed"</span>
         <span class="p">)</span>
+    <span class="k">return</span> <span class="n">openmmcppforces</span><span class="o">.</span><span class="n">CompositeRMSDForce</span>
 
 
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">openmmcppforces</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompositeRMSDForce</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">CompositeRMSDForce</span> <span class="o">=</span> <span class="n">_Stub</span>
+<span class="n">CompositeRMSDForce</span> <span class="o">=</span> <span class="n">_get_force_class</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="CompositeRMSD">
@@ -99,7 +119,8 @@
 
 <span class="sd">    .. warning::</span>
 
-<span class="sd">        To use this class, you must install the `openmm-cpp-forces`_ conda package.</span>
+<span class="sd">        To use this class, you must install the `openmm-cpp-forces`_ package,</span>
+<span class="sd">        version 0.2.0 or later.</span>
 
 <span class="sd">    .. _openmm-cpp-forces: https://anaconda.org/mdtools/openmm-cpp-forces</span>
 
@@ -122,7 +143,8 @@
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ImportError</span>
-<span class="sd">        If the `openmm-cpp-forces`_ conda package is not installed.</span>
+<span class="sd">        If the `openmm-cpp-forces`_ package (version 0.2.0 or later) is not</span>
+<span class="sd">        installed.</span>
 <span class="sd">    ValueError</span>
 <span class="sd">        If ``groups`` is not a sequence of disjoint atom groups.</span>
 <span class="sd">    ValueError</span>
@@ -173,6 +195,9 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"numAtoms is required when referencePositions is a dict"</span><span class="p">)</span>
         <span class="n">num_atoms</span> <span class="o">=</span> <span class="n">numAtoms</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">referencePositions</span><span class="p">)</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="p">[[</span><span class="nb">int</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">group</span><span class="p">]</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">groups</span><span class="p">):</span>
+            <span class="c1"># CompositeRMSDForce would interpret an empty group as all atoms</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"The groups of atoms must not be empty"</span><span class="p">)</span>
         <span class="n">defined_coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getDefinedCoords</span><span class="p">(</span><span class="n">referencePositions</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="p">[]))</span>
         <span class="n">all_coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getAllCoords</span><span class="p">(</span><span class="n">defined_coords</span><span class="p">,</span> <span class="n">num_atoms</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">all_coords</span><span class="p">)</span>

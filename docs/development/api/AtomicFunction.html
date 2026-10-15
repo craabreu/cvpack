@@ -177,7 +177,8 @@ distances. If <code class="docutils literal notranslate"><span class="pre">None<
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>TypeError</strong> – If the force is not convertible to an <a class="reference internal" href="#cvpack.AtomicFunction" title="cvpack.AtomicFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomicFunction</span></code></a></p></li>
-<li><p><strong>ValueError</strong> – If the force uses tabulated functions</p></li>
+<li><p><strong>ValueError</strong> – If the force uses tabulated functions, or if it is a
+    <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomExternalForce.html">openmm.CustomExternalForce</a> that uses <code class="docutils literal notranslate"><span class="pre">periodicdistance</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
