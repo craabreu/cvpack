@@ -175,3 +175,16 @@ def test_rmsd_content_step_function_with_named_functions(step_function):
     else:
         expected = np.sum(np.maximum(0, 1 - x))
     assert cv.getValue(context).value_in_unit(cv.getUnit()) == pytest.approx(expected)
+
+
+def test_atomic_and_centroid_functions_default_to_no_pbc():
+    system = particle_system(2)
+    atomic = cvpack.AtomicFunction("distance(p1, p2)", unit.nanometer, [[0, 1]])
+    centroid = cvpack.CentroidFunction(
+        "distance(g1, g2)", unit.nanometer, [[0], [1]], name="centroid"
+    )
+    atomic.addToSystem(system)
+    centroid.addToSystem(system)
+    context = make_context(system, [[0, 0, 0], [1.9, 0, 0]])
+    for cv in (atomic, centroid):
+        assert cv.getValue(context).value_in_unit(cv.getUnit()) == pytest.approx(1.9)

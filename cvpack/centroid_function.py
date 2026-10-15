@@ -96,7 +96,8 @@ class CentroidFunction(BaseCustomFunction, openmm.CustomCentroidBondForce):
         The periodic bounds of the collective variable if it is periodic, or `None` if
         it is not.
     pbc
-        Whether to use periodic boundary conditions.
+        Whether to use periodic boundary conditions. This should be ``True`` for
+        periodic systems.
     weighByMass
         Whether to define the centroid as the center of mass of the group instead of
         the geometric center.
@@ -145,7 +146,7 @@ class CentroidFunction(BaseCustomFunction, openmm.CustomCentroidBondForce):
     >>> context = openmm.Context(model.system, integrator, platform)
     >>> context.setPositions(model.positions)
     >>> res_coord.getValue(context)
-    33.0 dimensionless
+    28.0 dimensionless
 
     Recompute the residue coordination using the centroid function:
 
@@ -159,7 +160,7 @@ class CentroidFunction(BaseCustomFunction, openmm.CustomCentroidBondForce):
     >>> colvar.addToSystem(model.system)
     >>> context.reinitialize(preserveState=True)
     >>> colvar.getValue(context)
-    33.0 dimensionless
+    28.0 dimensionless
     """
 
     def __init__(
@@ -169,7 +170,7 @@ class CentroidFunction(BaseCustomFunction, openmm.CustomCentroidBondForce):
         groups: t.Iterable[t.Iterable[int]],
         collections: ArrayLike | None = None,
         periodicBounds: VectorQuantity | None = None,
-        pbc: bool = True,
+        pbc: bool = False,
         weighByMass: bool = True,
         name: str = "centroid_function",
         **parameters: ScalarQuantity | VectorQuantity,

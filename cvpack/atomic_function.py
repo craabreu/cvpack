@@ -71,6 +71,7 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
         ``None`` if it is not.
     pbc
         Whether to use periodic boundary conditions when computing atomic distances.
+        This should be ``True`` for periodic systems.
     name
         The name of the collective variable.
 
@@ -133,7 +134,7 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
         unit: mmunit.Unit,
         groups: ArrayLike,
         periodicBounds: VectorQuantity | None = None,
-        pbc: bool = True,
+        pbc: bool = False,
         name: str = "atomic_function",
         **parameters: ScalarQuantity | VectorQuantity,
     ) -> None:
