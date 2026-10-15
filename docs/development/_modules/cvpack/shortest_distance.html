@@ -101,6 +101,19 @@
 <span class="sd">        :math:`i = j` are ignored, and each pair of distinct atoms contributes a</span>
 <span class="sd">        single term, even if both atoms are in both groups.</span>
 
+<span class="sd">    .. note::</span>
+
+<span class="sd">        GPU platforms accumulate forces in 64-bit fixed point, which cannot represent</span>
+<span class="sd">        the forces of :math:`S_{rw}` and :math:`S_w` when the weights span many orders</span>
+<span class="sd">        of magnitude. To keep them in range, the collective variable is evaluated in</span>
+<span class="sd">        several windows. Each window multiplies all weights by a different constant,</span>
+<span class="sd">        which leaves :math:`r_{\rm min}` unchanged, and the window used is the one</span>
+<span class="sd">        whose :math:`S_w` is the largest not exceeding :math:`10^6`. The number of</span>
+<span class="sd">        windows, and thus the cost, grows with :math:`\beta`: one window for</span>
+<span class="sd">        :math:`\beta \leq 13`, five for the default :math:`\beta = 100`, and at most</span>
+<span class="sd">        16. For :math:`\beta &gt; 344`, 16 windows are not enough, and forces computed on</span>
+<span class="sd">        GPU platforms lose precision.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    group1</span>
@@ -149,6 +162,10 @@
 <span class="sd">    0.1785... nm</span>
 <span class="sd">    """</span>
 
+    <span class="n">WINDOW_EFOLDS</span> <span class="o">=</span> <span class="mi">22</span>
+    <span class="n">MAX_WEIGHT_SUM</span> <span class="o">=</span> <span class="mf">1e6</span>
+    <span class="n">MAX_WINDOWS</span> <span class="o">=</span> <span class="mi">16</span>
+
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">group1</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
@@ -162,23 +179,48 @@
         <span class="n">rc</span> <span class="o">=</span> <span class="n">cutoffDistance</span>
         <span class="k">if</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">is_quantity</span><span class="p">(</span><span class="n">rc</span><span class="p">):</span>
             <span class="n">rc</span> <span class="o">=</span> <span class="n">rc</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">mmunit</span><span class="o">.</span><span class="n">nanometers</span><span class="p">)</span>
-        <span class="n">weight</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"(exp(-</span><span class="si">{</span><span class="n">beta</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">rc</span><span class="si">}</span><span class="s2">*r)-</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">beta</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span>
-        <span class="n">forces</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">"wrsum"</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">weight</span><span class="si">}</span><span class="s2">*r"</span><span class="p">),</span>
-            <span class="s2">"wsum"</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">(</span><span class="n">weight</span><span class="p">),</span>
-        <span class="p">}</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="n">rc</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">beta</span><span class="p">)</span><span class="si">}</span><span class="s2">+wrsum)/(</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">beta</span><span class="p">)</span><span class="si">}</span><span class="s2">+wsum)"</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">cv</span><span class="p">,</span> <span class="n">force</span> <span class="ow">in</span> <span class="n">forces</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">force</span><span class="o">.</span><span class="n">setNonbondedMethod</span><span class="p">(</span>
-                <span class="n">force</span><span class="o">.</span><span class="n">CutoffPeriodic</span> <span class="k">if</span> <span class="n">pbc</span> <span class="k">else</span> <span class="n">force</span><span class="o">.</span><span class="n">CutoffNonPeriodic</span>
-            <span class="p">)</span>
-            <span class="n">force</span><span class="o">.</span><span class="n">setCutoffDistance</span><span class="p">(</span><span class="n">cutoffDistance</span><span class="p">)</span>
-            <span class="n">force</span><span class="o">.</span><span class="n">setUseSwitchingFunction</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-            <span class="n">force</span><span class="o">.</span><span class="n">setUseLongRangeCorrection</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numAtoms</span><span class="p">):</span>
-                <span class="n">force</span><span class="o">.</span><span class="n">addParticle</span><span class="p">([])</span>
-            <span class="n">force</span><span class="o">.</span><span class="n">addInteractionGroup</span><span class="p">(</span><span class="n">group1</span><span class="p">,</span> <span class="n">group2</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">addCollectiveVariable</span><span class="p">(</span><span class="n">cv</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
+        <span class="c1"># Window k multiplies all weights by exp(beta*a_k/rc), which leaves S_rw/S_w</span>
+        <span class="c1"># unchanged. The offsets a_k decrease from rc in steps of efolds*rc/beta until</span>
+        <span class="c1"># the weights of the last window are at most MAX_WEIGHT_SUM. A CustomCVForce</span>
+        <span class="c1"># holds at most 32 inner forces, so large beta values need wider steps.</span>
+        <span class="n">log_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MAX_WEIGHT_SUM</span><span class="p">)</span>
+        <span class="n">num_steps</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">beta</span> <span class="o">-</span> <span class="n">log_max</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">WINDOW_EFOLDS</span><span class="p">)))</span>
+        <span class="n">num_windows</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">num_steps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAX_WINDOWS</span><span class="p">)</span>
+        <span class="n">efolds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">WINDOW_EFOLDS</span>
+        <span class="k">if</span> <span class="n">num_windows</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">num_steps</span><span class="p">:</span>
+            <span class="n">efolds</span> <span class="o">=</span> <span class="p">(</span><span class="n">beta</span> <span class="o">-</span> <span class="n">log_max</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">num_windows</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">definitions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">expression</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_windows</span><span class="p">)):</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="n">rc</span> <span class="o">-</span> <span class="n">k</span> <span class="o">*</span> <span class="n">efolds</span> <span class="o">*</span> <span class="n">rc</span> <span class="o">/</span> <span class="n">beta</span>
+            <span class="n">shift</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">k</span> <span class="o">*</span> <span class="n">efolds</span><span class="p">)</span>
+            <span class="c1"># The clamp only acts on windows whose weight sum exceeds MAX_WEIGHT_SUM,</span>
+            <span class="c1"># which are never selected, and prevents overflows in them. Factoring out</span>
+            <span class="c1"># the shift keeps constants that underflow in single precision out of the</span>
+            <span class="c1"># GPU kernels.</span>
+            <span class="n">exponent</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"min(</span><span class="si">{</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">log_max</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">beta</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">rc</span><span class="si">}</span><span class="s2">*(</span><span class="si">{</span><span class="n">offset</span><span class="si">}</span><span class="s2">-r))"</span>
+            <span class="n">weight</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"exp(</span><span class="si">{</span><span class="n">exponent</span><span class="si">}</span><span class="s2">)*(1-exp(</span><span class="si">{</span><span class="n">beta</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">rc</span><span class="si">}</span><span class="s2">*(r-</span><span class="si">{</span><span class="n">rc</span><span class="si">}</span><span class="s2">)))"</span>
+            <span class="k">for</span> <span class="n">cv</span><span class="p">,</span> <span class="n">function</span> <span class="ow">in</span> <span class="p">[(</span><span class="sa">f</span><span class="s2">"wrsum</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">weight</span><span class="si">}</span><span class="s2">*r"</span><span class="p">),</span> <span class="p">(</span><span class="sa">f</span><span class="s2">"wsum</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">weight</span><span class="p">)]:</span>
+                <span class="n">force</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+                <span class="n">force</span><span class="o">.</span><span class="n">setNonbondedMethod</span><span class="p">(</span>
+                    <span class="n">force</span><span class="o">.</span><span class="n">CutoffPeriodic</span> <span class="k">if</span> <span class="n">pbc</span> <span class="k">else</span> <span class="n">force</span><span class="o">.</span><span class="n">CutoffNonPeriodic</span>
+                <span class="p">)</span>
+                <span class="n">force</span><span class="o">.</span><span class="n">setCutoffDistance</span><span class="p">(</span><span class="n">cutoffDistance</span><span class="p">)</span>
+                <span class="n">force</span><span class="o">.</span><span class="n">setUseSwitchingFunction</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">force</span><span class="o">.</span><span class="n">setUseLongRangeCorrection</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numAtoms</span><span class="p">):</span>
+                    <span class="n">force</span><span class="o">.</span><span class="n">addParticle</span><span class="p">([])</span>
+                <span class="n">force</span><span class="o">.</span><span class="n">addInteractionGroup</span><span class="p">(</span><span class="n">group1</span><span class="p">,</span> <span class="n">group2</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">addCollectiveVariable</span><span class="p">(</span><span class="n">cv</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
+            <span class="n">definitions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"value</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=(</span><span class="si">{</span><span class="n">rc</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">shift</span><span class="si">}</span><span class="s2">+wrsum</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">)/sum</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">definitions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"sum</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">shift</span><span class="si">}</span><span class="s2">+wsum</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">expression</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"value</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">"</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">condition</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"step(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">MAX_WEIGHT_SUM</span><span class="si">}</span><span class="s2">-sum</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">)"</span>
+                <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"select(</span><span class="si">{</span><span class="n">condition</span><span class="si">}</span><span class="s2">, value</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">expression</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setEnergyFunction</span><span class="p">(</span><span class="s2">"; "</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">expression</span><span class="p">,</span> <span class="o">*</span><span class="n">definitions</span><span class="p">]))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_registerCV</span><span class="p">(</span>
             <span class="n">name</span><span class="p">,</span>
             <span class="n">mmunit</span><span class="o">.</span><span class="n">nanometers</span><span class="p">,</span>

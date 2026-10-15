@@ -7,6 +7,9 @@ ShortestDistance
 
     .. rubric:: Methods
 
+    .. automethod:: MAX_WEIGHT_SUM
+    .. automethod:: MAX_WINDOWS
+    .. automethod:: WINDOW_EFOLDS
     .. automethod:: addToSystem
     .. automethod:: getEffectiveMass
     .. automethod:: getMassUnit

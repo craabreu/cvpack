@@ -75,6 +75,19 @@ so the collective variable is continuous when a pair crosses it.</p>
 <span class="math notranslate nohighlight">\(i = j\)</span> are ignored, and each pair of distinct atoms contributes a
 single term, even if both atoms are in both groups.</p>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>GPU platforms accumulate forces in 64-bit fixed point, which cannot represent
+the forces of <span class="math notranslate nohighlight">\(S_{rw}\)</span> and <span class="math notranslate nohighlight">\(S_w\)</span> when the weights span many orders
+of magnitude. To keep them in range, the collective variable is evaluated in
+several windows. Each window multiplies all weights by a different constant,
+which leaves <span class="math notranslate nohighlight">\(r_{\rm min}\)</span> unchanged, and the window used is the one
+whose <span class="math notranslate nohighlight">\(S_w\)</span> is the largest not exceeding <span class="math notranslate nohighlight">\(10^6\)</span>. The number of
+windows, and thus the cost, grows with <span class="math notranslate nohighlight">\(\beta\)</span>: one window for
+<span class="math notranslate nohighlight">\(\beta \leq 13\)</span>, five for the default <span class="math notranslate nohighlight">\(\beta = 100\)</span>, and at most
+16. For <span class="math notranslate nohighlight">\(\beta &gt; 344\)</span>, 16 windows are not enough, and forces computed on
+GPU platforms lose precision.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -119,6 +132,48 @@ should be <code class="docutils literal notranslate"><span class="pre">True</spa
 </pre></div>
 </div>
 <p class="rubric">Methods</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cvpack.ShortestDistance.MAX_WEIGHT_SUM">
+<span class="sig-name descname"><span class="pre">MAX_WEIGHT_SUM</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.ShortestDistance.MAX_WEIGHT_SUM" title="Link to this definition">¶</a></dt>
+<dd><p>Convert a string or number to a floating-point number, if possible.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvpack.ShortestDistance.MAX_WINDOWS">
+<span class="sig-name descname"><span class="pre">MAX_WINDOWS</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.ShortestDistance.MAX_WINDOWS" title="Link to this definition">¶</a></dt>
+<dd><p>int([x]) -&gt; integer
+int(x, base=10) -&gt; integer</p>
+<p>Convert a number or string to an integer, or return 0 if no arguments
+are given.  If x is a number, return x.__int__().  For floating-point
+numbers, this truncates towards zero.</p>
+<p>If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base.  The literal can be preceded by ‘+’ or ‘-’ and be surrounded
+by whitespace.  The base defaults to 10.  Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer
+iteral.
+&gt;&gt;&gt; int(‘0b100’, base=0)
+4</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvpack.ShortestDistance.WINDOW_EFOLDS">
+<span class="sig-name descname"><span class="pre">WINDOW_EFOLDS</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.ShortestDistance.WINDOW_EFOLDS" title="Link to this definition">¶</a></dt>
+<dd><p>int([x]) -&gt; integer
+int(x, base=10) -&gt; integer</p>
+<p>Convert a number or string to an integer, or return 0 if no arguments
+are given.  If x is a number, return x.__int__().  For floating-point
+numbers, this truncates towards zero.</p>
+<p>If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base.  The literal can be preceded by ‘+’ or ‘-’ and be surrounded
+by whitespace.  The base defaults to 10.  Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer
+iteral.
+&gt;&gt;&gt; int(‘0b100’, base=0)
+4</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="cvpack.ShortestDistance.addToSystem">
 <span class="sig-name descname"><span class="pre">addToSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">setUnusedForceGroup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.ShortestDistance.addToSystem" title="Link to this definition">¶</a></dt>
