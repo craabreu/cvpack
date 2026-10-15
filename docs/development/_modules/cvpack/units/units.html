@@ -221,6 +221,46 @@
 <span class="n">Quantity</span><span class="o">.</span><span class="n">registerTag</span><span class="p">(</span><span class="s2">"!cvpack.Quantity"</span><span class="p">)</span>
 
 
+<span class="n">_MD_BASE_UNITS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"mass"</span><span class="p">:</span> <span class="s2">"dalton"</span><span class="p">,</span>
+    <span class="s2">"length"</span><span class="p">:</span> <span class="s2">"nanometer"</span><span class="p">,</span>
+    <span class="s2">"time"</span><span class="p">:</span> <span class="s2">"picosecond"</span><span class="p">,</span>
+    <span class="s2">"charge"</span><span class="p">:</span> <span class="s2">"elementary_charge"</span><span class="p">,</span>
+    <span class="s2">"temperature"</span><span class="p">:</span> <span class="s2">"kelvin"</span><span class="p">,</span>
+    <span class="s2">"amount"</span><span class="p">:</span> <span class="s2">"mole"</span><span class="p">,</span>
+    <span class="s2">"angle"</span><span class="p">:</span> <span class="s2">"radian"</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_md_exponents</span><span class="p">(</span><span class="n">unit</span><span class="p">:</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">Unit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Exponents of a unit in the base units of OpenMM's MD unit system."""</span>
+    <span class="n">exponents</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">base</span><span class="p">,</span> <span class="n">exponent</span> <span class="ow">in</span> <span class="n">unit</span><span class="o">.</span><span class="n">iter_all_base_units</span><span class="p">():</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">_MD_BASE_UNITS</span><span class="p">[</span><span class="n">base</span><span class="o">.</span><span class="n">dimension</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+        <span class="n">exponents</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">exponents</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">exponent</span>
+    <span class="k">if</span> <span class="s2">"dalton"</span> <span class="ow">in</span> <span class="n">exponents</span><span class="p">:</span>
+        <span class="c1"># openmm.unit defines the dalton as gram/mole</span>
+        <span class="n">exponents</span><span class="p">[</span><span class="s2">"mole"</span><span class="p">]</span> <span class="o">=</span> <span class="n">exponents</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mole"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">exponents</span><span class="p">[</span><span class="s2">"dalton"</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">exponents</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_md_unit</span><span class="p">(</span><span class="n">exponents</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">Unit</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Build a unit from MD exponents, writing Da nm^2/ps^2 as kJ/mol if possible."""</span>
+    <span class="n">exponents</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">exponents</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">dimensionless</span>
+    <span class="n">energy</span> <span class="o">=</span> <span class="n">exponents</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dalton"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">energy</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">exponents</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"picosecond"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">energy</span><span class="p">:</span>
+        <span class="c1"># The time dimension comes only from energies, so express them in kJ/mol</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">result</span> <span class="o">*</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">kilojoule_per_mole</span><span class="o">**</span><span class="n">energy</span>
+        <span class="n">exponents</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"dalton"</span><span class="p">)</span>
+        <span class="n">exponents</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"picosecond"</span><span class="p">)</span>
+        <span class="n">exponents</span><span class="p">[</span><span class="s2">"nanometer"</span><span class="p">]</span> <span class="o">=</span> <span class="n">exponents</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"nanometer"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">energy</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">exponent</span> <span class="ow">in</span> <span class="n">exponents</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">exponent</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">result</span> <span class="o">*</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mmunit</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="o">**</span> <span class="n">exponent</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
 <div class="viewcode-block" id="in_md_units">
 <a class="viewcode-back" href="../../../units.html#cvpack.units.in_md_units">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">in_md_units</span><span class="p">(</span>
@@ -229,6 +269,10 @@
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Return a quantity in the MD unit system (e.g. mass in Da, distance in</span>
 <span class="sd">    nm, time in ps, temperature in K, energy in kJ/mol, angle in rad).</span>
+
+<span class="sd">    As in kJ/mol, amounts of substance follow OpenMM's per-mole convention: a quantity</span>
+<span class="sd">    defined per particle, such as a pressure, is multiplied by Avogadro's number</span>
+<span class="sd">    (e.g. 1 bar becomes 0.0602 kJ/(mol nm^3)). Energies are written in kJ/mol.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -240,12 +284,18 @@
 <span class="sd">    Quantity</span>
 <span class="sd">        The quantity in the MD unit system.</span>
 <span class="sd">    """</span>
-    <span class="k">if</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">is_quantity</span><span class="p">(</span><span class="n">quantity</span><span class="p">):</span>
-        <span class="n">unit_in_md_system</span> <span class="o">=</span> <span class="n">quantity</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">in_unit_system</span><span class="p">(</span><span class="n">mmunit</span><span class="o">.</span><span class="n">md_unit_system</span><span class="p">)</span>
-        <span class="k">if</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">quantity</span><span class="o">.</span><span class="n">unit</span> <span class="o">/</span> <span class="n">unit_in_md_system</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Quantity</span><span class="p">(</span><span class="n">quantity</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Quantity</span><span class="p">(</span><span class="n">quantity</span><span class="o">.</span><span class="n">in_units_of</span><span class="p">(</span><span class="n">unit_in_md_system</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">quantity</span> <span class="o">*</span> <span class="n">Unit</span><span class="p">(</span><span class="s2">"dimensionless"</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">is_quantity</span><span class="p">(</span><span class="n">quantity</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">quantity</span> <span class="o">*</span> <span class="n">Unit</span><span class="p">(</span><span class="s2">"dimensionless"</span><span class="p">)</span>
+    <span class="n">moles</span> <span class="o">=</span> <span class="n">_md_exponents</span><span class="p">(</span><span class="n">quantity</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mole"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">moles</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">quantity</span> <span class="o">=</span> <span class="n">quantity</span> <span class="o">*</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">AVOGADRO_CONSTANT_NA</span><span class="o">**</span><span class="n">moles</span>
+    <span class="n">exponents</span> <span class="o">=</span> <span class="n">_md_exponents</span><span class="p">(</span><span class="n">quantity</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
+    <span class="n">exponents</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"mole"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">unit_in_md_system</span> <span class="o">=</span> <span class="n">_md_unit</span><span class="p">(</span><span class="n">exponents</span><span class="p">)</span>
+    <span class="k">if</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">quantity</span><span class="o">.</span><span class="n">unit</span> <span class="o">/</span> <span class="n">unit_in_md_system</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># Keep the original spelling of a unit that is already in the MD system</span>
+        <span class="k">return</span> <span class="n">Quantity</span><span class="p">(</span><span class="n">quantity</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Quantity</span><span class="p">(</span><span class="n">quantity</span><span class="o">.</span><span class="n">in_units_of</span><span class="p">(</span><span class="n">unit_in_md_system</span><span class="p">))</span></div>
 
 
 
@@ -270,7 +320,7 @@
 
 <span class="sd">    """</span>
     <span class="k">if</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">is_quantity</span><span class="p">(</span><span class="n">quantity</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">quantity</span><span class="o">.</span><span class="n">value_in_unit_system</span><span class="p">(</span><span class="n">mmunit</span><span class="o">.</span><span class="n">md_unit_system</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">in_md_units</span><span class="p">(</span><span class="n">quantity</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
     <span class="k">return</span> <span class="n">quantity</span></div>
 
 </pre></div>
