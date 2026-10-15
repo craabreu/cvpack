@@ -7,6 +7,8 @@
 
 """
 
+from __future__ import annotations
+
 import functools
 import inspect
 import typing as t

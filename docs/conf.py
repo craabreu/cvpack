@@ -256,6 +256,18 @@ texinfo_documents = [
 autodoc_typehints = "description"
 autodoc_typehints_description_target = "documented_params"
 autodoc_typehints_format = "short"
+# Show type aliases by name instead of expanding them (annotations must be deferred
+# with "from __future__ import annotations" for this to take effect)
+autodoc_type_aliases = {
+    "ArrayLike": "numpy.typing.ArrayLike",
+    "ScalarQuantity": "cvpack.units.ScalarQuantity",
+    "VectorQuantity": "cvpack.units.VectorQuantity",
+    "MatrixQuantity": "cvpack.units.MatrixQuantity",
+}
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "numpy": ("https://numpy.org/doc/stable", None),
+}
 
 # Bibliography file
 bibtex_bibfiles = ["refs.bib"]

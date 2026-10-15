@@ -21,6 +21,7 @@ Contents
 
    getting_started
    api/index
+   type_aliases
    reporting
    serialization
    references
