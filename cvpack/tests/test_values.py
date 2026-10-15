@@ -127,9 +127,9 @@ def _glycine(hydrogen_names):
     return residue, {atom.name: atom.index for atom in residue.atoms()}
 
 
-def test_glycine_charmm_naming_uses_ha2():
+def test_glycine_charmm_naming_uses_ha1():
     residue, index = _glycine(["HA1", "HA2"])
-    assert BaseRMSDContent._getAtomList(residue)[2] == index["HA2"]
+    assert BaseRMSDContent._getAtomList(residue)[2] == index["HA1"]
 
 
 def test_glycine_pdb_naming_uses_ha3():
