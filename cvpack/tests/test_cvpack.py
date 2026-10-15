@@ -580,6 +580,35 @@ def test_sheet_rmsd_content(normalize: bool):
     perform_common_tests(sheet_content, context)
 
 
+def _two_strands(filename):
+    # Two strands of three residues placed exactly at an ideal sheet reference
+    topology = app.Topology()
+    for _ in range(2):
+        chain = topology.addChain()
+        for _ in range(3):
+            residue = topology.addResidue("ALA", chain)
+            for name in ("N", "CA", "CB", "C", "O"):
+                element = app.element.Element.getBySymbol(name[0])
+                topology.addAtom(name, element, residue)
+    positions = cvpack.base_rmsd_content.BaseRMSDContent._loadPositions(filename)
+    return list(topology.residues()), positions
+
+
+@pytest.mark.parametrize(
+    "filename",
+    ["ideal_parallel_beta_sheet.csv", "ideal_parallel_beta_sheet_swapped.csv"],
+)
+def test_parallel_sheet_content_uses_both_plumed_references(filename):
+    residues, positions = _two_strands(filename)
+    cv = cvpack.SheetRMSDContent(residues, 30, parallel=True, blockSizes=[3, 3])
+    system = openmm.System()
+    for _ in range(30):
+        system.addParticle(1.0)
+    cv.addToSystem(system)
+    context = make_context(system, positions)
+    assert cv.getValue(context).value_in_unit(cv.getUnit()) == pytest.approx(1.0)
+
+
 def test_atomic_function():
     """
     Test whether an atomic-function CV is computed correctly.

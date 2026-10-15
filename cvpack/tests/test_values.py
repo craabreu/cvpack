@@ -272,30 +272,3 @@ def test_shortest_distance_with_large_beta(positions):
     value = _shortest_distance_value(positions, [0], [1, 2], beta=1000)
     expected = shortest_distance_reference(positions, [0], [1, 2], 1000, 1.0)
     assert value == pytest.approx(expected)
-
-
-def _two_strands(filename):
-    # Two strands of three residues placed exactly at an ideal sheet reference
-    topology = app.Topology()
-    for _ in range(2):
-        chain = topology.addChain()
-        for _ in range(3):
-            residue = topology.addResidue("ALA", chain)
-            for name in ("N", "CA", "CB", "C", "O"):
-                element = app.element.Element.getBySymbol(name[0])
-                topology.addAtom(name, element, residue)
-    positions = BaseRMSDContent._loadPositions(filename)
-    return list(topology.residues()), positions
-
-
-@pytest.mark.parametrize(
-    "filename",
-    ["ideal_parallel_beta_sheet.csv", "ideal_parallel_beta_sheet_swapped.csv"],
-)
-def test_parallel_sheet_content_uses_both_plumed_references(filename):
-    residues, positions = _two_strands(filename)
-    cv = cvpack.SheetRMSDContent(residues, 30, parallel=True, blockSizes=[3, 3])
-    system = particle_system(30)
-    cv.addToSystem(system)
-    context = make_context(system, positions)
-    assert cv.getValue(context).value_in_unit(cv.getUnit()) == pytest.approx(1.0)
