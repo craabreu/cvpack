@@ -73,7 +73,7 @@ class CVWriter(CustomWriter):
     1000,1.680...,0.03749...,2.9692...,0.04450...
     """
 
-    def __init__(  # pylint: disable=dangerous-default-value
+    def __init__(
         self,
         variable: CollectiveVariable,
         value: bool = False,

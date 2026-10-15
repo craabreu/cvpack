@@ -119,7 +119,7 @@ class CollectiveVariable(Serializable):
             raise RuntimeError("All force groups are already in use.")
         mmswig.Force_setForceGroup(self, new_group)
 
-    def getName(self) -> str:  # pylint: disable=useless-parent-delegation
+    def getName(self) -> str:
         """
         Get the name of this collective variable.
         """

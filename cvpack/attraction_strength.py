@@ -168,7 +168,7 @@ class AttractionStrength(CollectiveVariable, openmm.CustomNonbondedForce):
     3880.8...
     """
 
-    def __init__(  # pylint: disable=too-many-locals
+    def __init__(
         self,
         group1: t.Iterable[int],
         group2: t.Iterable[int],

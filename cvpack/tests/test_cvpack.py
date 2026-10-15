@@ -349,9 +349,7 @@ def test_rmsd():
     context.setPositions(model.positions)
     context.setVelocitiesToTemperature(300 * unit.kelvin, 1234)
     context.getIntegrator().step(10000)
-    state = context.getState(  # pylint: disable=unexpected-keyword-arg
-        getPositions=True
-    )
+    state = context.getState(getPositions=True)
     coordinates = state.getPositions(asNumpy=True).value_in_unit(unit.nanometers)
     for pass_vec3 in [False, True]:
         for pass_group_only in [False, True]:
@@ -526,7 +524,6 @@ def test_helix_rmsd_content(normalize: bool):
     )
     ref = copy.deepcopy(traj)
     positions = cvpack.helix_rmsd_content.ALPHA_POSITIONS
-    # pylint: enable=protected-access
 
     def compute_cv_value(atoms):
         computed_value = 0
@@ -743,7 +740,7 @@ def test_attraction_strength():
                         * (1 / x + (x**2 - 3) / 2)
                     )
     system = openmm.System()
-    for i in range(num_particles):
+    for _ in range(num_particles):
         system.addParticle(1.0)
     force = openmm.NonbondedForce()
     for params in zip(charges, sigmas, epsilons):
@@ -871,9 +868,7 @@ def test_path_in_rmsd_space(metric: cvpack.path.Metric):
     for _ in range(10):
         integrator.step(1000)
         frame = mdtraj.Trajectory(
-            context.getState(  # pylint: disable=unexpected-keyword-arg
-                getPositions=True
-            )
+            context.getState(getPositions=True)
             .getPositions(asNumpy=True)
             .value_in_unit(unit.nanometer),
             model.mdtraj_topology,
@@ -907,7 +902,7 @@ def test_openmm_force_wrapper():
     platform = openmm.Platform.getPlatformByName("Reference")
     context = openmm.Context(model.system, integrator, platform)
     context.setPositions(model.positions)
-    state = context.getState(  # pylint: disable=unexpected-keyword-arg
+    state = context.getState(
         getEnergy=True,
         groups={cv.getForceGroup() + 1},
     )
@@ -940,9 +935,7 @@ def test_shortest_distance():
     context.setPositions(model.positions)
     for _ in range(10):
         integrator.step(100)
-        state = context.getState(  # pylint: disable=unexpected-keyword-arg
-            getPositions=True
-        )
+        state = context.getState(getPositions=True)
         coords = state.getPositions(asNumpy=True).value_in_unit(unit.nanometers)
         cv_value = min_dist.getValue(context) / unit.nanometer
         distances = np.linalg.norm(

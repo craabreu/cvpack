@@ -17,11 +17,11 @@ from openmm import unit as mmunit
 
 from ..serialization import Serializable
 
-ScalarQuantity = t.Union[mmunit.Quantity, Real]
-VectorQuantity = t.Union[mmunit.Quantity, np.ndarray, openmm.Vec3]
-MatrixQuantity = t.Union[
-    mmunit.Quantity, np.ndarray, t.Sequence[openmm.Vec3], t.Sequence[np.ndarray]
-]
+ScalarQuantity = mmunit.Quantity | Real
+VectorQuantity = mmunit.Quantity | np.ndarray | openmm.Vec3
+MatrixQuantity = (
+    mmunit.Quantity | np.ndarray | t.Sequence[openmm.Vec3] | t.Sequence[np.ndarray]
+)
 
 
 class Unit(mmunit.Unit, Serializable, ast.NodeTransformer):
@@ -38,7 +38,7 @@ class Unit(mmunit.Unit, Serializable, ast.NodeTransformer):
         if isinstance(data, str):
             expression = self.visit(ast.parse(data, mode="eval"))
             code = compile(ast.fix_missing_locations(expression), "", mode="eval")
-            data = eval(code)  # pylint: disable=eval-used
+            data = eval(code)
         if isinstance(data, mmunit.Unit):
             data = dict(data.iter_base_or_scaled_units())
         super().__init__(data)
@@ -52,9 +52,7 @@ class Unit(mmunit.Unit, Serializable, ast.NodeTransformer):
     def __setstate__(self, keywords: dict[str, str]) -> None:
         self.__init__(keywords["data"])
 
-    def visit_Name(  # pylint: disable=invalid-name
-        self, node: ast.Name
-    ) -> ast.Attribute:
+    def visit_Name(self, node: ast.Name) -> ast.Attribute:
         """
         Visit a Name node and transform it into an Attribute node.
 
@@ -96,7 +94,7 @@ class Quantity(mmunit.Quantity, Serializable):
         """The value of the quantity."""
         return self._value
 
-    def in_md_units(self) -> t.Any:  # pylint: disable=invalid-name
+    def in_md_units(self) -> t.Any:
         """The value of the quantity in MD units."""
         return self.value_in_unit_system(mmunit.md_unit_system)
 

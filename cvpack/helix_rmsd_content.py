@@ -15,9 +15,7 @@ from openmm import unit as mmunit
 from .base_rmsd_content import BaseRMSDContent
 from .units import Quantity, ScalarQuantity
 
-# pylint: disable=protected-access
 ALPHA_POSITIONS = BaseRMSDContent._loadPositions("ideal_alpha_helix.csv")
-# pylint: enable=protected-access
 
 
 class HelixRMSDContent(BaseRMSDContent):

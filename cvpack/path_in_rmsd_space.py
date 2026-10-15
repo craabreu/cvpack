@@ -120,7 +120,7 @@ class PathInRMSDSpace(BasePathCV):
     -0.004... nm**2
     """
 
-    def __init__(  # pylint: disable=too-many-branches
+    def __init__(
         self,
         metric: Metric,
         milestones: t.Sequence[dict[int, VectorQuantity]],
@@ -132,7 +132,7 @@ class PathInRMSDSpace(BasePathCV):
         if mmunit.is_quantity(sigma):
             sigma = sigma.value_in_unit(mmunit.nanometers)
         n = len(milestones)
-        if n < 2:
+        if n < 2:  # noqa: PLR2004
             raise ValueError("At least two reference structures are required.")
         collective_variables = {
             f"rmsd{i}": RMSD(reference, reference.keys(), numAtoms, name=f"rmsd{i}")

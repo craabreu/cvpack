@@ -160,7 +160,7 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
             self._registerPeriodicBounds(*periodicBounds)
 
     @classmethod
-    def _fromCustomForce(  # pylint: disable=too-many-branches
+    def _fromCustomForce(  # noqa: PLR0912
         cls,
         force: openmm.CustomAngleForce
         | openmm.CustomBondForce

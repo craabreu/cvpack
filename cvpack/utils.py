@@ -26,8 +26,6 @@ from .serialization import (
 )
 from .units import Quantity, Unit, value_in_md_units
 
-# pylint: disable=protected-access,c-extension-no-member
-
 
 def evaluate_in_context(
     forces: openmm.Force | t.Iterable[openmm.Force], context: openmm.Context
@@ -62,9 +60,7 @@ def evaluate_in_context(
     context.setPeriodicBoxVectors(*state.getPeriodicBoxVectors())
     energies = []
     for i in range(len(forces)):
-        state = context.getState(  # pylint: disable=unexpected-keyword-arg
-            getEnergy=True, groups=1 << i
-        )
+        state = context.getState(getEnergy=True, groups=1 << i)
         energies.append(value_in_md_units(state.getPotentialEnergy()))
     return energies[0] if is_single else tuple(energies)
 
@@ -216,7 +212,7 @@ def preprocess_args(func: t.Callable) -> t.Callable:
     """
     signature = inspect.signature(func)
 
-    def convert(data: t.Any) -> t.Any:  # pylint: disable=too-many-return-statements
+    def convert(data: t.Any) -> t.Any:  # noqa: PLR0911
         if isinstance(data, np.integer):
             return int(data)
         if isinstance(data, np.floating):

@@ -39,9 +39,7 @@ class SerializableAtom(Serializable):
     A serializable version of OpenMM's Atom class.
     """
 
-    def __init__(  # pylint: disable=super-init-not-called
-        self, atom: t.Union[mmapp.topology.Atom, "SerializableAtom"]
-    ) -> None:
+    def __init__(self, atom: t.Union[mmapp.topology.Atom, "SerializableAtom"]) -> None:
         self.name = atom.name
         self.index = atom.index
         if isinstance(atom, mmapp.topology.Atom):
@@ -70,7 +68,7 @@ SerializableAtom.registerTag("!cvpack.Atom")
 class SerializableResidue(Serializable):
     r"""A serializable version of OpenMM's Residue class."""
 
-    def __init__(  # pylint: disable=super-init-not-called
+    def __init__(
         self, residue: t.Union[mmapp.topology.Residue, "SerializableResidue"]
     ) -> None:
         self.name = residue.name
@@ -102,7 +100,7 @@ SerializableResidue.registerTag("!cvpack.Residue")
 class SerializableForce(openmm.Force, Serializable):
     """A serializable version of OpenMM's Force class."""
 
-    def __init__(  # pylint: disable=super-init-not-called
+    def __init__(
         self,
         force: openmm.Force,
     ) -> None:

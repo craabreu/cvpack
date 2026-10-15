@@ -26,6 +26,9 @@ class Metric(Serializable):
     def __eq__(self, other: object) -> bool:
         return isinstance(other, Metric) and self.name == other.name
 
+    def __hash__(self) -> int:
+        return hash(self.name)
+
     def __getstate__(self) -> dict:
         return {"name": self.name}
 

@@ -17,6 +17,10 @@ from .collective_variable import CollectiveVariable
 from .rmsd import RMSD
 from .units import ScalarQuantity, value_in_md_units
 
+# Limits on the number of collective variables per OpenMM CustomCVForce
+MAX_NUM_BLOCKS = 1024
+CHUNK_SIZE = 32
+
 
 class BaseRMSDContent(CollectiveVariable, openmm.CustomCVForce):
     """
@@ -34,10 +38,10 @@ class BaseRMSDContent(CollectiveVariable, openmm.CustomCVForce):
         normalize: bool = False,
     ):
         num_residue_blocks = self._num_residue_blocks = len(residue_blocks)
-        if not 1 <= num_residue_blocks <= 1024:
+        if not 1 <= num_residue_blocks <= MAX_NUM_BLOCKS:
             raise ValueError(
                 f"{len(residues)} residues yield {num_residue_blocks} blocks, "
-                "which is not between 1 and 1024"
+                f"which is not between 1 and {MAX_NUM_BLOCKS}"
             )
         residue_atoms = list(map(self._getAtomList, residues))
         block_atoms = [
@@ -48,7 +52,7 @@ class BaseRMSDContent(CollectiveVariable, openmm.CustomCVForce):
         def get_expression(start):
             summands = []
             definitions = []
-            for i in range(start, min(start + 32, num_residue_blocks)):
+            for i in range(start, min(start + CHUNK_SIZE, num_residue_blocks)):
                 summands.append(stepFunction.replace("x", f"x{i}"))
                 definitions.append(f"x{i}=rmsd{i}/{value_in_md_units(thresholdRMSD)}")
             summation = "+".join(summands)
@@ -56,18 +60,19 @@ class BaseRMSDContent(CollectiveVariable, openmm.CustomCVForce):
                 summation = f"({summation})/{num_residue_blocks}"
             return ";".join([summation] + definitions)
 
-        if num_residue_blocks <= 32:
+        if num_residue_blocks <= CHUNK_SIZE:
             expression = get_expression(0)
             force = self
         else:
             expression = "+".join(
-                f"chunk{i}" for i in range((num_residue_blocks + 31) // 32)
+                f"chunk{i}"
+                for i in range((num_residue_blocks + CHUNK_SIZE - 1) // CHUNK_SIZE)
             )
         super().__init__(expression)
         for index in range(num_residue_blocks):
-            if num_residue_blocks > 32 and index % 32 == 0:
+            if num_residue_blocks > CHUNK_SIZE and index % CHUNK_SIZE == 0:
                 force = openmm.CustomCVForce(get_expression(index))
-                self.addCollectiveVariable(f"chunk{index // 32}", force)
+                self.addCollectiveVariable(f"chunk{index // CHUNK_SIZE}", force)
             force.addCollectiveVariable(
                 f"rmsd{index}",
                 RMSD(

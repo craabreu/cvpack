@@ -15,7 +15,7 @@ from .base_rmsd import BaseRMSD
 from .units import MatrixQuantity, VectorQuantity
 
 
-class _Stub:  # pylint: disable=too-few-public-methods
+class _Stub:
     def __init__(self, _):
         raise ImportError(
             "CompositeRMSD requires the mdtools::openmm-cpp-forces conda package"

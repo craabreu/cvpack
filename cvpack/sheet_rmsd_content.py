@@ -16,10 +16,8 @@ from openmm import unit as mmunit
 from .base_rmsd_content import BaseRMSDContent
 from .units import Quantity, ScalarQuantity
 
-# pylint: disable=protected-access
 PARABETA_POSITIONS = BaseRMSDContent._loadPositions("ideal_parallel_beta_sheet.csv")
 ANTIBETA_POSITIONS = BaseRMSDContent._loadPositions("ideal_antiparallel_beta_sheet.csv")
-# pylint: enable=protected-access
 
 
 class SheetRMSDContent(BaseRMSDContent):
