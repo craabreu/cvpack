@@ -160,14 +160,14 @@
 <span class="sd">    0.2... dimensionless</span>
 <span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-branches</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">metric</span><span class="p">:</span> <span class="n">Metric</span><span class="p">,</span>
         <span class="n">variables</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="n">CollectiveVariable</span><span class="p">],</span>
         <span class="n">milestones</span><span class="p">:</span> <span class="n">MatrixQuantity</span><span class="p">,</span>
         <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="n">scales</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="n">ScalarQuantity</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">scales</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="n">ScalarQuantity</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generateName</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">"cv"</span><span class="p">)</span>
         <span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
@@ -175,7 +175,7 @@
         <span class="n">milestones</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">numvars</span> <span class="o">=</span> <span class="n">convert_to_matrix</span><span class="p">(</span><span class="n">milestones</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">numvars</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Wrong number of columns in the milestones matrix."</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># noqa: PLR2004</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"At least two rows are required in the milestones matrix."</span><span class="p">)</span>
         <span class="n">squared_distances</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">periods</span> <span class="o">=</span> <span class="p">{}</span>
@@ -183,7 +183,7 @@
             <span class="n">values</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">getPeriodicBounds</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">periods</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">value_in_md_units</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">milestones</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">milestones</span><span class="p">:</span>
             <span class="n">deltas</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">-cv</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2">)"</span> <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">values</span><span class="p">)]</span>
             <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">period</span> <span class="ow">in</span> <span class="n">periods</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">deltas</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"min(abs</span><span class="si">{</span><span class="n">deltas</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">period</span><span class="si">}</span><span class="s2">-abs</span><span class="si">{</span><span class="n">deltas</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="si">}</span><span class="s2">)"</span>

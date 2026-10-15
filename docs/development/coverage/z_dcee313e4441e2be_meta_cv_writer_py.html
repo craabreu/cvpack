@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="z_dcee313e4441e2be_state_data_reporter_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.16.2">coverage.py v7.16.2</a>,
-            created at 2026-10-15 13:46 +0000
+            created at 2026-10-15 14:03 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -193,7 +193,7 @@
     <p class="run"><span class="n"><a id="t111" href="#t111">111</a></span><span class="t">        <span class="nam">self</span><span class="op">.</span><span class="nam">_parameters</span> <span class="op">=</span> <span class="op">{</span><span class="nam">name</span><span class="op">:</span> <span class="nam">all_parameters</span><span class="op">[</span><span class="nam">name</span><span class="op">]</span> <span class="key">for</span> <span class="nam">name</span> <span class="key">in</span> <span class="nam">parameters</span><span class="op">}</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t112" href="#t112">112</a></span><span class="t">        <span class="nam">self</span><span class="op">.</span><span class="nam">_derivatives</span> <span class="op">=</span> <span class="op">{</span><span class="nam">name</span><span class="op">:</span> <span class="nam">all_parameters</span><span class="op">[</span><span class="nam">name</span><span class="op">]</span> <span class="key">for</span> <span class="nam">name</span> <span class="key">in</span> <span class="nam">derivatives</span><span class="op">}</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t113" href="#t113">113</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t114" href="#t114">114</a></span><span class="t">    <span class="key">def</span> <span class="nam">getHeaders</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="nam">t</span><span class="op">.</span><span class="nam">List</span><span class="op">[</span><span class="nam">str</span><span class="op">]</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t114" href="#t114">114</a></span><span class="t">    <span class="key">def</span> <span class="nam">getHeaders</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="nam">list</span><span class="op">[</span><span class="nam">str</span><span class="op">]</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t115" href="#t115">115</a></span><span class="t">        <span class="nam">headers</span> <span class="op">=</span> <span class="op">[</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t116" href="#t116">116</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t117" href="#t117">117</a></span><span class="t">        <span class="key">def</span> <span class="nam">add_header</span><span class="op">(</span><span class="nam">name</span><span class="op">:</span> <span class="nam">str</span><span class="op">,</span> <span class="nam">unit</span><span class="op">:</span> <span class="nam">mmunit</span><span class="op">.</span><span class="nam">Unit</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
@@ -212,7 +212,7 @@
     <p class="run run2"><span class="n"><a id="t130" href="#t130">130</a></span><span class="t">            <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t131" href="#t131">131</a></span><span class="t">        <span class="key">return</span> <span class="nam">headers</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t132" href="#t132">132</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t133" href="#t133">133</a></span><span class="t">    <span class="key">def</span> <span class="nam">getValues</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">simulation</span><span class="op">:</span> <span class="nam">mm</span><span class="op">.</span><span class="nam">app</span><span class="op">.</span><span class="nam">Simulation</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="nam">t</span><span class="op">.</span><span class="nam">List</span><span class="op">[</span><span class="nam">float</span><span class="op">]</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t133" href="#t133">133</a></span><span class="t">    <span class="key">def</span> <span class="nam">getValues</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">simulation</span><span class="op">:</span> <span class="nam">mm</span><span class="op">.</span><span class="nam">app</span><span class="op">.</span><span class="nam">Simulation</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="nam">list</span><span class="op">[</span><span class="nam">float</span><span class="op">]</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t134" href="#t134">134</a></span><span class="t">        <span class="nam">context</span> <span class="op">=</span> <span class="nam">simulation</span><span class="op">.</span><span class="nam">context</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t135" href="#t135">135</a></span><span class="t">        <span class="nam">values</span> <span class="op">=</span> <span class="op">[</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t136" href="#t136">136</a></span><span class="t">        <span class="key">if</span> <span class="nam">self</span><span class="op">.</span><span class="nam">_values</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
@@ -243,7 +243,7 @@
             <a class="nav" href="z_dcee313e4441e2be_state_data_reporter_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.16.2">coverage.py v7.16.2</a>,
-            created at 2026-10-15 13:46 +0000
+            created at 2026-10-15 14:03 +0000
         </p>
     </div>
 </footer>

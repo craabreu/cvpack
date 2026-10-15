@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="z_1162223856cd18a9_openmm_force_wrapper_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.16.2">coverage.py v7.16.2</a>,
-            created at 2026-10-15 13:46 +0000
+            created at 2026-10-15 14:03 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -210,11 +210,11 @@
     <p class="run run2"><span class="n"><a id="t128" href="#t128">128</a></span><span class="t">        <span class="nam">group1</span><span class="op">:</span> <span class="nam">t</span><span class="op">.</span><span class="nam">Sequence</span><span class="op">[</span><span class="nam">int</span><span class="op">]</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t129" href="#t129">129</a></span><span class="t">        <span class="nam">group2</span><span class="op">:</span> <span class="nam">t</span><span class="op">.</span><span class="nam">Sequence</span><span class="op">[</span><span class="nam">int</span><span class="op">]</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t130" href="#t130">130</a></span><span class="t">        <span class="nam">nonbondedForce</span><span class="op">:</span> <span class="nam">openmm</span><span class="op">.</span><span class="nam">NonbondedForce</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run run2"><span class="n"><a id="t131" href="#t131">131</a></span><span class="t">        <span class="nam">reference</span><span class="op">:</span> <span class="nam">t</span><span class="op">.</span><span class="nam">Union</span><span class="op">[</span><span class="nam">Real</span><span class="op">,</span> <span class="nam">openmm</span><span class="op">.</span><span class="nam">Context</span><span class="op">]</span> <span class="op">=</span> <span class="num">1.0</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t131" href="#t131">131</a></span><span class="t">        <span class="nam">reference</span><span class="op">:</span> <span class="nam">Real</span> <span class="op">|</span> <span class="nam">openmm</span><span class="op">.</span><span class="nam">Context</span> <span class="op">=</span> <span class="num">1.0</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t132" href="#t132">132</a></span><span class="t">        <span class="nam">stepFunction</span><span class="op">:</span> <span class="nam">str</span> <span class="op">=</span> <span class="str">&quot;1/(1+x^6)&quot;</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t133" href="#t133">133</a></span><span class="t">        <span class="nam">thresholdDistance</span><span class="op">:</span> <span class="nam">ScalarQuantity</span> <span class="op">=</span> <span class="nam">Quantity</span><span class="op">(</span><span class="num">0.3</span> <span class="op">*</span> <span class="nam">mmunit</span><span class="op">.</span><span class="nam">nanometers</span><span class="op">)</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t134" href="#t134">134</a></span><span class="t">        <span class="nam">cutoffFactor</span><span class="op">:</span> <span class="nam">float</span> <span class="op">=</span> <span class="num">2.0</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run run2"><span class="n"><a id="t135" href="#t135">135</a></span><span class="t">        <span class="nam">switchFactor</span><span class="op">:</span> <span class="nam">t</span><span class="op">.</span><span class="nam">Optional</span><span class="op">[</span><span class="nam">float</span><span class="op">]</span> <span class="op">=</span> <span class="num">1.5</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t135" href="#t135">135</a></span><span class="t">        <span class="nam">switchFactor</span><span class="op">:</span> <span class="nam">float</span> <span class="op">|</span> <span class="key">None</span> <span class="op">=</span> <span class="num">1.5</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t136" href="#t136">136</a></span><span class="t">        <span class="nam">name</span><span class="op">:</span> <span class="nam">str</span> <span class="op">=</span> <span class="str">&quot;number_of_contacts&quot;</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t137" href="#t137">137</a></span><span class="t">    <span class="op">)</span> <span class="op">-&gt;</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t138" href="#t138">138</a></span><span class="t">        <span class="nam">num_atoms</span> <span class="op">=</span> <span class="nam">nonbondedForce</span><span class="op">.</span><span class="nam">getNumParticles</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -265,7 +265,7 @@
             <a class="nav" href="z_1162223856cd18a9_openmm_force_wrapper_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.16.2">coverage.py v7.16.2</a>,
-            created at 2026-10-15 13:46 +0000
+            created at 2026-10-15 14:03 +0000
         </p>
     </div>
 </footer>

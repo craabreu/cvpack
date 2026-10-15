@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="z_1162223856cd18a9_base_radius_of_gyration_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.16.2">coverage.py v7.16.2</a>,
-            created at 2026-10-15 13:46 +0000
+            created at 2026-10-15 14:03 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -120,7 +120,7 @@
     <p class="run run2"><span class="n"><a id="t38" href="#t38">38</a></span><span class="t">        <span class="nam">metric</span><span class="op">:</span> <span class="nam">Metric</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t39" href="#t39">39</a></span><span class="t">        <span class="nam">sigma</span><span class="op">:</span> <span class="nam">float</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t40" href="#t40">40</a></span><span class="t">        <span class="nam">squared_distances</span><span class="op">:</span> <span class="nam">t</span><span class="op">.</span><span class="nam">Sequence</span><span class="op">[</span><span class="nam">str</span><span class="op">]</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run run2"><span class="n"><a id="t41" href="#t41">41</a></span><span class="t">        <span class="nam">variables</span><span class="op">:</span> <span class="nam">t</span><span class="op">.</span><span class="nam">Dict</span><span class="op">[</span><span class="nam">str</span><span class="op">,</span> <span class="nam">CollectiveVariable</span><span class="op">]</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t41" href="#t41">41</a></span><span class="t">        <span class="nam">variables</span><span class="op">:</span> <span class="nam">dict</span><span class="op">[</span><span class="nam">str</span><span class="op">,</span> <span class="nam">CollectiveVariable</span><span class="op">]</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t42" href="#t42">42</a></span><span class="t">    <span class="op">)</span> <span class="op">-&gt;</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t43" href="#t43">43</a></span><span class="t">        <span class="nam">n</span> <span class="op">=</span> <span class="nam">len</span><span class="op">(</span><span class="nam">squared_distances</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t44" href="#t44">44</a></span><span class="t">        <span class="nam">definitions</span> <span class="op">=</span> <span class="nam">OrderedDict</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
@@ -129,7 +129,7 @@
     <p class="run"><span class="n"><a id="t47" href="#t47">47</a></span><span class="t">        <span class="nam">definitions</span><span class="op">[</span><span class="str">&quot;lambda&quot;</span><span class="op">]</span> <span class="op">=</span> <span class="num">1</span> <span class="op">/</span> <span class="op">(</span><span class="num">2</span> <span class="op">*</span> <span class="nam">sigma</span><span class="op">**</span><span class="num">2</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t48" href="#t48">48</a></span><span class="t">        <span class="nam">definitions</span><span class="op">[</span><span class="str">&quot;xmin0&quot;</span><span class="op">]</span> <span class="op">=</span> <span class="str">&quot;min(x0,x1)&quot;</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t49" href="#t49">49</a></span><span class="t">        <span class="key">for</span> <span class="nam">i</span> <span class="key">in</span> <span class="nam">range</span><span class="op">(</span><span class="nam">n</span> <span class="op">-</span> <span class="num">2</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t50" href="#t50">50</a></span><span class="t">            <span class="nam">definitions</span><span class="op">[</span><span class="str">f&quot;xmin{i+1}&quot;</span><span class="op">]</span> <span class="op">=</span> <span class="str">f&quot;min(xmin{i},x{i+2})&quot;</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t50" href="#t50">50</a></span><span class="t">            <span class="nam">definitions</span><span class="op">[</span><span class="str">f&quot;xmin{i + 1}&quot;</span><span class="op">]</span> <span class="op">=</span> <span class="str">f&quot;min(xmin{i},x{i + 2})&quot;</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t51" href="#t51">51</a></span><span class="t">        <span class="key">for</span> <span class="nam">i</span> <span class="key">in</span> <span class="nam">range</span><span class="op">(</span><span class="nam">n</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t52" href="#t52">52</a></span><span class="t">            <span class="nam">definitions</span><span class="op">[</span><span class="str">f&quot;w{i}&quot;</span><span class="op">]</span> <span class="op">=</span> <span class="str">f&quot;exp(lambda*(xmin{n - 2}-x{i}))&quot;</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t53" href="#t53">53</a></span><span class="t">        <span class="nam">definitions</span><span class="op">[</span><span class="str">&quot;wsum&quot;</span><span class="op">]</span> <span class="op">=</span> <span class="str">&quot;+&quot;</span><span class="op">.</span><span class="nam">join</span><span class="op">(</span><span class="str">f&quot;w{i}&quot;</span> <span class="key">for</span> <span class="nam">i</span> <span class="key">in</span> <span class="nam">range</span><span class="op">(</span><span class="nam">n</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -160,7 +160,7 @@
             <a class="nav" href="z_1162223856cd18a9_base_radius_of_gyration_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.16.2">coverage.py v7.16.2</a>,
-            created at 2026-10-15 13:46 +0000
+            created at 2026-10-15 14:03 +0000
         </p>
     </div>
 </footer>
