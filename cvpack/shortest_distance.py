@@ -62,6 +62,19 @@ class ShortestDistance(CollectiveVariable, openmm.CustomCVForce):
         :math:`i = j` are ignored, and each pair of distinct atoms contributes a
         single term, even if both atoms are in both groups.
 
+    .. note::
+
+        GPU platforms accumulate forces in 64-bit fixed point, which cannot represent
+        the forces of :math:`S_{rw}` and :math:`S_w` when the weights span many orders
+        of magnitude. To keep them in range, the collective variable is evaluated in
+        several windows. Each window multiplies all weights by a different constant,
+        which leaves :math:`r_{\rm min}` unchanged, and the window used is the one
+        whose :math:`S_w` is the largest not exceeding :math:`10^6`. The number of
+        windows, and thus the cost, grows with :math:`\beta`: one window for
+        :math:`\beta \leq 13`, five for the default :math:`\beta = 100`, and at most
+        16. For :math:`\beta > 344`, 16 windows are not enough, and forces computed on
+        GPU platforms lose precision.
+
     Parameters
     ----------
     group1
@@ -110,6 +123,10 @@ class ShortestDistance(CollectiveVariable, openmm.CustomCVForce):
     0.1785... nm
     """
 
+    WINDOW_EFOLDS = 22
+    MAX_WEIGHT_SUM = 1e6
+    MAX_WINDOWS = 16
+
     def __init__(
         self,
         group1: t.Sequence[int],
@@ -123,23 +140,48 @@ class ShortestDistance(CollectiveVariable, openmm.CustomCVForce):
         rc = cutoffDistance
         if mmunit.is_quantity(rc):
             rc = rc.value_in_unit(mmunit.nanometers)
-        weight = f"(exp(-{beta / rc}*r)-{np.exp(-beta)})"
-        forces = {
-            "wrsum": openmm.CustomNonbondedForce(f"{weight}*r"),
-            "wsum": openmm.CustomNonbondedForce(weight),
-        }
-        super().__init__(f"({rc * np.exp(-beta)}+wrsum)/({np.exp(-beta)}+wsum)")
-        for cv, force in forces.items():
-            force.setNonbondedMethod(
-                force.CutoffPeriodic if pbc else force.CutoffNonPeriodic
-            )
-            force.setCutoffDistance(cutoffDistance)
-            force.setUseSwitchingFunction(False)
-            force.setUseLongRangeCorrection(False)
-            for _ in range(numAtoms):
-                force.addParticle([])
-            force.addInteractionGroup(group1, group2)
-            self.addCollectiveVariable(cv, force)
+        # Window k multiplies all weights by exp(beta*a_k/rc), which leaves S_rw/S_w
+        # unchanged. The offsets a_k decrease from rc in steps of efolds*rc/beta until
+        # the weights of the last window are at most MAX_WEIGHT_SUM. A CustomCVForce
+        # holds at most 32 inner forces, so large beta values need wider steps.
+        log_max = np.log(self.MAX_WEIGHT_SUM)
+        num_steps = max(0, int(np.ceil((beta - log_max) / self.WINDOW_EFOLDS)))
+        num_windows = min(1 + num_steps, self.MAX_WINDOWS)
+        efolds = self.WINDOW_EFOLDS
+        if num_windows < 1 + num_steps:
+            efolds = (beta - log_max) / (num_windows - 1)
+        definitions = []
+        expression = None
+        super().__init__("")
+        for k in reversed(range(num_windows)):
+            offset = rc - k * efolds * rc / beta
+            shift = np.exp(-k * efolds)
+            # The clamp only acts on windows whose weight sum exceeds MAX_WEIGHT_SUM,
+            # which are never selected, and prevents overflows in them. Factoring out
+            # the shift keeps constants that underflow in single precision out of the
+            # GPU kernels.
+            exponent = f"min({2 * log_max}, {beta / rc}*({offset}-r))"
+            weight = f"exp({exponent})*(1-exp({beta / rc}*(r-{rc})))"
+            for cv, function in [(f"wrsum{k}", f"{weight}*r"), (f"wsum{k}", weight)]:
+                force = openmm.CustomNonbondedForce(function)
+                force.setNonbondedMethod(
+                    force.CutoffPeriodic if pbc else force.CutoffNonPeriodic
+                )
+                force.setCutoffDistance(cutoffDistance)
+                force.setUseSwitchingFunction(False)
+                force.setUseLongRangeCorrection(False)
+                for _ in range(numAtoms):
+                    force.addParticle([])
+                force.addInteractionGroup(group1, group2)
+                self.addCollectiveVariable(cv, force)
+            definitions.append(f"value{k}=({rc * shift}+wrsum{k})/sum{k}")
+            definitions.append(f"sum{k}={shift}+wsum{k}")
+            if expression is None:
+                expression = f"value{k}"
+            else:
+                condition = f"step({self.MAX_WEIGHT_SUM}-sum{k})"
+                expression = f"select({condition}, value{k}, {expression})"
+        self.setEnergyFunction("; ".join([expression, *definitions]))
         self._registerCV(
             name,
             mmunit.nanometers,

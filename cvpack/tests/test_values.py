@@ -259,3 +259,16 @@ def test_shortest_distance_is_continuous_at_cutoff(beta):
         for delta in (-1e-9, 1e-9)
     ]
     assert values[0] == pytest.approx(values[1], abs=1e-8)
+
+
+@pytest.mark.parametrize(
+    "positions",
+    [
+        [[0, 0, 0], [0.8, 0, 0], [0, 0.9, 0]],  # exp(-beta*r/rc) underflows
+        [[0, 0, 0], [1.5, 0, 0], [0, 1.6, 0]],  # no pairs within the cutoff
+    ],
+)
+def test_shortest_distance_with_large_beta(positions):
+    value = _shortest_distance_value(positions, [0], [1, 2], beta=1000)
+    expected = shortest_distance_reference(positions, [0], [1, 2], 1000, 1.0)
+    assert value == pytest.approx(expected)

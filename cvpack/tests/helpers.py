@@ -44,7 +44,10 @@ def shortest_distance_reference(positions, group1, group2, beta, rc, box=None):
         deltas -= box * np.round(deltas / box)
     distances = np.linalg.norm(deltas, axis=1)
     distances = distances[distances < rc]
-    weights = np.exp(-beta * distances / rc) - np.exp(-beta)
-    numerator = rc * np.exp(-beta) + np.sum(distances * weights)
-    denominator = np.exp(-beta) + np.sum(weights)
+    # Multiplying all weights by exp(beta*shortest/rc) avoids underflow at large beta
+    shortest = np.min(distances, initial=rc)
+    constant = np.exp(-beta * (rc - shortest) / rc)
+    weights = np.exp(-beta * (distances - shortest) / rc) - constant
+    numerator = rc * constant + np.sum(distances * weights)
+    denominator = constant + np.sum(weights)
     return numerator / denominator
