@@ -14,7 +14,7 @@ from openmm import unit as mmunit
 from .base_path_cv import BasePathCV
 from .path import Metric, progress
 from .rmsd import RMSD
-from .units.units import VectorQuantity
+from .units.units import VectorQuantity, value_in_md_units
 
 
 class PathInRMSDSpace(BasePathCV):
@@ -144,7 +144,10 @@ class PathInRMSDSpace(BasePathCV):
             name,
             mmunit.dimensionless if metric == progress else mmunit.nanometers**2,
             metric=metric,
-            milestones=[{k: list(v) for k, v in m.items()} for m in milestones],
+            milestones=[
+                {int(k): [float(x) for x in value_in_md_units(v)] for k, v in m.items()}
+                for m in milestones
+            ],
             numAtoms=numAtoms,
             sigma=sigma,
         )

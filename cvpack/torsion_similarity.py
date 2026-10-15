@@ -96,6 +96,7 @@ class TorsionSimilarity(CollectiveVariable, openmm.CustomCompoundBondForce):
             mmunit.dimensionless,
             firstList=firstList,
             secondList=secondList,
+            pbc=pbc,
         )
 
 

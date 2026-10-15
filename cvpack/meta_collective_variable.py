@@ -121,6 +121,7 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
         **parameters: ScalarQuantity,
     ) -> None:
         super().__init__(function)
+        variables = list(variables)
         self._cvs = tuple(map(copy, variables))
         self._parameters = {k: in_md_units(v) for k, v in parameters.items()}
         for cv in self._cvs:

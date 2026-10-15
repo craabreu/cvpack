@@ -43,7 +43,7 @@ class SerializableAtom(Serializable):
         self.name = atom.name
         self.index = atom.index
         if isinstance(atom, mmapp.topology.Atom):
-            self._element_symbol = atom.element.symbol
+            self._element_symbol = None if atom.element is None else atom.element.symbol
             self._residue_index = atom.residue.index
         else:
             self._element_symbol = atom._element_symbol
@@ -57,8 +57,10 @@ class SerializableAtom(Serializable):
         self.__dict__.update(keywords)
 
     @property
-    def element(self) -> mmapp.Element:
-        """Return the Element of the Atom."""
+    def element(self) -> mmapp.Element | None:
+        """Return the Element of the Atom, or None for virtual sites."""
+        if self._element_symbol is None:
+            return None
         return mmapp.Element.getBySymbol(self._element_symbol)
 
 

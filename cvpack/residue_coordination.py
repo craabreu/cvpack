@@ -156,6 +156,16 @@ class ResidueCoordination(CollectiveVariable, openmm.CustomCentroidBondForce):
             includeHydrogens=includeHydrogens,
         )
 
+    def __getstate__(self) -> dict[str, t.Any]:
+        return {**super().__getstate__(), "referenceValue": self._ref_val}
+
+    def __setstate__(self, keywords: dict[str, t.Any]) -> None:
+        keywords = dict(keywords)
+        reference_value = keywords.pop("referenceValue", None)
+        super().__setstate__(keywords)
+        if reference_value is not None:
+            self.setReferenceValue(reference_value)
+
     def getReferenceValue(self) -> mmunit.Quantity:
         """
         Get the reference value used for normalizing the residue coordination.
@@ -177,7 +187,7 @@ class ResidueCoordination(CollectiveVariable, openmm.CustomCentroidBondForce):
                 The reference value.
         """
         expression = self.getEnergyFunction()
-        value = value_in_md_units(value)
+        value = float(value_in_md_units(value))
         self.setEnergyFunction(
             expression.replace(f"refval={self._ref_val}", f"refval={value}")
         )
