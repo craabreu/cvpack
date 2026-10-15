@@ -227,8 +227,11 @@ def preprocess_args(func: t.Callable) -> t.Callable:
             return SerializableResidue(data)
         if isinstance(data, openmm.Force) and not isinstance(data, Serializable):
             return SerializableForce(data)
+        if isinstance(data, np.ndarray):
+            return convert(data.tolist())
         if isinstance(data, t.Sequence) and not isinstance(data, str):
-            return type(data)(map(convert, data))
+            items = [convert(item) for item in data]
+            return tuple(items) if type(data) is tuple else items
         if isinstance(data, dict):
             return type(data)((key, convert(value)) for key, value in data.items())
         return data

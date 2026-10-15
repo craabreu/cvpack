@@ -24,6 +24,17 @@ MatrixQuantity = (
 )
 
 
+def _to_builtin(value: t.Any) -> t.Any:
+    """Convert numpy and OpenMM containers to plain Python lists and scalars."""
+    if isinstance(value, np.ndarray | np.generic):
+        return value.tolist()
+    if isinstance(value, openmm.Vec3):
+        return [_to_builtin(item) for item in value]
+    if type(value) in (list, tuple):
+        return type(value)(_to_builtin(item) for item in value)
+    return value
+
+
 class Unit(mmunit.Unit, Serializable, ast.NodeTransformer):
     """
     Extension of the OpenMM Unit class to allow serialization and deserialization.
@@ -84,7 +95,7 @@ class Quantity(mmunit.Quantity, Serializable):
         return str(self)
 
     def __getstate__(self) -> dict[str, t.Any]:
-        return {"value": self.value, "unit": str(self.unit)}
+        return {"value": _to_builtin(self._value), "unit": str(self.unit)}
 
     def __setstate__(self, keywords: dict[str, t.Any]) -> None:
         self.__init__(keywords["value"], Unit(keywords["unit"]))

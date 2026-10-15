@@ -4,7 +4,10 @@ Tests that collective variables survive copying and (de)serialization unchanged.
 
 import copy
 import itertools as it
+from collections import namedtuple
 
+import numpy as np
+import openmm
 import pytest
 import yaml
 from openmm import unit
@@ -12,6 +15,7 @@ from openmmtools import testsystems
 
 import cvpack
 from cvpack.tests.helpers import make_context
+from cvpack.utils import preprocess_args
 
 
 def assert_round_trip(cv, context):
@@ -91,3 +95,82 @@ def test_nested_renamed_cvs_round_trip(dipeptide):
     meta = cvpack.MetaCollectiveVariable("10*s", [path], unit.dimensionless)
     meta.addToSystem(dipeptide.system)
     assert_round_trip(meta, make_context(dipeptide.system, dipeptide.positions))
+
+
+def test_preprocess_args_converts_containers():
+    @preprocess_args
+    def identity(data):
+        return data
+
+    Pair = namedtuple("Pair", "a b")
+    assert identity(openmm.Vec3(1.0, 2.0, 3.0)) == [1.0, 2.0, 3.0]
+    assert identity(range(3)) == [0, 1, 2]
+    assert identity(Pair(1, 2)) == [1, 2]
+    converted = identity(np.array([[1, 2], [3, 4]]))
+    assert converted == [[1, 2], [3, 4]]
+    assert type(converted[0][0]) is int
+    assert identity((1, 2)) == (1, 2)
+
+
+def test_numpy_arguments_round_trip(dipeptide):
+    forces = {f.getName(): f for f in dipeptide.system.getForces()}
+    cvs = [
+        cvpack.NumberOfContacts(
+            np.array([0, 1, 2]), np.array([10, 11]), forces["NonbondedForce"]
+        ),
+        cvpack.ShortestDistance(np.arange(0, 5), np.arange(10, 15), 22),
+        cvpack.AtomicFunction(
+            "dihedral(p1, p2, p3, p4)",
+            unit.radian,
+            np.array([[6, 8, 14, 16]]),
+            periodicBounds=np.array([-np.pi, np.pi]) * unit.radian,
+            name="phi",
+        ),
+    ]
+    for cv in cvs:
+        cv.addToSystem(dipeptide.system)
+    context = make_context(dipeptide.system, dipeptide.positions)
+    for cv in cvs:
+        clone = assert_round_trip(cv, context)
+        assert clone.getPeriodicBounds() == cv.getPeriodicBounds()
+
+
+def test_one_shot_iterables_round_trip(dipeptide):
+    phi = cvpack.Torsion(6, 8, 14, 16, name="phi")
+    psi = cvpack.Torsion(8, 14, 16, 18, name="psi")
+    meta = cvpack.MetaCollectiveVariable(
+        "phi+psi", (cv for cv in [phi, psi]), unit.radian
+    )
+    path = cvpack.PathInCVSpace(
+        cvpack.path.progress,
+        [phi, psi],
+        [[1.3, -0.2], [1.2, 3.1]],
+        0.5,
+        scales=(s for s in [1.0, 2.0]),
+    )
+    for cv in (meta, path):
+        cv.addToSystem(dipeptide.system)
+    context = make_context(dipeptide.system, dipeptide.positions)
+    assert_round_trip(meta, context)
+    assert_round_trip(path, context)
+
+
+@pytest.mark.parametrize("as_vec3", [False, True])
+def test_path_in_rmsd_space_with_quantity_milestones(dipeptide, as_vec3):
+    positions = dipeptide.positions  # numpy-backed Quantity
+    atoms = list(range(10))
+
+    def milestone(shift):
+        if as_vec3:
+            return {
+                i: openmm.Vec3(*(positions[i].value_in_unit(unit.angstrom) + shift))
+                * unit.angstrom
+                for i in atoms
+            }
+        return {i: positions[i] + shift * unit.angstrom for i in atoms}
+
+    cv = cvpack.PathInRMSDSpace(
+        cvpack.path.progress, [milestone(0.0), milestone(0.5)], 22, 0.5 * unit.angstrom
+    )
+    cv.addToSystem(dipeptide.system)
+    assert_round_trip(cv, make_context(dipeptide.system, dipeptide.positions))

@@ -132,7 +132,8 @@ class PathInCVSpace(BasePathCV):
     ) -> None:
         name = self._generateName(metric, name, "cv")
         variables = list(variables)
-        cv_scales = [1.0] * len(variables) if scales is None else list(scales)
+        scales = None if scales is None else list(scales)
+        cv_scales = [1.0] * len(variables) if scales is None else scales
         milestones, n, numvars = convert_to_matrix(milestones)
         if numvars != len(variables):
             raise ValueError("Wrong number of columns in the milestones matrix.")
