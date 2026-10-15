@@ -223,10 +223,11 @@ def compute_effective_mass(
     force_vectors = state.getForces(asNumpy=True)._value
     squared_forces = np.sum(np.square(force_vectors), axis=1)
     nonzeros = np.nonzero(squared_forces)[0]
-    if nonzeros.size == 0:
-        return np.inf
     mass_values = np.fromiter(map(get_mass, nonzeros), dtype=np.float64)
-    return 1.0 / np.sum(squared_forces[nonzeros] / mass_values)
+    movable = mass_values > 0  # OpenMM treats massless particles as fixed
+    if not np.any(movable):
+        return np.inf
+    return 1.0 / np.sum(squared_forces[nonzeros][movable] / mass_values[movable])
 
 
 def preprocess_args(func: t.Callable) -> t.Callable:

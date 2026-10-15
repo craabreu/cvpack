@@ -192,6 +192,7 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
             A dictionary with the names of the collective variables as keys and their
             effective masses as values.
         """
+        self.getCollectiveVariableValues(context)  # update the inner context positions
         inner_context = self.getInnerContext(context)
         masses = [
             compute_effective_mass(force, inner_context)
