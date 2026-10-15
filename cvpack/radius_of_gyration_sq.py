@@ -41,16 +41,19 @@ class RadiusOfGyrationSq(BaseRadiusOfGyration):
 
     .. note::
 
-        This collective variable is better parallelized than :class:`RadiusOfGyration`
-        and might be preferred over :class:`RadiusOfGyration` when the group of atoms is
-        large.
+        The computation is done by OpenMM's :OpenMM:`RGForce`. With mass weighting,
+        the squared distance between the geometric center and the center of mass is
+        added to the squared radius of gyration about the geometric center, which is
+        exact by the parallel-axis theorem.
 
     Parameters
     ----------
     group
         The indices of the atoms in the group.
     pbc
-        Whether to use periodic boundary conditions.
+        Deprecated, with no effect. OpenMM does not wrap positions inside a
+        :OpenMM:`Context`, so the group of atoms must not be split across periodic
+        images, as was already required for its centroid.
     weighByMass
         Whether to use the center of mass of the group instead of its geometric center.
     name
@@ -82,10 +85,7 @@ class RadiusOfGyrationSq(BaseRadiusOfGyration):
         name: str = "radius_of_gyration_sq",
     ) -> None:
         group = list(group)
-        num_atoms = len(group)
-        super().__init__(2, f"distance(g1, g2)^2/{num_atoms}", group, pbc, weighByMass)
-        for index in range(num_atoms):
-            self.addBond([index, num_atoms])
+        super().__init__(True, group, pbc, weighByMass)
         self._registerCV(
             name, mmunit.nanometers**2, group=group, pbc=pbc, weighByMass=weighByMass
         )

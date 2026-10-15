@@ -375,24 +375,48 @@ def test_rmsd_content_accepts_charmm_terminal_oxygen():
     assert renamed.getValue(context) == reference.getValue(context)
 
 
-@pytest.mark.parametrize("pbc", [False, True])
-@pytest.mark.parametrize("weigh_by_mass", [False, True])
-def test_radius_of_gyration_is_square_root_of_squared(pbc, weigh_by_mass):
+def _radius_of_gyration_system():
     rng = np.random.default_rng(6)
     positions = rng.uniform(0, 1.5, (10, 3))
+    masses = rng.uniform(1, 30, 10)
     system = particle_system(10)
-    system.setDefaultPeriodicBoxVectors(*(2.0 * np.eye(3)))
-    for atom, mass in enumerate(rng.uniform(1, 30, 10)):
+    for atom, mass in enumerate(masses):
         system.setParticleMass(atom, mass)
+    return system, positions, masses
+
+
+@pytest.mark.parametrize("cls", [cvpack.RadiusOfGyration, cvpack.RadiusOfGyrationSq])
+@pytest.mark.parametrize("weigh_by_mass", [False, True])
+def test_radius_of_gyration_uses_rgforce(cls, weigh_by_mass):
+    system, positions, masses = _radius_of_gyration_system()
     group = [8, 1, 5, 3, 0, 6]
-    rg = cvpack.RadiusOfGyration(group, pbc=pbc, weighByMass=weigh_by_mass, name="rg")
-    rgsq = cvpack.RadiusOfGyrationSq(group, pbc=pbc, weighByMass=weigh_by_mass)
-    rg.addToSystem(system)
-    rgsq.addToSystem(system)
+    cv = cls(group, weighByMass=weigh_by_mass)
+    cv.addToSystem(system)
     context = make_context(system, positions)
-    value = rg.getValue(context).value_in_unit(unit.nanometer)
-    squared = rgsq.getValue(context).value_in_unit(unit.nanometer**2)
-    assert value == pytest.approx(np.sqrt(squared))
-    # Without mass weighting and PBC, OpenMM's RGForce does the computation
-    inner = rg.getCollectiveVariable(0)
-    assert isinstance(inner, openmm.RGForce) == (not pbc and not weigh_by_mass)
+    # Docstring: mean squared distance to the geometric center or the center of mass
+    selected = positions[group]
+    center = (
+        np.average(selected, axis=0, weights=masses[group])
+        if weigh_by_mass
+        else selected.mean(axis=0)
+    )
+    expected = np.mean(np.sum((selected - center) ** 2, axis=1))
+    if cls is cvpack.RadiusOfGyration:
+        expected = np.sqrt(expected)
+    value = cv.getValue(context)
+    assert value / value.unit == pytest.approx(expected)
+    inner = [cv.getCollectiveVariable(i) for i in range(cv.getNumCollectiveVariables())]
+    assert isinstance(inner[0], openmm.RGForce)
+    assert len(inner) == (2 if weigh_by_mass else 1)
+
+
+@pytest.mark.parametrize("cls", [cvpack.RadiusOfGyration, cvpack.RadiusOfGyrationSq])
+def test_radius_of_gyration_pbc_is_deprecated(cls):
+    system, positions, _ = _radius_of_gyration_system()
+    with pytest.warns(DeprecationWarning, match="pbc"):
+        periodic = cls(range(10), pbc=True, name="periodic")
+    plain = cls(range(10), name="plain")
+    periodic.addToSystem(system)
+    plain.addToSystem(system)
+    context = make_context(system, positions)
+    assert periodic.getValue(context) == plain.getValue(context)

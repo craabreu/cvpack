@@ -295,7 +295,10 @@ def test_from_openmm_force_rejects_periodicdistance():
         cvpack.AtomicFunction.fromOpenMMForce(force, unit.nanometer)
 
 
-def test_radius_of_gyration_rejects_empty_group():
+@pytest.mark.parametrize("cls", [cvpack.RadiusOfGyration, cvpack.RadiusOfGyrationSq])
+def test_radius_of_gyration_rejects_empty_or_repeated_atoms(cls):
     # OpenMM's RGForce would interpret an empty group as all atoms
     with pytest.raises(ValueError, match="empty"):
-        cvpack.RadiusOfGyration([])
+        cls([])
+    with pytest.raises(ValueError, match="repeated"):
+        cls([0, 1, 1])

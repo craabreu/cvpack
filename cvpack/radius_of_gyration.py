@@ -9,14 +9,12 @@
 
 import typing as t
 
-import openmm
 from openmm import unit as mmunit
 
-from .collective_variable import CollectiveVariable
-from .radius_of_gyration_sq import RadiusOfGyrationSq
+from .base_radius_of_gyration import BaseRadiusOfGyration
 
 
-class RadiusOfGyration(CollectiveVariable, openmm.CustomCVForce):
+class RadiusOfGyration(BaseRadiusOfGyration):
     r"""
     The radius of gyration of a group of :math:`n` atoms:
 
@@ -43,16 +41,19 @@ class RadiusOfGyration(CollectiveVariable, openmm.CustomCVForce):
 
     .. note::
 
-        Without mass weighting and periodic boundary conditions, the computation is
-        done by OpenMM's :OpenMM:`RGForce`. Otherwise, this collective variable is the
-        square root of a :class:`RadiusOfGyrationSq`.
+        The computation is done by OpenMM's :OpenMM:`RGForce`. With mass weighting,
+        the squared distance between the geometric center and the center of mass is
+        added to the squared radius of gyration about the geometric center, which is
+        exact by the parallel-axis theorem.
 
     Parameters
     ----------
     group
         The indices of the atoms in the group.
     pbc
-        Whether to use periodic boundary conditions.
+        Deprecated, with no effect. OpenMM does not wrap positions inside a
+        :OpenMM:`Context`, so the group of atoms must not be split across periodic
+        images, as was already required for its centroid.
     weighByMass
         Whether to use the center of mass of the group instead of its geometric center.
     name
@@ -84,17 +85,7 @@ class RadiusOfGyration(CollectiveVariable, openmm.CustomCVForce):
         name: str = "radius_of_gyration",
     ) -> None:
         group = list(group)
-        if not group:
-            # OpenMM's RGForce would interpret an empty group as all atoms
-            raise ValueError("The group of atoms must not be empty")
-        if pbc or weighByMass:
-            super().__init__("sqrt(rgsq)")
-            self.addCollectiveVariable(
-                "rgsq", RadiusOfGyrationSq(group, pbc=pbc, weighByMass=weighByMass)
-            )
-        else:
-            super().__init__("rg")
-            self.addCollectiveVariable("rg", openmm.RGForce(group))
+        super().__init__(False, group, pbc, weighByMass)
         self._registerCV(
             name, mmunit.nanometers, group=group, pbc=pbc, weighByMass=weighByMass
         )
