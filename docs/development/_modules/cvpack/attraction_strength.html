@@ -100,7 +100,7 @@
 <span class="sd">        Groups :math:`{\bf g}_1` and :math:`{\bf g}_2` can overlap or even be the</span>
 <span class="sd">        same, in which case the collective variable will measure the strength of</span>
 <span class="sd">        the self-attraction of :math:`{\bf g}_1`. On the other hand, the contrast</span>
-<span class="sd">        group :math:`{\bf g}_3` cannot overlap with neither :math:`{\bf g}_1` nor</span>
+<span class="sd">        group :math:`{\bf g}_3` cannot overlap with either :math:`{\bf g}_1` or</span>
 <span class="sd">        :math:`{\bf g}_2`.</span>
 
 <span class="sd">    The function :math:`u_{\rm disp}(x)` is a Lennard-Jones-like reduced potential with</span>
@@ -124,14 +124,14 @@
 
 <span class="sd">    .. note::</span>
 
-<span class="sd">        Only attractive electrostatic interactions are considered (:math:`q_i q_i &lt; 0`),</span>
+<span class="sd">        Only attractive electrostatic interactions are considered (:math:`q_i q_j &lt; 0`),</span>
 <span class="sd">        which gives :math:`S_{\rm attr}({\bf r})` a lower bound of zero. The upper</span>
-<span class="sd">        bound will depends on the system details, the chosen groups of atoms, and the</span>
+<span class="sd">        bound depends on the system details, the chosen groups of atoms, and the</span>
 <span class="sd">        adopted reference value.</span>
 
 <span class="sd">    The Lennard-Jones parameters, atomic charges, cutoff distance, boundary conditions,</span>
 <span class="sd">    as well as whether to use a switching function and its corresponding switching</span>
-<span class="sd">    distance, are taken from :openmm:`NonbondedForce` object.</span>
+<span class="sd">    distance, are taken from the :openmm:`NonbondedForce` object.</span>
 
 <span class="sd">    .. note::</span>
 <span class="sd">        Any non-exclusion exceptions involving an atom in :math:`{\bf g}_1` and an atom</span>
@@ -153,7 +153,7 @@
 <span class="sd">        and :math:`{\bf g}_3`.</span>
 <span class="sd">    reference</span>
 <span class="sd">        A reference value (in energy units per mole) to which the collective variable</span>
-<span class="sd">        should be normalized. One can also provide an :OpenMM:`Context` object from</span>
+<span class="sd">        should be normalized. One can also provide a :OpenMM:`Context` object from</span>
 <span class="sd">        which to extract a reference attraction strength. The extracted value will be</span>
 <span class="sd">        :math:`S_{1,2}({\bf r})` for :math:`E_{\rm ref} = 1`, regardless of whether</span>
 <span class="sd">        `contrastGroup` is provided or not.</span>

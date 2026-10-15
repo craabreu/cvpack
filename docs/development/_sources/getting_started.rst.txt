@@ -4,7 +4,7 @@ Getting Started
 Introduction
 ------------
 
-CVPack is a Python package with pre-defined Collective variable (CV) classes for `OpenMM`_.
+CVPack is a Python package with pre-defined collective variable (CV) classes for `OpenMM`_.
 
 Possible use cases include:
 

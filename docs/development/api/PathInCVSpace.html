@@ -64,8 +64,8 @@ milestone, i.e.,</p>
 <span class="math notranslate nohighlight">\({\bf x}\)</span> in the collective variable space is defined as</p>
 <div class="math notranslate nohighlight">
 \[\|{\bf x}\|^2 = {\bf x}^T {\bf D}^{-2} {\bf x}\]</div>
-<p>where <span class="math notranslate nohighlight">\({\bf D}\)</span> is a diagonal matrix whose each diagonal element is the
-characteristic scale of the corresponding collective variable, which makes
+<p>where <span class="math notranslate nohighlight">\({\bf D}\)</span> is a diagonal matrix whose diagonal elements are the
+characteristic scales of the corresponding collective variables, which makes
 <span class="math notranslate nohighlight">\(\|{\bf x}\|^2\)</span> dimensionless. Appropriate boundary conditions are used for
 periodic CVs.</p>
 <div class="admonition note">
@@ -154,7 +154,7 @@ first available force group in the system</p></li>
 \[m_\mathrm{eff}({\bf r}) = \left(
     \sum_{i=1}^N \frac{1}{m_i} \left\| \frac{dq}{d{\bf r}_i} \right\|^2
 \right)^{-1}\]</div>
-<p>If this collective variable share the force group with other forces, then
+<p>If this collective variable shares the force group with other forces, then
 evaluating its effective mass requires reinitializing the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a>
 twice at each call. This is inefficient and should be avoided. To allow this
 behavior, the <code class="docutils literal notranslate"><span class="pre">allowReinitialization</span></code> parameter must be set to True.</p>
@@ -261,7 +261,7 @@ periodic</p>
 <dt class="sig sig-object py" id="cvpack.PathInCVSpace.getValue">
 <span class="sig-name descname"><span class="pre">getValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowReinitialization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.PathInCVSpace.getValue" title="Link to this definition">¶</a></dt>
 <dd><p>Evaluate this collective variable at a given <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a>.</p>
-<p>If this collective variable share the force group with other forces, then its
+<p>If this collective variable shares the force group with other forces, then its
 evaluation requires reinitializing the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a> twice at each call.
 This is inefficient and should be avoided. To allow this behavior, the
 <code class="docutils literal notranslate"><span class="pre">allowReinitialization</span></code> parameter must be set to True.</p>

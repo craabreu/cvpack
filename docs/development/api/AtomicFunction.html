@@ -79,7 +79,7 @@ atoms per group. If a 1D object is passed, it is assumed that <cite>m</cite> is 
 <li><p><strong>unit</strong> (<em>mmunit.Unit</em>) – The unit of measurement of the collective variable. It must be compatible
 with the MD unit system (mass in <cite>daltons</cite>, distance in <cite>nanometers</cite>, time
 in <cite>picoseconds</cite>, temperature in <cite>kelvin</cite>, energy in <cite>kilojoules_per_mol</cite>,
-angle in <cite>radians</cite>). If the collective variables does not have a unit, use
+angle in <cite>radians</cite>). If the collective variable does not have a unit, use
 <cite>unit.dimensionless</cite>.</p></li>
 <li><p><strong>periodicBounds</strong> (<em>VectorQuantity</em><em> | </em><em>None</em>) – The lower and upper bounds of the collective variable if it is periodic, or
 <code class="docutils literal notranslate"><span class="pre">None</span></code> if it is not.</p></li>
@@ -165,7 +165,7 @@ first available force group in the system</p></li>
 <li><p><strong>unit</strong> (<em>Unit</em>) – The unit of measurement of the collective variable. It must be
 compatible with the MD unit system (mass in <cite>daltons</cite>, distance in
 <cite>nanometers</cite>, time in <cite>picoseconds</cite>, temperature in <cite>kelvin</cite>, energy in
-<cite>kilojoules_per_mol</cite>, angle in <cite>radians</cite>). If the collective variables
+<cite>kilojoules_per_mol</cite>, angle in <cite>radians</cite>). If the collective variable
 does not have a unit, use <cite>unit.dimensionless</cite>.</p></li>
 <li><p><strong>periodicBounds</strong> (<em>Quantity</em><em> | </em><em>ndarray</em><em> | </em><em>Vec3</em><em> | </em><em>None</em>) – The lower and upper bounds of the collective variable if it is periodic,
 or <code class="docutils literal notranslate"><span class="pre">None</span></code> if it is not. This parameter is considered only if <cite>force</cite> is
@@ -254,7 +254,7 @@ distances. If <code class="docutils literal notranslate"><span class="pre">None<
 \[m_\mathrm{eff}({\bf r}) = \left(
     \sum_{i=1}^N \frac{1}{m_i} \left\| \frac{dq}{d{\bf r}_i} \right\|^2
 \right)^{-1}\]</div>
-<p>If this collective variable share the force group with other forces, then
+<p>If this collective variable shares the force group with other forces, then
 evaluating its effective mass requires reinitializing the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a>
 twice at each call. This is inefficient and should be avoided. To allow this
 behavior, the <code class="docutils literal notranslate"><span class="pre">allowReinitialization</span></code> parameter must be set to True.</p>
@@ -361,7 +361,7 @@ periodic</p>
 <dt class="sig sig-object py" id="cvpack.AtomicFunction.getValue">
 <span class="sig-name descname"><span class="pre">getValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowReinitialization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.AtomicFunction.getValue" title="Link to this definition">¶</a></dt>
 <dd><p>Evaluate this collective variable at a given <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a>.</p>
-<p>If this collective variable share the force group with other forces, then its
+<p>If this collective variable shares the force group with other forces, then its
 evaluation requires reinitializing the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a> twice at each call.
 This is inefficient and should be avoided. To allow this behavior, the
 <code class="docutils literal notranslate"><span class="pre">allowReinitialization</span></code> parameter must be set to True.</p>

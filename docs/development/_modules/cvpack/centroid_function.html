@@ -59,7 +59,7 @@
 <a class="viewcode-back" href="../../api/CentroidFunction.html#cvpack.CentroidFunction">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CentroidFunction</span><span class="p">(</span><span class="n">BaseCustomFunction</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomCentroidBondForce</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">"""</span>
-<span class="sd">    A generic function of the centroids of :math:`m \times n` atoms groups split</span>
+<span class="sd">    A generic function of the centroids of :math:`m \times n` atom groups split</span>
 <span class="sd">    into `m` collections of `n` groups:</span>
 
 <span class="sd">    .. math::</span>
@@ -121,7 +121,7 @@
 <span class="sd">        The unit of measurement of the collective variable. It must be compatible</span>
 <span class="sd">        with the MD unit system (mass in `daltons`, distance in `nanometers`, time</span>
 <span class="sd">        in `picoseconds`, temperature in `kelvin`, energy in `kilojoules_per_mol`,</span>
-<span class="sd">        angle in `radians`). If the collective variables does not have a unit, use</span>
+<span class="sd">        angle in `radians`). If the collective variable does not have a unit, use</span>
 <span class="sd">        `dimensionless`.</span>
 <span class="sd">    groups</span>
 <span class="sd">        The groups of atoms to be used in the function. Each group must be specified</span>
@@ -129,8 +129,8 @@
 <span class="sd">    collections</span>
 <span class="sd">        The indices of the groups in each collection, passed as a 2D array-like object</span>
 <span class="sd">        of shape `(m, n)`, where `m` is the number of collections and `n` is the number</span>
-<span class="sd">        groups per collection. If a 1D object is passed, it is assumed that `m` is 1 and</span>
-<span class="sd">        `n` is the length of the object.</span>
+<span class="sd">        of groups per collection. If a 1D object is passed, it is assumed that `m` is 1</span>
+<span class="sd">        and `n` is the length of the object.</span>
 <span class="sd">    periodicBounds</span>
 <span class="sd">        The periodic bounds of the collective variable if it is periodic, or `None` if</span>
 <span class="sd">        it is not.</span>

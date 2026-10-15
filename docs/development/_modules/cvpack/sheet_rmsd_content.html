@@ -76,7 +76,7 @@
 <span class="sd">    :math:`d_{\rm min}` is the minimum distance between integers i and j,</span>
 <span class="sd">    :math:`{\bf g}_{\rm ref}` represents the coordinates of the same atoms in an</span>
 <span class="sd">    ideal beta-sheet configuration, :math:`r_{\rm rmsd}({\bf g}, {\bf g}_{\rm ref})`</span>
-<span class="sd">    is the root-mean-square distance (RMSD) between groups :math:`{\bf g}` and</span>
+<span class="sd">    is the root-mean-square deviation (RMSD) between groups :math:`{\bf g}` and</span>
 <span class="sd">    :math:`{\bf g}_{\rm ref}`, :math:`r_0` is a threshold RMSD value, and</span>
 <span class="sd">    :math:`S(x)` is a smooth step function whose default form is</span>
 
@@ -86,10 +86,10 @@
 <span class="sd">    The sequence of residues must be a contiguous subset of a protein chain, ordered</span>
 <span class="sd">    from the N-terminus to the C-terminus. The beta-sheet RMSD content is defined for</span>
 <span class="sd">    both antiparallel and parallel beta sheets, with different ideal configurations</span>
-<span class="sd">    :math:`{\bf g}_{\rm ref}` and minimim distances :math:`d_{\rm min}` in each case.</span>
+<span class="sd">    :math:`{\bf g}_{\rm ref}` and minimum distances :math:`d_{\rm min}` in each case.</span>
 
 <span class="sd">    Every group :math:`{\bf g}_{i,j}` is formed by the N, :math:`{\rm C}_\alpha`,</span>
-<span class="sd">    :math:`{\rm C}_\beta`, C, and O atoms of the six residues involvend, thus</span>
+<span class="sd">    :math:`{\rm C}_\beta`, C, and O atoms of the six residues involved, thus</span>
 <span class="sd">    comprising 30 atoms in total. In the case of glycine, the missing</span>
 <span class="sd">    :math:`{\rm C}_\beta` atom is replaced by the corresponding H atom. The RMSD is</span>
 <span class="sd">    then defined as</span>
@@ -142,9 +142,9 @@
 
 <span class="sd">    This collective variable was introduced in Ref. :cite:`Pietrucci_2009`. The default</span>
 <span class="sd">    step function shown above is identical to the one in the original paper, but written</span>
-<span class="sd">    in a numerically safe form. The ideal beta-sheet configurations are the same used</span>
-<span class="sd">    for the collective variable `ANTIBETARMSD`_ and `PARABETARMSD`_ in `PLUMED v2.8.1</span>
-<span class="sd">    &lt;https://github.com/plumed/plumed2&gt;`_ .</span>
+<span class="sd">    in a numerically safe form. The ideal beta-sheet configurations are the same as</span>
+<span class="sd">    those used for the collective variables `ANTIBETARMSD`_ and `PARABETARMSD`_ in</span>
+<span class="sd">    `PLUMED v2.8.1 &lt;https://github.com/plumed/plumed2&gt;`_.</span>
 
 <span class="sd">    .. _ANTIBETARMSD:</span>
 <span class="sd">        https://www.plumed.org/doc-v2.8/user-doc/html/_a_n_t_i_b_e_t_a_r_m_s_d.html</span>

@@ -75,7 +75,7 @@ interactions. In this case, the collective variable becomes</p>
 <p>Groups <span class="math notranslate nohighlight">\({\bf g}_1\)</span> and <span class="math notranslate nohighlight">\({\bf g}_2\)</span> can overlap or even be the
 same, in which case the collective variable will measure the strength of
 the self-attraction of <span class="math notranslate nohighlight">\({\bf g}_1\)</span>. On the other hand, the contrast
-group <span class="math notranslate nohighlight">\({\bf g}_3\)</span> cannot overlap with neither <span class="math notranslate nohighlight">\({\bf g}_1\)</span> nor
+group <span class="math notranslate nohighlight">\({\bf g}_3\)</span> cannot overlap with either <span class="math notranslate nohighlight">\({\bf g}_1\)</span> or
 <span class="math notranslate nohighlight">\({\bf g}_2\)</span>.</p>
 </div>
 <p>The function <span class="math notranslate nohighlight">\(u_{\rm disp}(x)\)</span> is a Lennard-Jones-like reduced potential with
@@ -92,14 +92,14 @@ reaction-field screening, defined as</p>
 <span class="bibtex-citation" id="id1">[<a class="reference internal" href="../references.html#id4" title="Gabriela B. Correa, Jéssica C. S. L. Maciel, Frederico W. Tavares, and Charlles R. A. Abreu. A New Formulation for the Concerted Alchemical Calculation of van der Waals and Coulomb Components of Solvation Free Energies. Journal of Chemical Theory and Computation, 18(10):5876–5889, October 2022. doi:10.1021/acs.jctc.2c00563.">2</a>]</span>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Only attractive electrostatic interactions are considered (<span class="math notranslate nohighlight">\(q_i q_i &lt; 0\)</span>),
+<p>Only attractive electrostatic interactions are considered (<span class="math notranslate nohighlight">\(q_i q_j &lt; 0\)</span>),
 which gives <span class="math notranslate nohighlight">\(S_{\rm attr}({\bf r})\)</span> a lower bound of zero. The upper
-bound will depends on the system details, the chosen groups of atoms, and the
+bound depends on the system details, the chosen groups of atoms, and the
 adopted reference value.</p>
 </div>
 <p>The Lennard-Jones parameters, atomic charges, cutoff distance, boundary conditions,
 as well as whether to use a switching function and its corresponding switching
-distance, are taken from <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.NonbondedForce.html">openmm.NonbondedForce</a> object.</p>
+distance, are taken from the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.NonbondedForce.html">openmm.NonbondedForce</a> object.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Any non-exclusion exceptions involving an atom in <span class="math notranslate nohighlight">\({\bf g}_1\)</span> and an atom
@@ -117,7 +117,7 @@ parameters.</p></li>
 <span class="math notranslate nohighlight">\({\bf g}_1\)</span> and <span class="math notranslate nohighlight">\({\bf g}_2\)</span> with that between <span class="math notranslate nohighlight">\({\bf g}_1\)</span>
 and <span class="math notranslate nohighlight">\({\bf g}_3\)</span>.</p></li>
 <li><p><strong>reference</strong> (<em>Quantity</em><em> | </em><em>Real</em><em> | </em><em>Context</em>) – A reference value (in energy units per mole) to which the collective variable
-should be normalized. One can also provide an <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a> object from
+should be normalized. One can also provide a <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a> object from
 which to extract a reference attraction strength. The extracted value will be
 <span class="math notranslate nohighlight">\(S_{1,2}({\bf r})\)</span> for <span class="math notranslate nohighlight">\(E_{\rm ref} = 1\)</span>, regardless of whether
 <cite>contrastGroup</cite> is provided or not.</p></li>
@@ -206,7 +206,7 @@ first available force group in the system</p></li>
 \[m_\mathrm{eff}({\bf r}) = \left(
     \sum_{i=1}^N \frac{1}{m_i} \left\| \frac{dq}{d{\bf r}_i} \right\|^2
 \right)^{-1}\]</div>
-<p>If this collective variable share the force group with other forces, then
+<p>If this collective variable shares the force group with other forces, then
 evaluating its effective mass requires reinitializing the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a>
 twice at each call. This is inefficient and should be avoided. To allow this
 behavior, the <code class="docutils literal notranslate"><span class="pre">allowReinitialization</span></code> parameter must be set to True.</p>
@@ -313,7 +313,7 @@ periodic</p>
 <dt class="sig sig-object py" id="cvpack.AttractionStrength.getValue">
 <span class="sig-name descname"><span class="pre">getValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowReinitialization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.AttractionStrength.getValue" title="Link to this definition">¶</a></dt>
 <dd><p>Evaluate this collective variable at a given <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a>.</p>
-<p>If this collective variable share the force group with other forces, then its
+<p>If this collective variable shares the force group with other forces, then its
 evaluation requires reinitializing the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a> twice at each call.
 This is inefficient and should be avoided. To allow this behavior, the
 <code class="docutils literal notranslate"><span class="pre">allowReinitialization</span></code> parameter must be set to True.</p>

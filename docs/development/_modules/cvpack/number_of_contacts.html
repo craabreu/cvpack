@@ -66,7 +66,7 @@
 
 <span class="sd">    where :math:`r_0` is the threshold distance for defining a contact and :math:`S(x)`</span>
 <span class="sd">    is a step function equal to :math:`1` if a contact is made or equal to :math:`0`</span>
-<span class="sd">    otherwise. For trajectory analysis, it is fine to make :math:`S(x) = H(1-x)`, where</span>
+<span class="sd">    otherwise. For trajectory analysis, it is fine to set :math:`S(x) = H(1-x)`, where</span>
 <span class="sd">    `H` is the `Heaviside step function</span>
 <span class="sd">    &lt;https://en.wikipedia.org/wiki/Heaviside_step_function&gt;`_. For molecular dynamics,</span>
 <span class="sd">    however, :math:`S(x)` should be a continuous approximation of :math:`H(1-x)` for</span>
@@ -105,7 +105,7 @@
 <span class="sd">        taken.</span>
 <span class="sd">    reference</span>
 <span class="sd">        A dimensionless reference value to which the collective variable should be</span>
-<span class="sd">        normalized. One can also provide an :OpenMM:`Context` object from which to</span>
+<span class="sd">        normalized. One can also provide a :OpenMM:`Context` object from which to</span>
 <span class="sd">        obtain the reference number of contacts.</span>
 <span class="sd">    stepFunction</span>
 <span class="sd">        The function "step(1-x)" (for analysis only) or a continuous approximation</span>

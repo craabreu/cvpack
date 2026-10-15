@@ -43,7 +43,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="cvpack.CentroidFunction">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">cvpack.</span></span><span class="sig-name descname"><span class="pre">CentroidFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groups</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collections</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodicBounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighByMass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'centroid_function'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cvpack/centroid_function.html#CentroidFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cvpack.CentroidFunction" title="Link to this definition">¶</a></dt>
-<dd><p>A generic function of the centroids of <span class="math notranslate nohighlight">\(m \times n\)</span> atoms groups split
+<dd><p>A generic function of the centroids of <span class="math notranslate nohighlight">\(m \times n\)</span> atom groups split
 into <cite>m</cite> collections of <cite>n</cite> groups:</p>
 <div class="math notranslate nohighlight">
 \[f({\bf r}) = \sum_{i=1}^m F\Big(
@@ -91,14 +91,14 @@ share the same values of equal-named parameters.</p></li>
 <li><p><strong>unit</strong> (<em>Unit</em>) – The unit of measurement of the collective variable. It must be compatible
 with the MD unit system (mass in <cite>daltons</cite>, distance in <cite>nanometers</cite>, time
 in <cite>picoseconds</cite>, temperature in <cite>kelvin</cite>, energy in <cite>kilojoules_per_mol</cite>,
-angle in <cite>radians</cite>). If the collective variables does not have a unit, use
+angle in <cite>radians</cite>). If the collective variable does not have a unit, use
 <cite>dimensionless</cite>.</p></li>
 <li><p><strong>groups</strong> (<em>Iterable</em><em>[</em><em>Iterable</em><em>[</em><em>int</em><em>]</em><em>]</em>) – The groups of atoms to be used in the function. Each group must be specified
 as a list of atom indices with arbitrary length.</p></li>
 <li><p><strong>collections</strong> (<em>ArrayLike</em><em> | </em><em>None</em>) – The indices of the groups in each collection, passed as a 2D array-like object
 of shape <cite>(m, n)</cite>, where <cite>m</cite> is the number of collections and <cite>n</cite> is the number
-groups per collection. If a 1D object is passed, it is assumed that <cite>m</cite> is 1 and
-<cite>n</cite> is the length of the object.</p></li>
+of groups per collection. If a 1D object is passed, it is assumed that <cite>m</cite> is 1
+and <cite>n</cite> is the length of the object.</p></li>
 <li><p><strong>periodicBounds</strong> (<em>Quantity</em><em> | </em><em>ndarray</em><em> | </em><em>Vec3</em><em> | </em><em>None</em>) – The periodic bounds of the collective variable if it is periodic, or <cite>None</cite> if
 it is not.</p></li>
 <li><p><strong>pbc</strong> (<em>bool</em>) – Whether to use periodic boundary conditions. This should be <code class="docutils literal notranslate"><span class="pre">True</span></code> for
@@ -190,7 +190,7 @@ first available force group in the system</p></li>
 \[m_\mathrm{eff}({\bf r}) = \left(
     \sum_{i=1}^N \frac{1}{m_i} \left\| \frac{dq}{d{\bf r}_i} \right\|^2
 \right)^{-1}\]</div>
-<p>If this collective variable share the force group with other forces, then
+<p>If this collective variable shares the force group with other forces, then
 evaluating its effective mass requires reinitializing the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a>
 twice at each call. This is inefficient and should be avoided. To allow this
 behavior, the <code class="docutils literal notranslate"><span class="pre">allowReinitialization</span></code> parameter must be set to True.</p>
@@ -297,7 +297,7 @@ periodic</p>
 <dt class="sig sig-object py" id="cvpack.CentroidFunction.getValue">
 <span class="sig-name descname"><span class="pre">getValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowReinitialization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.CentroidFunction.getValue" title="Link to this definition">¶</a></dt>
 <dd><p>Evaluate this collective variable at a given <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a>.</p>
-<p>If this collective variable share the force group with other forces, then its
+<p>If this collective variable shares the force group with other forces, then its
 evaluation requires reinitializing the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a> twice at each call.
 This is inefficient and should be avoided. To allow this behavior, the
 <code class="docutils literal notranslate"><span class="pre">allowReinitialization</span></code> parameter must be set to True.</p>

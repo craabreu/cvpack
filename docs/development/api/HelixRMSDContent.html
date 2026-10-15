@@ -52,7 +52,7 @@
 <span class="math notranslate nohighlight">\(i\)</span> to <span class="math notranslate nohighlight">\(i+5\)</span> of the sequence, <span class="math notranslate nohighlight">\({\bf g}_{\rm ref}\)</span> represents
 the same atoms in an ideal alpha-helix configuration,
 <span class="math notranslate nohighlight">\(r_{\rm rmsd}({\bf g}, {\bf g}_{\rm ref})\)</span> is the root-mean-square
-distance (RMSD) between groups <span class="math notranslate nohighlight">\({\bf g}\)</span> and <span class="math notranslate nohighlight">\({\bf g}_{\rm ref}\)</span>,
+deviation (RMSD) between groups <span class="math notranslate nohighlight">\({\bf g}\)</span> and <span class="math notranslate nohighlight">\({\bf g}_{\rm ref}\)</span>,
 <span class="math notranslate nohighlight">\(r_0\)</span> is a threshold RMSD value, and <span class="math notranslate nohighlight">\(S(x)\)</span> is a smooth step function
 whose default form is</p>
 <div class="math notranslate nohighlight">
@@ -60,7 +60,7 @@ whose default form is</p>
 <p>The residues must be a contiguous sequence from a single chain, ordered from
 the N-terminus to the C-terminus.</p>
 <p>Every group <span class="math notranslate nohighlight">\({\bf g}_{i,j}\)</span> is formed by the N, <span class="math notranslate nohighlight">\({\rm C}_\alpha\)</span>,
-<span class="math notranslate nohighlight">\({\rm C}_\beta\)</span>, C, and O atoms of the six residues involvend, thus
+<span class="math notranslate nohighlight">\({\rm C}_\beta\)</span>, C, and O atoms of the six residues involved, thus
 comprising 30 atoms in total. In the case of glycine, the missing
 <span class="math notranslate nohighlight">\({\rm C}_\beta\)</span> atom is replaced by the corresponding H atom. The RMSD is
 then defined as</p>
@@ -79,8 +79,8 @@ a group <span class="math notranslate nohighlight">\({\bf g}\)</span> relative t
 n - 5\)</span>.</p>
 <p>This collective variable was introduced in Ref. <span class="bibtex-citation" id="id2">[<a class="reference internal" href="../references.html#id7" title="Fabio Pietrucci and Alessandro Laio. A collective variable for the efficient exploration of protein beta-sheet structures: application to SH3 and GB1. Journal of Chemical Theory and Computation, 5(9):2197–2201, aug 2009. doi:10.1021/ct900202f.">3</a>]</span>. The default
 step function shown above is identical to the one in the original paper, but written
-in a numerically safe form. The ideal alpha-helix configuration is the same used for
-the collective variable <a class="reference external" href="https://www.plumed.org/doc-v2.8/user-doc/html/_a_l_p_h_a_r_m_s_d.html">ALPHARMSD</a> in <a class="reference external" href="https://github.com/plumed/plumed2">PLUMED v2.8.1</a> .</p>
+in a numerically safe form. The ideal alpha-helix configuration is the same as that
+used for the collective variable <a class="reference external" href="https://www.plumed.org/doc-v2.8/user-doc/html/_a_l_p_h_a_r_m_s_d.html">ALPHARMSD</a> in <a class="reference external" href="https://github.com/plumed/plumed2">PLUMED v2.8.1</a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The present implementation is limited to <span class="math notranslate nohighlight">\(1 \leq N_{\rm groups} \leq
@@ -156,7 +156,7 @@ first available force group in the system</p></li>
 \[m_\mathrm{eff}({\bf r}) = \left(
     \sum_{i=1}^N \frac{1}{m_i} \left\| \frac{dq}{d{\bf r}_i} \right\|^2
 \right)^{-1}\]</div>
-<p>If this collective variable share the force group with other forces, then
+<p>If this collective variable shares the force group with other forces, then
 evaluating its effective mass requires reinitializing the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a>
 twice at each call. This is inefficient and should be avoided. To allow this
 behavior, the <code class="docutils literal notranslate"><span class="pre">allowReinitialization</span></code> parameter must be set to True.</p>
@@ -263,7 +263,7 @@ periodic</p>
 <dt class="sig sig-object py" id="cvpack.HelixRMSDContent.getValue">
 <span class="sig-name descname"><span class="pre">getValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowReinitialization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.HelixRMSDContent.getValue" title="Link to this definition">¶</a></dt>
 <dd><p>Evaluate this collective variable at a given <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a>.</p>
-<p>If this collective variable share the force group with other forces, then its
+<p>If this collective variable shares the force group with other forces, then its
 evaluation requires reinitializing the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a> twice at each call.
 This is inefficient and should be avoided. To allow this behavior, the
 <code class="docutils literal notranslate"><span class="pre">allowReinitialization</span></code> parameter must be set to True.</p>

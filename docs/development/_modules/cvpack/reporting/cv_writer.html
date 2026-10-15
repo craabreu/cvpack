@@ -97,7 +97,7 @@
 <span class="sd">    ...     2 * unit.femtosecond,</span>
 <span class="sd">    ... )</span>
 <span class="sd">    &gt;&gt;&gt; integrator.setRandomNumberSeed(1234)</span>
-<span class="sd">    &gt;&gt;&gt; # Integrate only the physical forces, so that phi and psi do not bias dynamics</span>
+<span class="sd">    &gt;&gt;&gt; # Integrate only the physical forces, so phi and psi do not bias the dynamics</span>
 <span class="sd">    &gt;&gt;&gt; integrator.setIntegrationForceGroups({0})</span>
 <span class="sd">    &gt;&gt;&gt; simulation = app.Simulation(model.topology, model.system, integrator)</span>
 <span class="sd">    &gt;&gt;&gt; simulation.context.setPositions(model.positions)</span>
@@ -127,7 +127,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">CollectiveVariable</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"variable must be a CollectiveVariable object"</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">value</span> <span class="ow">or</span> <span class="n">emass</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"At least one of value or effective_mass must be True"</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"At least one of value or emass must be True"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cv</span> <span class="o">=</span> <span class="n">variable</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_emass</span> <span class="o">=</span> <span class="n">emass</span>

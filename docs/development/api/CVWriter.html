@@ -82,7 +82,7 @@ its force group with other forces (see <code class="xref py py-meth docutils lit
 <span class="gp">... </span>    <span class="mi">2</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">femtosecond</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">integrator</span><span class="o">.</span><span class="n">setRandomNumberSeed</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Integrate only the physical forces, so that phi and psi do not bias dynamics</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Integrate only the physical forces, so phi and psi do not bias the dynamics</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">integrator</span><span class="o">.</span><span class="n">setIntegrationForceGroups</span><span class="p">({</span><span class="mi">0</span><span class="p">})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">simulation</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">Simulation</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">topology</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">,</span> <span class="n">integrator</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">simulation</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
@@ -106,7 +106,7 @@ its force group with other forces (see <code class="xref py py-meth docutils lit
 <dl class="py method">
 <dt class="sig sig-object py" id="cvpack.reporting.CVWriter.getHeaders">
 <span class="sig-name descname"><span class="pre">getHeaders</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cvpack/reporting/cv_writer.html#CVWriter.getHeaders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cvpack.reporting.CVWriter.getHeaders" title="Link to this definition">¶</a></dt>
-<dd><p>Gets a list of strigs containing the headers to be added to the report.</p>
+<dd><p>Gets a list of strings containing the headers to be added to the report.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list[str]</p>
