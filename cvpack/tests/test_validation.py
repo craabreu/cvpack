@@ -22,15 +22,15 @@ def test_openmm_force_wrapper_rejects_non_md_unit():
 
 
 def test_meta_cv_rejects_non_md_unit():
-    phi = cvpack.Torsion(6, 8, 14, 16, name="phi")
+    phi = cvpack.Torsion(4, 6, 8, 14, name="phi")
     with pytest.raises(ValueError, match="MD unit system"):
         cvpack.MetaCollectiveVariable("phi", [phi], unit.kilocalorie_per_mole)
 
 
 def _dipeptide_path(milestones, sigma, scales=None):
     model = testsystems.AlanineDipeptideVacuum()
-    phi = cvpack.Torsion(6, 8, 14, 16, name="phi")
-    psi = cvpack.Torsion(8, 14, 16, 18, name="psi")
+    phi = cvpack.Torsion(4, 6, 8, 14, name="phi")
+    psi = cvpack.Torsion(6, 8, 14, 16, name="psi")
     cv = cvpack.PathInCVSpace(
         cvpack.path.progress, [phi, psi], milestones, sigma, scales
     )

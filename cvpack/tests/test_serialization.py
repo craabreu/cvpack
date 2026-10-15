@@ -69,7 +69,7 @@ def test_residue_coordination_keeps_reference_value(lysozyme):
 
 
 def test_renamed_cv_keeps_its_name_inside_meta_cv(dipeptide):
-    phi = cvpack.Torsion(6, 8, 14, 16)
+    phi = cvpack.Torsion(4, 6, 8, 14)
     phi.setName("phi")
     assert copy.copy(phi).getName() == "phi"
     meta = cvpack.MetaCollectiveVariable("2*phi", [phi], unit.radian)
@@ -83,8 +83,8 @@ def test_renamed_cv_keeps_its_name_inside_meta_cv(dipeptide):
 
 
 def test_nested_renamed_cvs_round_trip(dipeptide):
-    phi = cvpack.Torsion(6, 8, 14, 16)
-    psi = cvpack.Torsion(8, 14, 16, 18)
+    phi = cvpack.Torsion(4, 6, 8, 14)
+    psi = cvpack.Torsion(6, 8, 14, 16)
     phi.setName("phi")
     psi.setName("psi")
     path = cvpack.PathInCVSpace(
@@ -124,7 +124,7 @@ def test_numpy_arguments_round_trip(dipeptide):
         cvpack.AtomicFunction(
             "dihedral(p1, p2, p3, p4)",
             unit.radian,
-            np.array([[6, 8, 14, 16]]),
+            np.array([[4, 6, 8, 14]]),
             periodicBounds=np.array([-np.pi, np.pi]) * unit.radian,
             name="phi",
         ),
@@ -138,8 +138,8 @@ def test_numpy_arguments_round_trip(dipeptide):
 
 
 def test_one_shot_iterables_round_trip(dipeptide):
-    phi = cvpack.Torsion(6, 8, 14, 16, name="phi")
-    psi = cvpack.Torsion(8, 14, 16, 18, name="psi")
+    phi = cvpack.Torsion(4, 6, 8, 14, name="phi")
+    psi = cvpack.Torsion(6, 8, 14, 16, name="psi")
     meta = cvpack.MetaCollectiveVariable(
         "phi+psi", (cv for cv in [phi, psi]), unit.radian
     )

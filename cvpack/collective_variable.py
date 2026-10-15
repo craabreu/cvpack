@@ -224,7 +224,7 @@ class CollectiveVariable(Serializable):
         >>> from openmmtools import testsystems
         >>> model = testsystems.AlanineDipeptideExplicit()
         >>> top = model.mdtraj_topology
-        >>> backbone_atoms = top.select("name N C CA and resid 1 2")
+        >>> backbone_atoms = top.select("not water and name N CA C")
         >>> phi = cvpack.Torsion(*backbone_atoms[0:4])
         >>> psi = cvpack.Torsion(*backbone_atoms[1:5])
         >>> radius_of_gyration = cvpack.RadiusOfGyration(
@@ -237,7 +237,7 @@ class CollectiveVariable(Serializable):
         ... )
         >>> context.setPositions(model.positions)
         >>> phi.getValue(context)
-        3.1415... rad
+        -3.1415... rad
         >>> psi.getValue(context)
         3.1415... rad
         >>> radius_of_gyration.getValue(context)
@@ -302,7 +302,7 @@ class CollectiveVariable(Serializable):
         >>> from openmmtools import testsystems
         >>> model = testsystems.AlanineDipeptideExplicit()
         >>> top = model.mdtraj_topology
-        >>> backbone_atoms = top.select("name N C CA and resid 1 2")
+        >>> backbone_atoms = top.select("not water and name N CA C")
         >>> phi = cvpack.Torsion(*backbone_atoms[0:4])
         >>> psi = cvpack.Torsion(*backbone_atoms[1:5])
         >>> radius_of_gyration = cvpack.RadiusOfGyration(
@@ -315,9 +315,9 @@ class CollectiveVariable(Serializable):
         ... )
         >>> context.setPositions(model.positions)
         >>> phi.getEffectiveMass(context)
-        0.05119... nm**2 Da/(rad**2)
+        0.04795... nm**2 Da/(rad**2)
         >>> psi.getEffectiveMass(context)
-        0.05186... nm**2 Da/(rad**2)
+        0.05119... nm**2 Da/(rad**2)
         >>> radius_of_gyration.getEffectiveMass(context)
         30.946... Da
         """

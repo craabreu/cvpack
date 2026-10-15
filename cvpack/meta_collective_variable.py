@@ -83,7 +83,7 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
     >>> from openmm import unit
     >>> from openmmtools import testsystems
     >>> model = testsystems.AlanineDipeptideVacuum()
-    >>> phi = cvpack.Torsion(6, 8, 14, 16, name="phi")
+    >>> phi = cvpack.Torsion(4, 6, 8, 14, name="phi")
     >>> driving_force = cvpack.MetaCollectiveVariable(
     ...     f"0.5*kappa*min(delta,{2*math.pi}-delta)^2"
     ...     "; delta=abs(phi-phi0)",
@@ -104,11 +104,11 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
     >>> driving_force.getValue(context)
     548.3... kJ/mol
     >>> driving_force.getInnerValues(context)
-    {'phi': 3.14... rad}
+    {'phi': -3.14... rad}
     >>> driving_force.getInnerEffectiveMasses(context)
-    {'phi': 0.05119... nm**2 Da/(rad**2)}
+    {'phi': 0.04795... nm**2 Da/(rad**2)}
     >>> driving_force.getParameterDerivatives(context)
-    {'kappa': 0.548... rad**2, 'phi0': -1047.19... kJ/(mol rad)}
+    {'kappa': 0.548... rad**2, 'phi0': -1047.20... kJ/(mol rad)}
     """
 
     def __init__(

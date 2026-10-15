@@ -21,9 +21,9 @@ def dipeptide():
 
 
 def test_allow_reinitialization_restores_force_group(dipeptide):
-    shared = cvpack.Torsion(6, 8, 14, 16, name="shared")
+    shared = cvpack.Torsion(4, 6, 8, 14, name="shared")
     shared.addToSystem(dipeptide.system, setUnusedForceGroup=False)
-    alone = cvpack.Torsion(6, 8, 14, 16, name="alone")
+    alone = cvpack.Torsion(4, 6, 8, 14, name="alone")
     alone.addToSystem(dipeptide.system)
     context = make_context(dipeptide.system, dipeptide.positions)
     with pytest.raises(ValueError, match="reinitialization"):
@@ -37,7 +37,7 @@ def test_allow_reinitialization_restores_force_group(dipeptide):
 
 
 def test_set_unused_force_group_returns_group(dipeptide):
-    cv = cvpack.Torsion(6, 8, 14, 16)
+    cv = cvpack.Torsion(4, 6, 8, 14)
     group = cv._setUnusedForceGroup(dipeptide.system)
     assert group == cv.getForceGroup() == 1
 
@@ -53,10 +53,10 @@ def test_effective_mass_ignores_massless_particles():
 
 
 def test_inner_effective_masses_follow_current_positions(dipeptide):
-    phi = cvpack.Torsion(6, 8, 14, 16, name="phi")
+    phi = cvpack.Torsion(4, 6, 8, 14, name="phi")
     meta = cvpack.MetaCollectiveVariable("phi", [phi], unit.radian, name="meta")
     meta.addToSystem(dipeptide.system)
-    direct = cvpack.Torsion(6, 8, 14, 16, name="direct")
+    direct = cvpack.Torsion(4, 6, 8, 14, name="direct")
     direct.addToSystem(dipeptide.system)
     context = make_context(dipeptide.system, dipeptide.positions)
     for shift in (0.0, 0.05):
@@ -108,7 +108,7 @@ def test_reporter_accepts_duck_typed_writers_and_generators(dipeptide):
 
 
 def test_cv_writer_reports_current_values_between_timing_columns(dipeptide):
-    phi = cvpack.Torsion(6, 8, 14, 16, name="phi")
+    phi = cvpack.Torsion(4, 6, 8, 14, name="phi")
     phi.addToSystem(dipeptide.system)
     simulation = _simulation(dipeptide)
     stream = io.StringIO()
@@ -131,7 +131,7 @@ def test_cv_writer_reports_current_values_between_timing_columns(dipeptide):
 
 
 def test_cv_writer_allows_reinitialization(dipeptide):
-    phi = cvpack.Torsion(6, 8, 14, 16, name="phi")
+    phi = cvpack.Torsion(4, 6, 8, 14, name="phi")
     phi.addToSystem(dipeptide.system, setUnusedForceGroup=False)
     simulation = _simulation(dipeptide)
     writer = reporting.CVWriter(phi, value=True, emass=True, allowReinitialization=True)
@@ -144,14 +144,14 @@ def test_cv_writer_allows_reinitialization(dipeptide):
 
 
 def test_meta_cv_writer_rejects_unknown_names():
-    phi = cvpack.Torsion(6, 8, 14, 16, name="phi")
+    phi = cvpack.Torsion(4, 6, 8, 14, name="phi")
     meta = cvpack.MetaCollectiveVariable("phi", [phi], unit.radian)
     with pytest.raises(ValueError, match="chi"):
         reporting.MetaCVWriter(meta, values=["chi"])
 
 
 def test_meta_cv_writer_allows_reinitialization(dipeptide):
-    phi = cvpack.Torsion(6, 8, 14, 16, name="phi")
+    phi = cvpack.Torsion(4, 6, 8, 14, name="phi")
     meta = cvpack.MetaCollectiveVariable(
         "k*phi", [phi], unit.kilojoule_per_mole, k=1.0 * unit.kilojoule_per_mole
     )
