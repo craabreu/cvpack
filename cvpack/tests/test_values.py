@@ -272,3 +272,104 @@ def test_shortest_distance_with_large_beta(positions):
     value = _shortest_distance_value(positions, [0], [1, 2], beta=1000)
     expected = shortest_distance_reference(positions, [0], [1, 2], 1000, 1.0)
     assert value == pytest.approx(expected)
+
+
+def _attraction_strength(particles, positions, switching_distance=None):
+    nonbonded = openmm.NonbondedForce()
+    nonbonded.setNonbondedMethod(openmm.NonbondedForce.CutoffNonPeriodic)
+    nonbonded.setCutoffDistance(1.0)
+    if switching_distance is not None:
+        nonbonded.setUseSwitchingFunction(True)
+        nonbonded.setSwitchingDistance(switching_distance)
+    for charge, sigma, epsilon in particles:
+        nonbonded.addParticle(charge, sigma, epsilon)
+    cv = cvpack.AttractionStrength([0], list(range(1, len(particles))), nonbonded)
+    system = particle_system(len(particles))
+    cv.addToSystem(system)
+    return cv, make_context(system, positions)
+
+
+def test_attraction_strength_forces_with_zero_sigma():
+    # Older Amber force fields give sigma = epsilon = 0 to hydroxyl hydrogens
+    positions = np.array([[0, 0, 0], [0.3, 0, 0], [0, 0.5, 0]])
+    particles = [(0.4, 0.0, 0.0), (-0.4, 0.0, 0.0), (0.0, 0.3, 0.5)]
+    cv, context = _attraction_strength(particles, positions)
+    state = context.getState(getForces=True, groups={cv.getForceGroup()})
+    forces = state.getForces(asNumpy=True).value_in_unit(
+        unit.kilojoule_per_mole / unit.nanometer
+    )
+    assert np.all(np.isfinite(forces))
+    step = 1e-6
+    for k in range(3):
+        values = []
+        for sign in (1, -1):
+            displaced = positions.copy()
+            displaced[1, k] += sign * step
+            context.setPositions(displaced)
+            values.append(cv.getValue(context).value_in_unit(cv.getUnit()))
+        gradient = (values[0] - values[1]) / (2 * step)
+        assert -forces[1, k] == pytest.approx(gradient, rel=1e-5, abs=1e-6)
+
+
+def test_attraction_strength_switches_only_lennard_jones():
+    distance, cutoff, switching = 0.8, 1.0, 0.6
+    t = (distance - switching) / (cutoff - switching)
+    switch = 1 - 10 * t**3 + 15 * t**4 - 6 * t**5
+    positions = [[0, 0, 0], [distance, 0, 0]]
+    # Coulomb only: no switching, as in NonbondedForce
+    cv, context = _attraction_strength(
+        [(1.0, 0.3, 0.0), (-1.0, 0.3, 0.0)], positions, switching
+    )
+    x = distance / cutoff
+    coulomb = ONE_4PI_EPS0 / cutoff * (1 / x + (x**2 - 3) / 2)
+    value = cv.getValue(context).value_in_unit(cv.getUnit())
+    assert value == pytest.approx(coulomb)
+    # Lennard-Jones only: switched
+    cv, context = _attraction_strength(
+        [(0.0, 0.3, 1.0), (0.0, 0.3, 1.0)], positions, switching
+    )
+    y = abs((distance / 0.3) ** 6 - 2) + 2
+    lennard_jones = 4 * (1 / y**2 - 1 / y)
+    value = cv.getValue(context).value_in_unit(cv.getUnit())
+    assert value == pytest.approx(-lennard_jones * switch)
+
+
+def test_residue_coordination_excludes_deuterium():
+    topology = app.Topology()
+    chain = topology.addChain()
+    for _ in range(2):
+        residue = topology.addResidue("ALA", chain)
+        topology.addAtom("CA", app.element.carbon, residue)
+        topology.addAtom("D", app.element.deuterium, residue)
+    residues = list(topology.residues())
+    system = particle_system(4)
+    cv = cvpack.ResidueCoordination(
+        residues[:1],
+        residues[1:],
+        includeHydrogens=False,
+        weighByMass=False,
+        stepFunction="x",
+        thresholdDistance=1.0 * unit.nanometer,
+    )
+    cv.addToSystem(system)
+    context = make_context(system, [[0, 0, 0], [0.6, 0, 0], [1, 0, 0], [1, 0, 0]])
+    # Only the carbon atoms define the centroids, so S(x) = x = 1 nm / 1 nm. With the
+    # deuterium atoms, the centroids would be 0.7 nm apart.
+    assert cv.getValue(context).value_in_unit(cv.getUnit()) == pytest.approx(1.0)
+
+
+def test_rmsd_content_accepts_charmm_terminal_oxygen():
+    model = testsystems.LysozymeImplicit()
+    residues = [r for r in model.topology.residues() if 59 <= r.index <= 66]
+    reference = cvpack.HelixRMSDContent(residues, model.system.getNumParticles())
+    oxygen = next(atom for atom in residues[-1].atoms() if atom.name == "O")
+    oxygen.name = "OT1"
+    try:
+        renamed = cvpack.HelixRMSDContent(residues, model.system.getNumParticles())
+    finally:
+        oxygen.name = "O"
+    reference.addToSystem(model.system)
+    renamed.setName("renamed")
+    renamed.addToSystem(model.system)
+    context = make_context(model.system, model.positions)
+    assert renamed.getValue(context) == reference.getValue(context)

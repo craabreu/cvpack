@@ -178,6 +178,11 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
         :openmm:`CustomCompoundBondForce` class.
         """
         if isinstance(force, openmm.CustomExternalForce):
+            if "periodicdistance" in force.getEnergyFunction():
+                raise ValueError(
+                    "Converting a CustomExternalForce that uses periodicdistance is "
+                    "not supported"
+                )
             number, item, definition = 1, "Particle", "; x=x1; y=y1; z=z1"
         elif isinstance(force, openmm.CustomBondForce):
             number, item, definition = 2, "Bond", "; r=distance(p1, p2)"
@@ -330,7 +335,8 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
         TypeError
             If the force is not convertible to an :class:`AtomicFunction`
         ValueError
-            If the force uses tabulated functions
+            If the force uses tabulated functions, or if it is a
+            :OpenMM:`CustomExternalForce` that uses ``periodicdistance``
 
         Examples
         --------

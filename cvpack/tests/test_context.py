@@ -170,3 +170,21 @@ def test_meta_cv_writer_allows_reinitialization(dipeptide):
 
 def test_custom_writer_is_exported():
     assert isinstance(DuckWriter(), reporting.CustomWriter)
+
+
+def test_inner_effective_masses_with_virtual_sites():
+    system = particle_system(5)
+    for atom, mass in enumerate([12.0, 1.0, 16.0, 1.0, 0.0]):
+        system.setParticleMass(atom, mass)
+    system.setVirtualSite(4, openmm.TwoParticleAverageSite(0, 2, 0.3, 0.7))
+    meta = cvpack.MetaCollectiveVariable(
+        "2*d", [cvpack.Distance(3, 4, name="d")], unit.nanometer, name="meta"
+    )
+    meta.addToSystem(system)
+    direct = cvpack.Distance(3, 4, name="direct")
+    direct.addToSystem(system)
+    positions = [[0, 0, 0], [0.1, 0, 0], [0.12, 0.1, 0], [0.3, 0.2, 0.1], [0, 0, 0]]
+    context = make_context(system, positions)
+    inner = meta.getInnerEffectiveMasses(context)["d"]
+    expected = direct.getEffectiveMass(context)
+    assert inner / inner.unit == pytest.approx(expected / expected.unit)

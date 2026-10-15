@@ -103,6 +103,11 @@ class BaseRMSDContent(CollectiveVariable, openmm.CustomCVForce):
                     f"Atom HA3 or HA1 not found in residue {residue.name}{residue.id}"
                 )
             residue_atoms["CB"] = residue_atoms[hydrogen]
+        if "O" not in residue_atoms:
+            # A C-terminal residue has OT1 in CHARMM naming and OC1 in GROMACS naming
+            oxygen = next((o for o in ("OT1", "OC1") if o in residue_atoms), None)
+            if oxygen is not None:
+                residue_atoms["O"] = residue_atoms[oxygen]
         atom_list = []
         for atom in ("N", "CA", "CB", "C", "O"):
             try:

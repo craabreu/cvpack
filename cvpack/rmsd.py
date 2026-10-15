@@ -94,6 +94,9 @@ class RMSD(BaseRMSD, openmm.RMSDForce):
         name: str = "rmsd",
     ) -> None:
         group = list(map(int, group))
+        if not group:
+            # OpenMM's RMSDForce would interpret an empty group as all atoms
+            raise ValueError("The group of atoms must not be empty")
         if numAtoms is None and isinstance(referencePositions, dict):
             raise ValueError("numAtoms is required when referencePositions is a dict")
         num_atoms = numAtoms or len(referencePositions)

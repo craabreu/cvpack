@@ -20,6 +20,21 @@ from .utils import evaluate_in_context
 ONE_4PI_EPS0 = 138.93545764438198
 
 
+def _lennard_jones_switch(nonbondedForce: openmm.NonbondedForce, cutoff: float) -> str:
+    """
+    The factor and definitions that apply the switching function of a
+    NonbondedForce to a Lennard-Jones term, or an empty string if it uses none.
+    As in NonbondedForce, the switching function does not apply to electrostatics.
+    """
+    if not nonbondedForce.getUseSwitchingFunction():
+        return ""
+    rs = nonbondedForce.getSwitchingDistance().value_in_unit(mmunit.nanometers)
+    return (
+        f"*select(step(r - {rs}), 1 - t^3*(10 - t*(15 - 6*t)), 1)"
+        f"; t = (r - {rs})/{cutoff - rs}"
+    )
+
+
 class AttractionStrength(CollectiveVariable, openmm.CustomNonbondedForce):
     r"""
     The strength of the attraction between two atom groups:
@@ -60,9 +75,10 @@ class AttractionStrength(CollectiveVariable, openmm.CustomNonbondedForce):
 
         Groups :math:`{\bf g}_1` and :math:`{\bf g}_2` can overlap or even be the
         same, in which case the collective variable will measure the strength of
-        the self-attraction of :math:`{\bf g}_1`. On the other hand, the contrast
-        group :math:`{\bf g}_3` cannot overlap with either :math:`{\bf g}_1` or
-        :math:`{\bf g}_2`.
+        the self-attraction of :math:`{\bf g}_1`. Each pair of distinct atoms
+        contributes a single term, even if both atoms are in both groups. On the
+        other hand, the contrast group :math:`{\bf g}_3` cannot overlap with either
+        :math:`{\bf g}_1` or :math:`{\bf g}_2`.
 
     The function :math:`u_{\rm disp}(x)` is a Lennard-Jones-like reduced potential with
     a highly softened repulsion part, defined as
@@ -92,7 +108,9 @@ class AttractionStrength(CollectiveVariable, openmm.CustomNonbondedForce):
 
     The Lennard-Jones parameters, atomic charges, cutoff distance, boundary conditions,
     as well as whether to use a switching function and its corresponding switching
-    distance, are taken from the :openmm:`NonbondedForce` object.
+    distance, are taken from the :openmm:`NonbondedForce` object. As in
+    :openmm:`NonbondedForce`, the switching function applies only to the
+    Lennard-Jones term. Pairs with :math:`\sigma_{ij} = 0` have no Lennard-Jones term.
 
     .. note::
         Any non-exclusion exceptions involving an atom in :math:`{\bf g}_1` and an atom
@@ -147,22 +165,22 @@ class AttractionStrength(CollectiveVariable, openmm.CustomNonbondedForce):
     >>> context = openmm.Context(model.system, integrator, platform)
     >>> context.setPositions(model.positions)
     >>> cv1.getValue(context)
-    4912.5... dimensionless
+    4912.8... dimensionless
 
     >>> water = [a.index for a in model.topology.atoms() if a.residue.name == "HOH"]
     >>> cv2 = cvpack.AttractionStrength(guest, water, forces["NonbondedForce"])
     >>> cv2.addToSystem(model.system)
     >>> context.reinitialize(preserveState=True)
     >>> cv2.getValue(context)
-    2063.3... dimensionless
+    2090.2... dimensionless
 
     >>> cv3 = cvpack.AttractionStrength(guest, host, forces["NonbondedForce"], water)
     >>> cv3.addToSystem(model.system)
     >>> context.reinitialize(preserveState=True)
     >>> cv3.getValue(context)
-    2849.17... dimensionless
+    2822.63... dimensionless
     >>> print(cv1.getValue(context) - cv2.getValue(context))
-    2849.17... dimensionless
+    2822.63... dimensionless
 
     >>> cv4 = cvpack.AttractionStrength(
     ...     guest, host, forces["NonbondedForce"], water, contrastScaling=0.5
@@ -170,9 +188,9 @@ class AttractionStrength(CollectiveVariable, openmm.CustomNonbondedForce):
     >>> cv4.addToSystem(model.system)
     >>> context.reinitialize(preserveState=True)
     >>> cv4.getValue(context)
-    3880.8... dimensionless
+    3867.7... dimensionless
     >>> 1 * cv1.getValue(context) - 0.5 * cv2.getValue(context)
-    3880.8...
+    3867.7...
     """
 
     def __init__(
@@ -199,9 +217,12 @@ class AttractionStrength(CollectiveVariable, openmm.CustomNonbondedForce):
             if contrastScaling < 0:
                 raise ValueError("contrastScaling must be non-negative")
         cutoff = nonbondedForce.getCutoffDistance().value_in_unit(mmunit.nanometers)
+        # Pairs with sigma = 0 have no Lennard-Jones term, and select() keeps their
+        # NaN derivatives out of the forces
         expression = (
             f"-(lj + coul){'*sign1*sign2' if contrasting else ''}/ref"
-            "; lj = 4*epsilon*(1/y^2 - 1/y)"
+            "; lj = select(sigma, 4*epsilon*(1/y^2 - 1/y), 0)"
+            f"{_lennard_jones_switch(nonbondedForce, cutoff)}"
             f"; coul = {ONE_4PI_EPS0 / cutoff}*q1q2*(1/x + (x^2 - 3)/2)"
             f"; x = r/{cutoff}"
             "; y = abs((r/sigma)^6 - 2) + 2"
@@ -233,8 +254,7 @@ class AttractionStrength(CollectiveVariable, openmm.CustomNonbondedForce):
         for exception in range(nonbondedForce.getNumExceptions()):
             i, j, *_ = nonbondedForce.getExceptionParameters(exception)
             self.addExclusion(i, j)
-        self.setUseSwitchingFunction(nonbondedForce.getUseSwitchingFunction())
-        self.setSwitchingDistance(nonbondedForce.getSwitchingDistance())
+        self.setUseSwitchingFunction(False)
         self.setUseLongRangeCorrection(False)
         self.addInteractionGroup(group1, group2)
         if isinstance(reference, openmm.Context):
