@@ -263,7 +263,7 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
             "(k/2)*(angle(p1, p2, p3)-theta0)^2",
             unit,
             atoms,
-            (-np.pi, np.pi),
+            None,
             pbc,
             **parameters,
         )
@@ -290,7 +290,7 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
             "k*(1 + cos(periodicity*dihedral(p1, p2, p3, p4) - phase))",
             unit,
             atoms,
-            (-np.pi, np.pi),
+            None,
             pbc,
             **parameters,
         )

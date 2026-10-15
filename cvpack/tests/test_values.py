@@ -79,3 +79,20 @@ def test_shortest_distance_defaults_to_no_pbc():
     context = make_context(system, [[0, 0, 0], [1.9, 0, 0]])
     # No pair within the 1 nm cutoff, so the CV evaluates to the cutoff distance
     assert cv.getValue(context).value_in_unit(cv.getUnit()) == pytest.approx(1.0)
+
+
+def test_angle_is_not_periodic():
+    assert cvpack.Angle(0, 1, 2).getPeriodicBounds() is None
+
+
+@pytest.mark.parametrize(
+    "force_class", [openmm.HarmonicAngleForce, openmm.PeriodicTorsionForce]
+)
+def test_energy_cvs_from_openmm_forces_are_not_periodic(force_class):
+    force = force_class()
+    if force_class is openmm.HarmonicAngleForce:
+        force.addAngle(0, 1, 2, 1.9, 100.0)
+    else:
+        force.addTorsion(0, 1, 2, 3, 3, 0.0, 1.0)
+    cv = cvpack.AtomicFunction.fromOpenMMForce(force, unit.kilojoules_per_mole)
+    assert cv.getPeriodicBounds() is None
