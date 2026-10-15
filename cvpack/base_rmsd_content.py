@@ -94,7 +94,14 @@ class BaseRMSDContent(CollectiveVariable, openmm.CustomCVForce):
     def _getAtomList(residue: mmapp.topology.Residue) -> list[int]:
         residue_atoms = {atom.name: atom.index for atom in residue.atoms()}
         if residue.name == "GLY":
-            residue_atoms["CB"] = residue_atoms["HA2"]
+            # The hydrogen on the CB side is HA3 in PDB/Amber naming (HA2, HA3) and
+            # HA2 in CHARMM/GROMACS naming (HA1, HA2)
+            hydrogen = next((h for h in ("HA3", "HA2") if h in residue_atoms), None)
+            if hydrogen is None:
+                raise ValueError(
+                    f"Atom HA3 or HA2 not found in residue {residue.name}{residue.id}"
+                )
+            residue_atoms["CB"] = residue_atoms[hydrogen]
         atom_list = []
         for atom in ("N", "CA", "CB", "C", "O"):
             try:

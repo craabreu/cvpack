@@ -5,10 +5,12 @@ Regression tests for the values computed by cvpack collective variables.
 import numpy as np
 import openmm
 import pytest
-from openmm import unit
+from openmm import app, unit
+from openmmtools import testsystems
 
 import cvpack
 from cvpack.attraction_strength import ONE_4PI_EPS0
+from cvpack.base_rmsd_content import BaseRMSDContent
 from cvpack.tests.helpers import make_context, particle_system, single_atom_topology
 
 
@@ -96,3 +98,44 @@ def test_energy_cvs_from_openmm_forces_are_not_periodic(force_class):
         force.addTorsion(0, 1, 2, 3, 3, 0.0, 1.0)
     cv = cvpack.AtomicFunction.fromOpenMMForce(force, unit.kilojoules_per_mole)
     assert cv.getPeriodicBounds() is None
+
+
+def _chirality(positions, n, ca, c, x):
+    normal = np.cross(positions[n] - positions[ca], positions[c] - positions[ca])
+    return np.sign(np.dot(normal, positions[x] - positions[ca]))
+
+
+def test_pseudo_cb_has_the_same_chirality_as_cb():
+    model = testsystems.LysozymeImplicit()
+    positions = model.positions.value_in_unit(unit.nanometers)
+    amino_acids = [
+        r for r in model.topology.residues() if {"N", "CA"} <= {a.name for a in r.atoms()}
+    ]
+    for residue in amino_acids:
+        n, ca, cb, c, _ = BaseRMSDContent._getAtomList(residue)
+        assert _chirality(positions, n, ca, c, cb) == 1, residue
+
+
+def _glycine(hydrogen_names):
+    topology = app.Topology()
+    residue = topology.addResidue("GLY", topology.addChain())
+    for name in ["N", "CA", "C", "O", *hydrogen_names]:
+        element = app.element.hydrogen if name.startswith("H") else app.element.carbon
+        topology.addAtom(name, element, residue)
+    return residue, {atom.name: atom.index for atom in residue.atoms()}
+
+
+def test_glycine_charmm_naming_uses_ha2():
+    residue, index = _glycine(["HA1", "HA2"])
+    assert BaseRMSDContent._getAtomList(residue)[2] == index["HA2"]
+
+
+def test_glycine_pdb_naming_uses_ha3():
+    residue, index = _glycine(["HA2", "HA3"])
+    assert BaseRMSDContent._getAtomList(residue)[2] == index["HA3"]
+
+
+def test_glycine_without_hydrogens_raises_value_error():
+    residue, _ = _glycine([])
+    with pytest.raises(ValueError, match="GLY"):
+        BaseRMSDContent._getAtomList(residue)

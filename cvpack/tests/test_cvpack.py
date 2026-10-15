@@ -541,7 +541,7 @@ def test_helix_rmsd_content(normalize: bool):
         for residue in residues[stard:end]:
             residue_atoms = {atom.name: atom.index for atom in residue.atoms()}
             if residue.name == "GLY":
-                residue_atoms["CB"] = residue_atoms["HA2"]
+                residue_atoms["CB"] = residue_atoms["HA3"]
             atoms += tuple(residue_atoms[name] for name in ["N", "CA", "CB", "C", "O"])
         return atoms
 
