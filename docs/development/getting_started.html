@@ -90,20 +90,21 @@ rounded to seven decimal places, and printed to the screen:</p>
     <span class="n">cvpack</span><span class="o">.</span><span class="n">HelixTorsionContent</span><span class="p">(</span><span class="n">residues</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
 <span class="p">]</span>
 <span class="k">for</span> <span class="n">cv</span> <span class="ow">in</span> <span class="n">helix_content</span><span class="p">:</span>
-    <span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">addForce</span><span class="p">(</span><span class="n">cv</span><span class="p">)</span>
+    <span class="n">cv</span><span class="o">.</span><span class="n">addToSystem</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">)</span>
 <span class="n">platform</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Platform</span><span class="o">.</span><span class="n">getPlatformByName</span><span class="p">(</span><span class="s1">'Reference'</span><span class="p">)</span>
 <span class="n">integrator</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">VerletIntegrator</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">femtoseconds</span><span class="p">)</span>
 <span class="n">context</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Context</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">,</span> <span class="n">integrator</span><span class="p">,</span> <span class="n">platform</span><span class="p">)</span>
 <span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">cv</span> <span class="ow">in</span> <span class="n">helix_content</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">cv</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">cv</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span> <span class="o">/</span> <span class="n">cv</span><span class="o">.</span><span class="n">getUnit</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">cv</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.7f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The output should be:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">HelixAngleContent</span><span class="p">:</span> <span class="mf">0.9873989</span> <span class="n">dimensionless</span>
-<span class="n">HelixHBondContent</span><span class="p">:</span> <span class="mf">0.93414</span> <span class="n">dimensionless</span>
-<span class="n">HelixRMSDContent</span><span class="p">:</span> <span class="mf">0.9946999</span> <span class="n">dimensionless</span>
-<span class="n">HelixTorsionContent</span><span class="p">:</span> <span class="mf">0.918571</span> <span class="n">dimensionless</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">HelixAngleContent</span><span class="p">:</span> <span class="mf">0.9873989</span>
+<span class="n">HelixHBondContent</span><span class="p">:</span> <span class="mf">0.9341400</span>
+<span class="n">HelixRMSDContent</span><span class="p">:</span> <span class="mf">0.9992768</span>
+<span class="n">HelixTorsionContent</span><span class="p">:</span> <span class="mf">0.9185710</span>
 </pre></div>
 </div>
 <p>The output shows that the normalized helix content of residues LYS60-ARG80 of the T4 lysozyme L99A

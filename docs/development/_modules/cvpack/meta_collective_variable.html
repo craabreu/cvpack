@@ -122,7 +122,7 @@
 <span class="sd">    &gt;&gt;&gt; from openmm import unit</span>
 <span class="sd">    &gt;&gt;&gt; from openmmtools import testsystems</span>
 <span class="sd">    &gt;&gt;&gt; model = testsystems.AlanineDipeptideVacuum()</span>
-<span class="sd">    &gt;&gt;&gt; phi = cvpack.Torsion(6, 8, 14, 16, name="phi")</span>
+<span class="sd">    &gt;&gt;&gt; phi = cvpack.Torsion(4, 6, 8, 14, name="phi")</span>
 <span class="sd">    &gt;&gt;&gt; driving_force = cvpack.MetaCollectiveVariable(</span>
 <span class="sd">    ...     f"0.5*kappa*min(delta,{2*math.pi}-delta)^2"</span>
 <span class="sd">    ...     "; delta=abs(phi-phi0)",</span>
@@ -143,11 +143,11 @@
 <span class="sd">    &gt;&gt;&gt; driving_force.getValue(context)</span>
 <span class="sd">    548.3... kJ/mol</span>
 <span class="sd">    &gt;&gt;&gt; driving_force.getInnerValues(context)</span>
-<span class="sd">    {'phi': 3.14... rad}</span>
+<span class="sd">    {'phi': -3.14... rad}</span>
 <span class="sd">    &gt;&gt;&gt; driving_force.getInnerEffectiveMasses(context)</span>
-<span class="sd">    {'phi': 0.05119... nm**2 Da/(rad**2)}</span>
+<span class="sd">    {'phi': 0.04795... nm**2 Da/(rad**2)}</span>
 <span class="sd">    &gt;&gt;&gt; driving_force.getParameterDerivatives(context)</span>
-<span class="sd">    {'kappa': 0.548... rad**2, 'phi0': -1047.19... kJ/(mol rad)}</span>
+<span class="sd">    {'kappa': 0.548... rad**2, 'phi0': -1047.20... kJ/(mol rad)}</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>

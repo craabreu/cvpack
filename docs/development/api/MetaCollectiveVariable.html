@@ -95,7 +95,7 @@ OpenMM’s MD unit system to serve as default values for the context parameters.
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">openmm</span><span class="w"> </span><span class="kn">import</span> <span class="n">unit</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">openmmtools</span><span class="w"> </span><span class="kn">import</span> <span class="n">testsystems</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">testsystems</span><span class="o">.</span><span class="n">AlanineDipeptideVacuum</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">Torsion</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"phi"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">Torsion</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"phi"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">driving_force</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">MetaCollectiveVariable</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="sa">f</span><span class="s2">"0.5*kappa*min(delta,</span><span class="si">{</span><span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="si">}</span><span class="s2">-delta)^2"</span>
 <span class="gp">... </span>    <span class="s2">"; delta=abs(phi-phi0)"</span><span class="p">,</span>
@@ -116,11 +116,11 @@ OpenMM’s MD unit system to serve as default values for the context parameters.
 <span class="gp">&gt;&gt;&gt; </span><span class="n">driving_force</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 <span class="go">548.3... kJ/mol</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">driving_force</span><span class="o">.</span><span class="n">getInnerValues</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<span class="go">{'phi': 3.14... rad}</span>
+<span class="go">{'phi': -3.14... rad}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">driving_force</span><span class="o">.</span><span class="n">getInnerEffectiveMasses</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<span class="go">{'phi': 0.05119... nm**2 Da/(rad**2)}</span>
+<span class="go">{'phi': 0.04795... nm**2 Da/(rad**2)}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">driving_force</span><span class="o">.</span><span class="n">getParameterDerivatives</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<span class="go">{'kappa': 0.548... rad**2, 'phi0': -1047.19... kJ/(mol rad)}</span>
+<span class="go">{'kappa': 0.548... rad**2, 'phi0': -1047.20... kJ/(mol rad)}</span>
 </pre></div>
 </div>
 <p class="rubric">Methods</p>
@@ -183,7 +183,7 @@ angles and the radius of gyration of an alanine dipeptide molecule in water:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">openmmtools</span><span class="w"> </span><span class="kn">import</span> <span class="n">testsystems</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">testsystems</span><span class="o">.</span><span class="n">AlanineDipeptideExplicit</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">top</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">mdtraj_topology</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">backbone_atoms</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"name N C CA and resid 1 2"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">backbone_atoms</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"not water and name N CA C"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">Torsion</span><span class="p">(</span><span class="o">*</span><span class="n">backbone_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">psi</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">Torsion</span><span class="p">(</span><span class="o">*</span><span class="n">backbone_atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">radius_of_gyration</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">RadiusOfGyration</span><span class="p">(</span>
@@ -196,9 +196,9 @@ angles and the radius of gyration of an alanine dipeptide molecule in water:</p>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span><span class="o">.</span><span class="n">getEffectiveMass</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<span class="go">0.05119... nm**2 Da/(rad**2)</span>
+<span class="go">0.04795... nm**2 Da/(rad**2)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">psi</span><span class="o">.</span><span class="n">getEffectiveMass</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<span class="go">0.05186... nm**2 Da/(rad**2)</span>
+<span class="go">0.05119... nm**2 Da/(rad**2)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">radius_of_gyration</span><span class="o">.</span><span class="n">getEffectiveMass</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 <span class="go">30.946... Da</span>
 </pre></div>
@@ -392,7 +392,7 @@ the radius of gyration of an alanine dipeptide molecule in water:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">openmmtools</span><span class="w"> </span><span class="kn">import</span> <span class="n">testsystems</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">testsystems</span><span class="o">.</span><span class="n">AlanineDipeptideExplicit</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">top</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">mdtraj_topology</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">backbone_atoms</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"name N C CA and resid 1 2"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">backbone_atoms</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"not water and name N CA C"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">Torsion</span><span class="p">(</span><span class="o">*</span><span class="n">backbone_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">psi</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">Torsion</span><span class="p">(</span><span class="o">*</span><span class="n">backbone_atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">radius_of_gyration</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">RadiusOfGyration</span><span class="p">(</span>
@@ -405,7 +405,7 @@ the radius of gyration of an alanine dipeptide molecule in water:</p>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<span class="go">3.1415... rad</span>
+<span class="go">-3.1415... rad</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">psi</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 <span class="go">3.1415... rad</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">radius_of_gyration</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>

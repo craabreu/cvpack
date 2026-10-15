@@ -306,7 +306,7 @@
     <p class="pln"><span class="n"><a id="t224" href="#t224">224</a></span><span class="t"><span class="str">        &gt;&gt;&gt; from openmmtools import testsystems</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t225" href="#t225">225</a></span><span class="t"><span class="str">        &gt;&gt;&gt; model = testsystems.AlanineDipeptideExplicit()</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t226" href="#t226">226</a></span><span class="t"><span class="str">        &gt;&gt;&gt; top = model.mdtraj_topology</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t227" href="#t227">227</a></span><span class="t"><span class="str">        &gt;&gt;&gt; backbone_atoms = top.select(&quot;name N C CA and resid 1 2&quot;)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t227" href="#t227">227</a></span><span class="t"><span class="str">        &gt;&gt;&gt; backbone_atoms = top.select(&quot;not water and name N CA C&quot;)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t228" href="#t228">228</a></span><span class="t"><span class="str">        &gt;&gt;&gt; phi = cvpack.Torsion(*backbone_atoms[0:4])</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t229" href="#t229">229</a></span><span class="t"><span class="str">        &gt;&gt;&gt; psi = cvpack.Torsion(*backbone_atoms[1:5])</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t230" href="#t230">230</a></span><span class="t"><span class="str">        &gt;&gt;&gt; radius_of_gyration = cvpack.RadiusOfGyration(</span>&nbsp;</span><span class="r"></span></p>
@@ -319,7 +319,7 @@
     <p class="pln"><span class="n"><a id="t237" href="#t237">237</a></span><span class="t"><span class="str">        ... )</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t238" href="#t238">238</a></span><span class="t"><span class="str">        &gt;&gt;&gt; context.setPositions(model.positions)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t239" href="#t239">239</a></span><span class="t"><span class="str">        &gt;&gt;&gt; phi.getValue(context)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t240" href="#t240">240</a></span><span class="t"><span class="str">        3.1415... rad</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t240" href="#t240">240</a></span><span class="t"><span class="str">        -3.1415... rad</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t241" href="#t241">241</a></span><span class="t"><span class="str">        &gt;&gt;&gt; psi.getValue(context)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t242" href="#t242">242</a></span><span class="t"><span class="str">        3.1415... rad</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t243" href="#t243">243</a></span><span class="t"><span class="str">        &gt;&gt;&gt; radius_of_gyration.getValue(context)</span>&nbsp;</span><span class="r"></span></p>
@@ -384,7 +384,7 @@
     <p class="pln"><span class="n"><a id="t302" href="#t302">302</a></span><span class="t"><span class="str">        &gt;&gt;&gt; from openmmtools import testsystems</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t303" href="#t303">303</a></span><span class="t"><span class="str">        &gt;&gt;&gt; model = testsystems.AlanineDipeptideExplicit()</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t304" href="#t304">304</a></span><span class="t"><span class="str">        &gt;&gt;&gt; top = model.mdtraj_topology</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t305" href="#t305">305</a></span><span class="t"><span class="str">        &gt;&gt;&gt; backbone_atoms = top.select(&quot;name N C CA and resid 1 2&quot;)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t305" href="#t305">305</a></span><span class="t"><span class="str">        &gt;&gt;&gt; backbone_atoms = top.select(&quot;not water and name N CA C&quot;)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t306" href="#t306">306</a></span><span class="t"><span class="str">        &gt;&gt;&gt; phi = cvpack.Torsion(*backbone_atoms[0:4])</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t307" href="#t307">307</a></span><span class="t"><span class="str">        &gt;&gt;&gt; psi = cvpack.Torsion(*backbone_atoms[1:5])</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t308" href="#t308">308</a></span><span class="t"><span class="str">        &gt;&gt;&gt; radius_of_gyration = cvpack.RadiusOfGyration(</span>&nbsp;</span><span class="r"></span></p>
@@ -397,9 +397,9 @@
     <p class="pln"><span class="n"><a id="t315" href="#t315">315</a></span><span class="t"><span class="str">        ... )</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t316" href="#t316">316</a></span><span class="t"><span class="str">        &gt;&gt;&gt; context.setPositions(model.positions)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t317" href="#t317">317</a></span><span class="t"><span class="str">        &gt;&gt;&gt; phi.getEffectiveMass(context)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t318" href="#t318">318</a></span><span class="t"><span class="str">        0.05119... nm**2 Da/(rad**2)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t318" href="#t318">318</a></span><span class="t"><span class="str">        0.04795... nm**2 Da/(rad**2)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t319" href="#t319">319</a></span><span class="t"><span class="str">        &gt;&gt;&gt; psi.getEffectiveMass(context)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t320" href="#t320">320</a></span><span class="t"><span class="str">        0.05186... nm**2 Da/(rad**2)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t320" href="#t320">320</a></span><span class="t"><span class="str">        0.05119... nm**2 Da/(rad**2)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t321" href="#t321">321</a></span><span class="t"><span class="str">        &gt;&gt;&gt; radius_of_gyration.getEffectiveMass(context)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t322" href="#t322">322</a></span><span class="t"><span class="str">        30.946... Da</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t323" href="#t323">323</a></span><span class="t"><span class="str">        &quot;&quot;&quot;</span>&nbsp;</span><span class="r"></span></p>

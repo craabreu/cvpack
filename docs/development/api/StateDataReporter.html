@@ -89,8 +89,8 @@ constructor.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sys</span><span class="w"> </span><span class="kn">import</span> <span class="n">stdout</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">openmmtools</span><span class="w"> </span><span class="kn">import</span> <span class="n">testsystems</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">testsystems</span><span class="o">.</span><span class="n">AlanineDipeptideVacuum</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">Torsion</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"phi"</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">psi</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">Torsion</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"psi"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">Torsion</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"phi"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">psi</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">Torsion</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"psi"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">umbrella</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">MetaCollectiveVariable</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="sa">f</span><span class="s2">"0.5*kappa*(min(dphi,</span><span class="si">{</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="si">}</span><span class="s2">-dphi)^2+min(dpsi,</span><span class="si">{</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="si">}</span><span class="s2">-dpsi)^2)"</span>
 <span class="gp">... </span>    <span class="s2">"; dphi=abs(phi-phi0); dpsi=abs(psi-psi0)"</span><span class="p">,</span>
@@ -129,16 +129,16 @@ constructor.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">simulation</span><span class="o">.</span><span class="n">reporters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reporter</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">simulation</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
 <span class="go">#"Step","umbrella (kJ/mol)",...,"d[umbrella]/d[psi0] (kJ/(mol rad))"</span>
-<span class="go">100,11.26...,40.371...</span>
-<span class="go">200,7.463...,27.910...</span>
-<span class="go">300,2.558...,-12.74...</span>
-<span class="go">400,6.199...,3.9768...</span>
-<span class="go">500,8.827...,41.878...</span>
-<span class="go">600,3.761...,25.262...</span>
-<span class="go">700,3.388...,25.342...</span>
-<span class="go">800,1.071...,11.349...</span>
-<span class="go">900,8.586...,37.380...</span>
-<span class="go">1000,5.84...,31.159...</span>
+<span class="go">100,2.2775...,-20.519...</span>
+<span class="go">200,3.0913...,0.7804...</span>
+<span class="go">300,25.466...,49.272...</span>
+<span class="go">400,2.5009...,-10.012...</span>
+<span class="go">500,1.3608...,-8.9529...</span>
+<span class="go">600,2.9577...,23.049...</span>
+<span class="go">700,8.1081...,25.068...</span>
+<span class="go">800,0.3278...,-0.4481...</span>
+<span class="go">900,1.2975...,9.5528...</span>
+<span class="go">1000,3.6413...,21.986...</span>
 </pre></div>
 </div>
 </dd></dl>

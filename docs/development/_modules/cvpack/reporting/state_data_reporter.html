@@ -111,8 +111,8 @@
 <span class="sd">    &gt;&gt;&gt; from sys import stdout</span>
 <span class="sd">    &gt;&gt;&gt; from openmmtools import testsystems</span>
 <span class="sd">    &gt;&gt;&gt; model = testsystems.AlanineDipeptideVacuum()</span>
-<span class="sd">    &gt;&gt;&gt; phi = cvpack.Torsion(6, 8, 14, 16, name="phi")</span>
-<span class="sd">    &gt;&gt;&gt; psi = cvpack.Torsion(8, 14, 16, 18, name="psi")</span>
+<span class="sd">    &gt;&gt;&gt; phi = cvpack.Torsion(4, 6, 8, 14, name="phi")</span>
+<span class="sd">    &gt;&gt;&gt; psi = cvpack.Torsion(6, 8, 14, 16, name="psi")</span>
 <span class="sd">    &gt;&gt;&gt; umbrella = cvpack.MetaCollectiveVariable(</span>
 <span class="sd">    ...     f"0.5*kappa*(min(dphi,{2*pi}-dphi)^2+min(dpsi,{2*pi}-dpsi)^2)"</span>
 <span class="sd">    ...     "; dphi=abs(phi-phi0); dpsi=abs(psi-psi0)",</span>
@@ -151,16 +151,16 @@
 <span class="sd">    &gt;&gt;&gt; simulation.reporters.append(reporter)</span>
 <span class="sd">    &gt;&gt;&gt; simulation.step(1000)  # doctest: +SKIP</span>
 <span class="sd">    #"Step","umbrella (kJ/mol)",...,"d[umbrella]/d[psi0] (kJ/(mol rad))"</span>
-<span class="sd">    100,11.26...,40.371...</span>
-<span class="sd">    200,7.463...,27.910...</span>
-<span class="sd">    300,2.558...,-12.74...</span>
-<span class="sd">    400,6.199...,3.9768...</span>
-<span class="sd">    500,8.827...,41.878...</span>
-<span class="sd">    600,3.761...,25.262...</span>
-<span class="sd">    700,3.388...,25.342...</span>
-<span class="sd">    800,1.071...,11.349...</span>
-<span class="sd">    900,8.586...,37.380...</span>
-<span class="sd">    1000,5.84...,31.159...</span>
+<span class="sd">    100,2.2775...,-20.519...</span>
+<span class="sd">    200,3.0913...,0.7804...</span>
+<span class="sd">    300,25.466...,49.272...</span>
+<span class="sd">    400,2.5009...,-10.012...</span>
+<span class="sd">    500,1.3608...,-8.9529...</span>
+<span class="sd">    600,2.9577...,23.049...</span>
+<span class="sd">    700,8.1081...,25.068...</span>
+<span class="sd">    800,0.3278...,-0.4481...</span>
+<span class="sd">    900,1.2975...,9.5528...</span>
+<span class="sd">    1000,3.6413...,21.986...</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
