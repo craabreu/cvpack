@@ -14,18 +14,38 @@ from openmm import unit as mmunit
 from .base_rmsd import BaseRMSD
 from .units import MatrixQuantity, VectorQuantity
 
+# Earlier versions compute wrong forces for groups of different sizes
+MIN_OPENMM_CPP_FORCES_VERSION = (0, 2, 0)
 
-class _Stub:
-    def __init__(self, _):
-        raise ImportError(
-            "CompositeRMSD requires the mdtools::openmm-cpp-forces conda package"
+
+def _stub(message: str) -> type:
+    class Stub:
+        def __init__(self, *_):
+            raise ImportError(message)
+
+    return Stub
+
+
+def _get_force_class() -> type:
+    """Return CompositeRMSDForce, or a stub that raises an informative ImportError."""
+    requirement = "openmm-cpp-forces 0.2.0 or later (mdtools conda channel or PyPI)"
+    try:
+        import openmmcppforces  # noqa: PLC0415
+    except ImportError:
+        return _stub(f"CompositeRMSD requires {requirement}")
+    version = getattr(openmmcppforces, "__version__", None)
+    numbers = tuple(
+        int(part) for part in (version or "").split(".")[:3] if part.isdigit()
+    )
+    if numbers < MIN_OPENMM_CPP_FORCES_VERSION:
+        return _stub(
+            f"CompositeRMSD requires {requirement}, because earlier versions compute "
+            f"wrong forces, but version {version or 'unknown'} is installed"
         )
+    return openmmcppforces.CompositeRMSDForce
 
 
-try:
-    from openmmcppforces import CompositeRMSDForce
-except ImportError:
-    CompositeRMSDForce = _Stub
+CompositeRMSDForce = _get_force_class()
 
 
 class CompositeRMSD(BaseRMSD, CompositeRMSDForce):
@@ -60,7 +80,8 @@ class CompositeRMSD(BaseRMSD, CompositeRMSDForce):
 
     .. warning::
 
-        To use this class, you must install the `openmm-cpp-forces`_ conda package.
+        To use this class, you must install the `openmm-cpp-forces`_ package,
+        version 0.2.0 or later.
 
     .. _openmm-cpp-forces: https://anaconda.org/mdtools/openmm-cpp-forces
 
@@ -83,7 +104,8 @@ class CompositeRMSD(BaseRMSD, CompositeRMSDForce):
     Raises
     ------
     ImportError
-        If the `openmm-cpp-forces`_ conda package is not installed.
+        If the `openmm-cpp-forces`_ package (version 0.2.0 or later) is not
+        installed.
     ValueError
         If ``groups`` is not a sequence of disjoint atom groups.
     ValueError

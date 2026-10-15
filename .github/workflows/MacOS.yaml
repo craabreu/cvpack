@@ -49,6 +49,8 @@ jobs:
         # conda setup requires this special shell
         shell: bash -l {0}
         run: |
+          # Needed by CompositeRMSD. Versions before 0.2.0 give wrong forces.
+          micromamba install -y -c mdtools "openmm-cpp-forces>=0.2"
           python -m pip install . --no-deps
           micromamba list
 

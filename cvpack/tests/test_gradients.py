@@ -189,13 +189,6 @@ def test_attraction_strength_forces():
     )
 
 
-# Strict, so that this test fails as a reminder to remove the marker once a fixed
-# openmm-cpp-forces package is released.
-@pytest.mark.xfail(
-    strict=True,
-    reason="openmm-cpp-forces scales the forces of each group by 1/n_j instead of 1/n "
-    "(https://github.com/craabreu/openmm-cpp-forces/pull/22)",
-)
 def test_composite_rmsd_forces(dipeptide):
     model, positions = dipeptide
     try:
