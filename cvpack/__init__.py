@@ -4,7 +4,11 @@
     :synopsis: Collective Variables for Molecular Dynamics Simulations with OpenMM
 """
 
-from ._version import __version__  # noqa: F401
+try:
+    from ._version import __version__  # noqa: F401
+except ImportError:  # source tree that was never built or installed
+    __version__ = "0+unknown"
+
 from .angle import Angle  # noqa: F401
 from .atomic_function import AtomicFunction  # noqa: F401
 from .attraction_strength import AttractionStrength  # noqa: F401
