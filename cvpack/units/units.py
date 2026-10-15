@@ -8,6 +8,8 @@
 """
 
 import ast
+import functools
+import operator
 import typing as t
 from numbers import Real
 
@@ -35,7 +37,68 @@ def _to_builtin(value: t.Any) -> t.Any:
     return value
 
 
-class Unit(mmunit.Unit, Serializable, ast.NodeTransformer):
+_UNIT_OPERATORS = {
+    ast.Mult: operator.mul,
+    ast.Div: operator.truediv,
+    ast.Pow: operator.pow,
+}
+
+
+@functools.cache
+def _unit_names() -> dict[t.Any, str]:
+    """Map each OpenMM base or scaled unit to an ``openmm.unit`` attribute name."""
+    names = {}
+    for attribute in dir(mmunit):
+        value = getattr(mmunit, attribute)
+        if isinstance(value, mmunit.Unit):
+            components = list(value.iter_base_or_scaled_units())
+            if len(components) == 1 and components[0][1] == 1:
+                names.setdefault(components[0][0], attribute)
+    return names
+
+
+def _evaluate_unit_node(node: ast.AST) -> t.Any:  # noqa: PLR0911
+    """Evaluate a parsed unit expression, allowing only unit names and arithmetic."""
+    if isinstance(node, ast.Expression):
+        return _evaluate_unit_node(node.body)
+    if isinstance(node, ast.Name):
+        value = getattr(mmunit, node.id, None)
+        if isinstance(value, mmunit.Unit):
+            return value
+        raise ValueError(f"Unknown unit: {node.id}")
+    if isinstance(node, ast.Constant) and type(node.value) in (int, float):
+        return node.value
+    if isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.USub | ast.UAdd):
+        operand = _evaluate_unit_node(node.operand)
+        if isinstance(operand, int | float):
+            return -operand if isinstance(node.op, ast.USub) else operand
+    if isinstance(node, ast.BinOp) and type(node.op) in _UNIT_OPERATORS:
+        left = _evaluate_unit_node(node.left)
+        right = _evaluate_unit_node(node.right)
+        if isinstance(node.op, ast.Pow) and not (
+            isinstance(left, mmunit.Unit) and isinstance(right, int | float)
+        ):
+            raise ValueError("Only units can be raised to numeric powers")
+        return _UNIT_OPERATORS[type(node.op)](left, right)
+    raise ValueError(f"Invalid unit expression: {ast.unparse(node)}")
+
+
+def _parse_unit(expression: str) -> mmunit.Unit:
+    """Safely parse a unit expression such as ``kilojoule/(mole*radian**2)``."""
+    text = f"1{expression}" if expression.startswith("/") else expression
+    try:
+        tree = ast.parse(text, mode="eval")
+    except SyntaxError as error:
+        raise ValueError(f"Invalid unit expression: {expression}") from error
+    result = _evaluate_unit_node(tree)
+    if mmunit.is_quantity(result) and result.value_in_unit(result.unit) == 1:
+        result = result.unit
+    if not isinstance(result, mmunit.Unit):
+        raise ValueError(f"Invalid unit expression: {expression}")
+    return result
+
+
+class Unit(mmunit.Unit, Serializable):
     """
     Extension of the OpenMM Unit class to allow serialization and deserialization.
 
@@ -47,9 +110,7 @@ class Unit(mmunit.Unit, Serializable, ast.NodeTransformer):
 
     def __init__(self, data: str | mmunit.Unit | dict) -> None:
         if isinstance(data, str):
-            expression = self.visit(ast.parse(data, mode="eval"))
-            code = compile(ast.fix_missing_locations(expression), "", mode="eval")
-            data = eval(code)
+            data = _parse_unit(data)
         if isinstance(data, mmunit.Unit):
             data = dict(data.iter_base_or_scaled_units())
         super().__init__(data)
@@ -58,23 +119,18 @@ class Unit(mmunit.Unit, Serializable, ast.NodeTransformer):
         return self.get_symbol()
 
     def __getstate__(self) -> dict[str, str]:
-        return {"data": str(self)}
+        names = _unit_names()
+        factors = []
+        for component, exponent in self.iter_base_or_scaled_units():
+            if component not in names:
+                return {"data": str(self)}
+            power = int(exponent) if float(exponent).is_integer() else exponent
+            name = names[component]
+            factors.append(name if power == 1 else f"{name}**{power}")
+        return {"data": "*".join(factors) or "dimensionless"}
 
     def __setstate__(self, keywords: dict[str, str]) -> None:
         self.__init__(keywords["data"])
-
-    def visit_Name(self, node: ast.Name) -> ast.Attribute:
-        """
-        Visit a Name node and transform it into an Attribute node.
-
-        Parameters
-        ----------
-        node
-            The node to be visited and transformed.
-        """
-        return ast.Attribute(
-            value=ast.Name(id="mmunit", ctx=ast.Load()), attr=node.id, ctx=ast.Load()
-        )
 
 
 Unit.registerTag("!cvpack.Unit")
@@ -95,7 +151,10 @@ class Quantity(mmunit.Quantity, Serializable):
         return str(self)
 
     def __getstate__(self) -> dict[str, t.Any]:
-        return {"value": _to_builtin(self._value), "unit": str(self.unit)}
+        return {
+            "value": _to_builtin(self._value),
+            "unit": Unit(self.unit).__getstate__()["data"],
+        }
 
     def __setstate__(self, keywords: dict[str, t.Any]) -> None:
         self.__init__(keywords["value"], Unit(keywords["unit"]))

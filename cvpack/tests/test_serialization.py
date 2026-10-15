@@ -16,6 +16,7 @@ from openmmtools import testsystems
 import cvpack
 from cvpack.serialization import SerializableAtom
 from cvpack.tests.helpers import make_context
+from cvpack.units import Unit
 from cvpack.utils import preprocess_args
 
 
@@ -184,3 +185,56 @@ def test_serializable_atom_without_element():
     atom = SerializableAtom(next(topology.atoms()))
     assert atom.element is None
     assert yaml.safe_load(yaml.safe_dump(atom)).element is None
+
+
+@pytest.mark.parametrize(
+    "mm_unit",
+    [
+        unit.elementary_charge,
+        unit.year,
+        unit.picosecond**-1,
+        unit.kilojoule_per_mole / unit.radian**2,
+        unit.nanometer**2 * unit.dalton / unit.radian**2,
+        unit.dimensionless,
+        unit.angstrom,
+    ],
+)
+def test_unit_round_trip(mm_unit):
+    loaded = yaml.safe_load(yaml.safe_dump(Unit(mm_unit)))
+    assert isinstance(loaded, Unit)
+    assert (1 * loaded) / mm_unit == pytest.approx(1.0)
+
+
+@pytest.mark.parametrize(
+    "text, expected",
+    [
+        (
+            "nanometer**2*dalton/(radian**2)",
+            unit.nanometer**2 * unit.dalton / unit.radian**2,
+        ),
+        ("kilojoule/(mole*radian**2)", unit.kilojoule_per_mole / unit.radian**2),
+        ("/picosecond", unit.picosecond**-1),
+        ("dimensionless", unit.dimensionless),
+    ],
+)
+def test_legacy_unit_strings_still_load(text, expected):
+    assert (1 * Unit(text)) / expected == pytest.approx(1.0)
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "nanometer.__class__",
+        "__import__('os')",
+        "nanometer.__class__.__init__.__globals__['__builtins__']['print']('x')"
+        " or nanometer",
+        "not_a_unit",
+        "9**9**9",
+        "2*nanometer",
+    ],
+)
+def test_unit_rejects_unsafe_or_invalid_expressions(text):
+    with pytest.raises(ValueError):
+        Unit(text)
+    with pytest.raises(ValueError):
+        yaml.safe_load(f'!cvpack.Unit {{data: "{text}"}}')
