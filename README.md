@@ -111,6 +111,13 @@ Documentation
 The documentation of the [latest release](https://craabreu.github.io/cvpack/latest) and of the
 [development version](https://craabreu.github.io/cvpack/development) is available on GitHub Pages.
 
+Related Packages
+----------------
+
+[OpenMM-Colvars] adds the [Colvars] library to OpenMM through a C++ `Force` with Python bindings.
+Colvars has its own set of CVs and enhanced-sampling methods, and it is also available in NAMD,
+LAMMPS, GROMACS, VMD and Tinker-HP.
+
 Copyright
 ---------
 
@@ -123,10 +130,12 @@ Initial project based on the [CMS Cookiecutter] version 1.1.
 
 [BiasVariable]:      https://docs.openmm.org/latest/api-python/generated/openmm.app.metadynamics.BiasVariable.html
 [CMS Cookiecutter]:  https://github.com/molssi/cookiecutter-cms
+[Colvars]:           https://github.com/Colvars/colvars
 [CustomCVForce]:     https://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomCVForce.html
 [Force]:             https://docs.openmm.org/latest/api-python/generated/openmm.openmm.Force.html
 [Metadynamics]:      https://docs.openmm.org/latest/api-python/generated/openmm.app.metadynamics.Metadynamics.html
 [OpenMM]:            https://openmm.org
+[OpenMM-Colvars]:    https://github.com/fhh2626/OpenMM-Colvars
 [OpenMMTools]:       https://openmmtools.readthedocs.io
 [openmm-cpp-forces]: https://anaconda.org/mdtools/openmm-cpp-forces
 
