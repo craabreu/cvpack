@@ -59,6 +59,13 @@
 <span class="n">ONE_4PI_EPS0</span> <span class="o">=</span> <span class="mf">138.93545764438198</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_cutoff_distance</span><span class="p">(</span><span class="n">nonbondedForce</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">NonbondedForce</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The cutoff distance of a NonbondedForce in nm, which the reaction field needs."""</span>
+    <span class="k">if</span> <span class="n">nonbondedForce</span><span class="o">.</span><span class="n">getNonbondedMethod</span><span class="p">()</span> <span class="o">==</span> <span class="n">openmm</span><span class="o">.</span><span class="n">NonbondedForce</span><span class="o">.</span><span class="n">NoCutoff</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"The NonbondedForce must use a cutoff distance"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">nonbondedForce</span><span class="o">.</span><span class="n">getCutoffDistance</span><span class="p">()</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">mmunit</span><span class="o">.</span><span class="n">nanometers</span><span class="p">)</span>
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_lennard_jones_switch</span><span class="p">(</span><span class="n">nonbondedForce</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">NonbondedForce</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    The factor and definitions that apply the switching function of a</span>
@@ -189,6 +196,8 @@
 <span class="sd">        If the contrast group overlaps with group1 or group2</span>
 <span class="sd">    ValueError</span>
 <span class="sd">        If contrastScaling is negative</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the nonbonded force does not use a cutoff distance</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -257,7 +266,7 @@
                 <span class="p">)</span>
             <span class="k">if</span> <span class="n">contrastScaling</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"contrastScaling must be non-negative"</span><span class="p">)</span>
-        <span class="n">cutoff</span> <span class="o">=</span> <span class="n">nonbondedForce</span><span class="o">.</span><span class="n">getCutoffDistance</span><span class="p">()</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">mmunit</span><span class="o">.</span><span class="n">nanometers</span><span class="p">)</span>
+        <span class="n">cutoff</span> <span class="o">=</span> <span class="n">_cutoff_distance</span><span class="p">(</span><span class="n">nonbondedForce</span><span class="p">)</span>
         <span class="c1"># Pairs with sigma = 0 have no Lennard-Jones term, and select() keeps their</span>
         <span class="c1"># NaN derivatives out of the forces</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="p">(</span>
@@ -347,6 +356,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../type_aliases.html">Type Aliases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reporting.html">Reporting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../serialization.html">Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../units.html">Units</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../references.html">Bibliography</a></li>
 </ul>
 

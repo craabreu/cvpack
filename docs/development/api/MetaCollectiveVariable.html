@@ -131,7 +131,7 @@ OpenMM’s MD unit system to serve as default values for the context parameters.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>system</strong> (<em>System</em>) – The system to which this collective variable should be added</p></li>
+<li><p><strong>system</strong> (<a class="reference external" href="https://docs.openmm.org/latest/api-python/generated/openmm.openmm.System.html#openmm.openmm.System" title="(in OpenMM Python API v8.6.0)"><em>System</em></a>) – The system to which this collective variable should be added</p></li>
 <li><p><strong>setUnusedForceGroup</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the force group of this collective variable will be set to the
 first available force group in the system</p></li>
 </ul>
@@ -163,7 +163,7 @@ is set to an available force group in the system by default.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>context</strong> (<em>Context</em>) – The context at which this collective variable’s effective mass should be
+<li><p><strong>context</strong> (<a class="reference external" href="https://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html#openmm.openmm.Context" title="(in OpenMM Python API v8.6.0)"><em>Context</em></a>) – The context at which this collective variable’s effective mass should be
 evaluated.</p></li>
 <li><p><strong>allowReinitialization</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the context will be reinitialized if necessary.</p></li>
 </ul>
@@ -172,7 +172,7 @@ evaluated.</p></li>
 <dd class="field-even"><p>The effective mass of this collective variable at the given context.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Quantity</p>
+<dd class="field-odd"><p><a class="reference internal" href="../units.html#cvpack.units.Quantity" title="cvpack.units.Quantity">Quantity</a></p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
@@ -213,14 +213,14 @@ meta-collective variable depends. The effective masses are calculated from the
 forces acting on the particles that represent the collective variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>context</strong> (<em>Context</em>) – The context in which the collective variables will be evaluated.</p>
+<dd class="field-odd"><p><strong>context</strong> (<a class="reference external" href="https://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html#openmm.openmm.Context" title="(in OpenMM Python API v8.6.0)"><em>Context</em></a>) – The context in which the collective variables will be evaluated.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dictionary with the names of the collective variables as keys and their
 effective masses as values.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Dict[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a>, Quantity]</p>
+<dd class="field-odd"><p>Dict[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a>, <a class="reference internal" href="../units.html#cvpack.units.Quantity" title="cvpack.units.Quantity">Quantity</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -233,14 +233,14 @@ depends. The values are returned as a dictionary with the names of the
 collective variables as keys.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>context</strong> (<em>Context</em>) – The context in which the collective variables will be evaluated.</p>
+<dd class="field-odd"><p><strong>context</strong> (<a class="reference external" href="https://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html#openmm.openmm.Context" title="(in OpenMM Python API v8.6.0)"><em>Context</em></a>) – The context in which the collective variables will be evaluated.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dictionary with the names of the collective variables as keys and their
 values as values.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Dict[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a>, Quantity]</p>
+<dd class="field-odd"><p>Dict[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a>, <a class="reference internal" href="../units.html#cvpack.units.Quantity" title="cvpack.units.Quantity">Quantity</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -265,7 +265,7 @@ values as values.</p>
 <dd><p>Get the unit of measurement of the effective mass of this collective variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>Unit</em></p>
+<dd class="field-odd"><p><a class="reference internal" href="../units.html#cvpack.units.Unit" title="cvpack.units.units.Unit"><em>Unit</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -291,7 +291,7 @@ values as values.</p>
 default values as values.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Dict[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a>, Quantity]</p>
+<dd class="field-even"><p>Dict[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a>, <a class="reference internal" href="../units.html#cvpack.units.Quantity" title="cvpack.units.Quantity">Quantity</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -306,7 +306,7 @@ default values as values.</p>
 derivatives as values.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Dict[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a>, Quantity]</p>
+<dd class="field-even"><p>Dict[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a>, <a class="reference internal" href="../units.html#cvpack.units.Quantity" title="cvpack.units.Quantity">Quantity</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -318,14 +318,14 @@ derivatives as values.</p>
 values are returned as a dictionary with the names of the parameters as keys.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>context</strong> (<em>Context</em>) – The context in which the named parameters will be evaluated.</p>
+<dd class="field-odd"><p><strong>context</strong> (<a class="reference external" href="https://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html#openmm.openmm.Context" title="(in OpenMM Python API v8.6.0)"><em>Context</em></a>) – The context in which the named parameters will be evaluated.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dictionary with the names of the named parameters as keys and their values
 as values.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Dict[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a>, Quantity]</p>
+<dd class="field-odd"><p>Dict[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a>, <a class="reference internal" href="../units.html#cvpack.units.Quantity" title="cvpack.units.Quantity">Quantity</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -340,7 +340,7 @@ as values.</p>
 periodic</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Union[Quantity, None]</p>
+<dd class="field-even"><p>Union[<a class="reference internal" href="../units.html#cvpack.units.Quantity" title="cvpack.units.Quantity">Quantity</a>, None]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -351,7 +351,7 @@ periodic</p>
 <dd><p>Get the unit of measurement of this collective variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>Unit</em></p>
+<dd class="field-odd"><p><a class="reference internal" href="../units.html#cvpack.units.Unit" title="cvpack.units.units.Unit"><em>Unit</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -373,7 +373,7 @@ is set to an available force group in the system by default.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>context</strong> (<em>Context</em>) – The context at which this collective variable should be evaluated.</p></li>
+<li><p><strong>context</strong> (<a class="reference external" href="https://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html#openmm.openmm.Context" title="(in OpenMM Python API v8.6.0)"><em>Context</em></a>) – The context at which this collective variable should be evaluated.</p></li>
 <li><p><strong>allowReinitialization</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the context will be reinitialized if necessary.</p></li>
 </ul>
 </dd>
@@ -381,7 +381,7 @@ is set to an available force group in the system by default.</p>
 <dd class="field-even"><p>The value of this collective variable at the given context.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Quantity</p>
+<dd class="field-odd"><p><a class="reference internal" href="../units.html#cvpack.units.Quantity" title="cvpack.units.Quantity">Quantity</a></p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
@@ -469,6 +469,7 @@ the radius of gyration of an alanine dipeptide molecule in water:</p>
 <li class="toctree-l1"><a class="reference internal" href="../type_aliases.html">Type Aliases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reporting.html">Reporting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../serialization.html">Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">Units</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">Bibliography</a></li>
 </ul>
 

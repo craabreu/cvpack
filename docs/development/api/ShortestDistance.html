@@ -97,7 +97,7 @@ GPU platforms lose precision.</p>
 of the groups. This is necessary for the correct initialization of the
 collective variable.</p></li>
 <li><p><strong>beta</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The parameter that controls the degree of approximation.</p></li>
-<li><p><strong>cutoffDistance</strong> (<em>Quantity</em>) – The cutoff distance for evaluating atom pairs.</p></li>
+<li><p><strong>cutoffDistance</strong> (<a class="reference external" href="https://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.6.0)"><em>Quantity</em></a>) – The cutoff distance for evaluating atom pairs.</p></li>
 <li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – Whether to use periodic boundary conditions in distance calculations. This
 should be <code class="docutils literal notranslate"><span class="pre">True</span></code> for periodic systems.</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The name of the collective variable.</p></li>
@@ -133,55 +133,13 @@ should be <code class="docutils literal notranslate"><span class="pre">True</spa
 </div>
 <p class="rubric">Methods</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="cvpack.ShortestDistance.MAX_WEIGHT_SUM">
-<span class="sig-name descname"><span class="pre">MAX_WEIGHT_SUM</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.ShortestDistance.MAX_WEIGHT_SUM" title="Link to this definition">¶</a></dt>
-<dd><p>Convert a string or number to a floating-point number, if possible.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cvpack.ShortestDistance.MAX_WINDOWS">
-<span class="sig-name descname"><span class="pre">MAX_WINDOWS</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.ShortestDistance.MAX_WINDOWS" title="Link to this definition">¶</a></dt>
-<dd><p>int([x]) -&gt; integer
-int(x, base=10) -&gt; integer</p>
-<p>Convert a number or string to an integer, or return 0 if no arguments
-are given.  If x is a number, return x.__int__().  For floating-point
-numbers, this truncates towards zero.</p>
-<p>If x is not a number or if base is given, then x must be a string,
-bytes, or bytearray instance representing an integer literal in the
-given base.  The literal can be preceded by ‘+’ or ‘-’ and be surrounded
-by whitespace.  The base defaults to 10.  Valid bases are 0 and 2-36.
-Base 0 means to interpret the base from the string as an integer
-iteral.
-&gt;&gt;&gt; int(‘0b100’, base=0)
-4</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cvpack.ShortestDistance.WINDOW_EFOLDS">
-<span class="sig-name descname"><span class="pre">WINDOW_EFOLDS</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.ShortestDistance.WINDOW_EFOLDS" title="Link to this definition">¶</a></dt>
-<dd><p>int([x]) -&gt; integer
-int(x, base=10) -&gt; integer</p>
-<p>Convert a number or string to an integer, or return 0 if no arguments
-are given.  If x is a number, return x.__int__().  For floating-point
-numbers, this truncates towards zero.</p>
-<p>If x is not a number or if base is given, then x must be a string,
-bytes, or bytearray instance representing an integer literal in the
-given base.  The literal can be preceded by ‘+’ or ‘-’ and be surrounded
-by whitespace.  The base defaults to 10.  Valid bases are 0 and 2-36.
-Base 0 means to interpret the base from the string as an integer
-iteral.
-&gt;&gt;&gt; int(‘0b100’, base=0)
-4</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="cvpack.ShortestDistance.addToSystem">
 <span class="sig-name descname"><span class="pre">addToSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">setUnusedForceGroup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.ShortestDistance.addToSystem" title="Link to this definition">¶</a></dt>
 <dd><p>Add this collective variable to an <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.System.html">openmm.System</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>system</strong> (<em>System</em>) – The system to which this collective variable should be added</p></li>
+<li><p><strong>system</strong> (<a class="reference external" href="https://docs.openmm.org/latest/api-python/generated/openmm.openmm.System.html#openmm.openmm.System" title="(in OpenMM Python API v8.6.0)"><em>System</em></a>) – The system to which this collective variable should be added</p></li>
 <li><p><strong>setUnusedForceGroup</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the force group of this collective variable will be set to the
 first available force group in the system</p></li>
 </ul>
@@ -213,7 +171,7 @@ is set to an available force group in the system by default.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>context</strong> (<em>Context</em>) – The context at which this collective variable’s effective mass should be
+<li><p><strong>context</strong> (<a class="reference external" href="https://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html#openmm.openmm.Context" title="(in OpenMM Python API v8.6.0)"><em>Context</em></a>) – The context at which this collective variable’s effective mass should be
 evaluated.</p></li>
 <li><p><strong>allowReinitialization</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the context will be reinitialized if necessary.</p></li>
 </ul>
@@ -222,7 +180,7 @@ evaluated.</p></li>
 <dd class="field-even"><p>The effective mass of this collective variable at the given context.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Quantity</p>
+<dd class="field-odd"><p><a class="reference internal" href="../units.html#cvpack.units.Quantity" title="cvpack.units.Quantity">Quantity</a></p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
@@ -261,7 +219,7 @@ angles and the radius of gyration of an alanine dipeptide molecule in water:</p>
 <dd><p>Get the unit of measurement of the effective mass of this collective variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>Unit</em></p>
+<dd class="field-odd"><p><a class="reference internal" href="../units.html#cvpack.units.Unit" title="cvpack.units.units.Unit"><em>Unit</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -287,7 +245,7 @@ angles and the radius of gyration of an alanine dipeptide molecule in water:</p>
 periodic</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Union[Quantity, None]</p>
+<dd class="field-even"><p>Union[<a class="reference internal" href="../units.html#cvpack.units.Quantity" title="cvpack.units.Quantity">Quantity</a>, None]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -298,7 +256,7 @@ periodic</p>
 <dd><p>Get the unit of measurement of this collective variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>Unit</em></p>
+<dd class="field-odd"><p><a class="reference internal" href="../units.html#cvpack.units.Unit" title="cvpack.units.units.Unit"><em>Unit</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -320,7 +278,7 @@ is set to an available force group in the system by default.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>context</strong> (<em>Context</em>) – The context at which this collective variable should be evaluated.</p></li>
+<li><p><strong>context</strong> (<a class="reference external" href="https://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html#openmm.openmm.Context" title="(in OpenMM Python API v8.6.0)"><em>Context</em></a>) – The context at which this collective variable should be evaluated.</p></li>
 <li><p><strong>allowReinitialization</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the context will be reinitialized if necessary.</p></li>
 </ul>
 </dd>
@@ -328,7 +286,7 @@ is set to an available force group in the system by default.</p>
 <dd class="field-even"><p>The value of this collective variable at the given context.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Quantity</p>
+<dd class="field-odd"><p><a class="reference internal" href="../units.html#cvpack.units.Quantity" title="cvpack.units.Quantity">Quantity</a></p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
@@ -416,6 +374,7 @@ the radius of gyration of an alanine dipeptide molecule in water:</p>
 <li class="toctree-l1"><a class="reference internal" href="../type_aliases.html">Type Aliases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reporting.html">Reporting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../serialization.html">Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">Units</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">Bibliography</a></li>
 </ul>
 

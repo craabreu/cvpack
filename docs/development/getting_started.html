@@ -41,23 +41,24 @@
 <h1>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading">¶</a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
-<p>CVPack is a Python package with pre-defined collective variable (CV) classes for <a class="reference external" href="http://openmm.org">OpenMM</a>.</p>
+<p>CVPack is a Python package with pre-defined collective variable (CV) classes for <a class="reference external" href="https://openmm.org">OpenMM</a>.</p>
 <p>Possible use cases include:</p>
 <ul class="simple">
-<li><p>Adding CVs to <a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomCVForce.html">CustomCVForce</a> instances in <a class="reference external" href="http://openmm.org">OpenMM</a></p></li>
-<li><p>Defining <a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.app.metadynamics.BiasVariable.html">BiasVariable</a> instances for <a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.app.metadynamics.Metadynamics.html">Metadynamics</a> simulations</p></li>
+<li><p>Adding CVs to <a class="reference external" href="https://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomCVForce.html">CustomCVForce</a> instances in <a class="reference external" href="https://openmm.org">OpenMM</a></p></li>
+<li><p>Defining <a class="reference external" href="https://docs.openmm.org/latest/api-python/generated/openmm.app.metadynamics.BiasVariable.html">BiasVariable</a> instances for <a class="reference external" href="https://docs.openmm.org/latest/api-python/generated/openmm.app.metadynamics.Metadynamics.html">Metadynamics</a> simulations</p></li>
 <li><p>Defining <a class="reference external" href="https://craabreu.github.io/ufedmm/pythonapi/ufedmm.html#ufedmm.ufedmm.CollectiveVariable">CollectiveVariable</a> instances for <a class="reference external" href="https://craabreu.github.io/ufedmm/">UFED</a> simulations</p></li>
-<li><p>Harnessing the power of <a class="reference external" href="http://openmm.org">OpenMM</a> for trajectory analysis</p></li>
+<li><p>Harnessing the power of <a class="reference external" href="https://openmm.org">OpenMM</a> for trajectory analysis</p></li>
 </ul>
 </section>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
+<p>CVPack requires OpenMM 8.4 or later.</p>
 <p>To install CVPack in a conda environment, run the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="o">-</span><span class="n">c</span> <span class="n">mdtools</span> <span class="n">cvpack</span>
 </pre></div>
 </div>
 <p>Or use mamba instead:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mamba</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">mdtools</span> <span class="n">cvpack</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mamba</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="o">-</span><span class="n">c</span> <span class="n">mdtools</span> <span class="n">cvpack</span>
 </pre></div>
 </div>
 </section>
@@ -74,7 +75,7 @@
 a sequence of residues in a protein. The example uses the <cite>testsystems</cite> module from the
 <a class="reference external" href="https://openmmtools.readthedocs.io/en/stable">OpenMMTools</a> package to create a system with a T4 lysozyme L99A molecule. The longest helix in
 this protein occurs between residues LYS60 and ARG80. Four different CVs are defined and added
-to the system, which is then used to create an OpenMM <a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">Context</a>. The CVs are finally evaluated,
+to the system, which is then used to create an OpenMM <a class="reference external" href="https://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">Context</a>. The CVs are finally evaluated,
 rounded to seven decimal places, and printed to the screen:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">cvpack</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">openmm</span>
@@ -144,6 +145,7 @@ molecule is close to one, as expected, no matter which measure is used.</p>
 <li class="toctree-l1"><a class="reference internal" href="type_aliases.html">Type Aliases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reporting.html">Reporting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="serialization.html">Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units</a></li>
 <li class="toctree-l1"><a class="reference internal" href="references.html">Bibliography</a></li>
 </ul>
 

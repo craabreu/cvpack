@@ -249,7 +249,7 @@
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">system</span><span class="o">.</span><span class="n">isVirtualSite</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">system</span><span class="o">.</span><span class="n">getNumParticles</span><span class="p">()))):</span>
             <span class="c1"># The inner context has no virtual sites, so the forces on them would not</span>
             <span class="c1"># be distributed to the atoms that define them</span>
-            <span class="n">inner_context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_contextWithVirtualSites</span><span class="p">(</span><span class="n">forces</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+            <span class="n">inner_context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getContextWithVirtualSites</span><span class="p">(</span><span class="n">forces</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
             <span class="n">forces</span> <span class="o">=</span> <span class="n">inner_context</span><span class="o">.</span><span class="n">getSystem</span><span class="p">()</span><span class="o">.</span><span class="n">getForces</span><span class="p">()</span>
         <span class="n">masses</span> <span class="o">=</span> <span class="p">[</span><span class="n">compute_effective_mass</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="n">inner_context</span><span class="p">)</span> <span class="k">for</span> <span class="n">force</span> <span class="ow">in</span> <span class="n">forces</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">{</span>
@@ -258,8 +258,26 @@
         <span class="p">}</span></div>
 
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_getContextWithVirtualSites</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">forces</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">openmm</span><span class="o">.</span><span class="n">Force</span><span class="p">],</span> <span class="n">context</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Context</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Context</span><span class="p">:</span>
+        <span class="c1"># Built once per outer context, then updated with its current state</span>
+        <span class="n">cached</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_virtual_site_context"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cached</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">cached</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">context</span><span class="p">:</span>
+            <span class="n">cached</span> <span class="o">=</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_createContextWithVirtualSites</span><span class="p">(</span><span class="n">forces</span><span class="p">,</span> <span class="n">context</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_virtual_site_context</span> <span class="o">=</span> <span class="n">cached</span>
+        <span class="n">new_context</span> <span class="o">=</span> <span class="n">cached</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">getState</span><span class="p">(</span><span class="n">getPositions</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">getParameters</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">new_context</span><span class="o">.</span><span class="n">setPeriodicBoxVectors</span><span class="p">(</span><span class="o">*</span><span class="n">state</span><span class="o">.</span><span class="n">getPeriodicBoxVectors</span><span class="p">())</span>
+        <span class="n">new_context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">getPositions</span><span class="p">())</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">getParameters</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">new_context</span><span class="o">.</span><span class="n">getParameters</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+                <span class="n">new_context</span><span class="o">.</span><span class="n">setParameter</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">parameters</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">new_context</span>
+
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_contextWithVirtualSites</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_createContextWithVirtualSites</span><span class="p">(</span>
         <span class="n">forces</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">openmm</span><span class="o">.</span><span class="n">Force</span><span class="p">],</span> <span class="n">context</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Context</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Context</span><span class="p">:</span>
         <span class="n">system</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">XmlSerializer</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span>
@@ -273,13 +291,9 @@
             <span class="p">)</span>
             <span class="n">force_copy</span><span class="o">.</span><span class="n">setForceGroup</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
             <span class="n">system</span><span class="o">.</span><span class="n">addForce</span><span class="p">(</span><span class="n">force_copy</span><span class="p">)</span>
-        <span class="n">new_context</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Context</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Context</span><span class="p">(</span>
             <span class="n">system</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">VerletIntegrator</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span> <span class="n">context</span><span class="o">.</span><span class="n">getPlatform</span><span class="p">()</span>
         <span class="p">)</span>
-        <span class="n">state</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">getState</span><span class="p">(</span><span class="n">getPositions</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">new_context</span><span class="o">.</span><span class="n">setPeriodicBoxVectors</span><span class="p">(</span><span class="o">*</span><span class="n">state</span><span class="o">.</span><span class="n">getPeriodicBoxVectors</span><span class="p">())</span>
-        <span class="n">new_context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">getPositions</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">new_context</span>
 
 <div class="viewcode-block" id="MetaCollectiveVariable.getParameterDefaultValues">
 <a class="viewcode-back" href="../../api/MetaCollectiveVariable.html#cvpack.MetaCollectiveVariable.getParameterDefaultValues">[docs]</a>
@@ -376,6 +390,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../type_aliases.html">Type Aliases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reporting.html">Reporting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../serialization.html">Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../units.html">Units</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../references.html">Bibliography</a></li>
 </ul>
 

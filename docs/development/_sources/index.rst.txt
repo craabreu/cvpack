@@ -24,6 +24,7 @@ Contents
    type_aliases
    reporting
    serialization
+   units
    references
 
 
