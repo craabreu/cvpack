@@ -126,7 +126,7 @@ class StateDataReporter(mmapp.StateDataReporter):
 
     def __init__(
         self,
-        file: t.Union[str, io.TextIOBase],
+        file: str | io.TextIOBase,
         reportInterval: int,
         writers: t.Sequence[CustomWriter] = (),
         **kwargs,
@@ -147,7 +147,7 @@ class StateDataReporter(mmapp.StateDataReporter):
             if hasattr(writer, "initialize"):
                 writer.initialize(simulation)
 
-    def _constructHeaders(self) -> t.List[str]:
+    def _constructHeaders(self) -> list[str]:
         return self._expand(
             super()._constructHeaders(),
             (w.getHeaders() for w in self._writers),
@@ -155,7 +155,7 @@ class StateDataReporter(mmapp.StateDataReporter):
 
     def _constructReportValues(
         self, simulation: mmapp.Simulation, state: openmm.State
-    ) -> t.List[float]:
+    ) -> list[float]:
         return self._expand(
             super()._constructReportValues(simulation, state),
             (w.getValues(simulation) for w in self._writers),

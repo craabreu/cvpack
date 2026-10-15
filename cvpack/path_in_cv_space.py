@@ -127,8 +127,8 @@ class PathInCVSpace(BasePathCV):
         variables: t.Iterable[CollectiveVariable],
         milestones: MatrixQuantity,
         sigma: float,
-        scales: t.Optional[t.Iterable[ScalarQuantity]] = None,
-        name: t.Optional[str] = None,
+        scales: t.Iterable[ScalarQuantity] | None = None,
+        name: str | None = None,
     ) -> None:
         name = self._generateName(metric, name, "cv")
         variables = list(variables)

@@ -173,8 +173,8 @@ class AttractionStrength(CollectiveVariable, openmm.CustomNonbondedForce):
         group1: t.Iterable[int],
         group2: t.Iterable[int],
         nonbondedForce: openmm.NonbondedForce,
-        contrastGroup: t.Optional[t.Iterable[int]] = None,
-        reference: t.Union[ScalarQuantity, openmm.Context] = Quantity(
+        contrastGroup: t.Iterable[int] | None = None,
+        reference: ScalarQuantity | openmm.Context = Quantity(
             1.0 * mmunit.kilojoule_per_mole
         ),
         contrastScaling: float = 1.0,

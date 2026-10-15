@@ -7,7 +7,6 @@
 
 """
 
-import typing as t
 from importlib import resources
 
 import numpy as np
@@ -26,9 +25,9 @@ class BaseRMSDContent(CollectiveVariable, openmm.CustomCVForce):
 
     def __init__(
         self,
-        residue_blocks: t.List[int],
-        ideal_positions: t.List[openmm.Vec3],
-        residues: t.List[mmapp.topology.Residue],
+        residue_blocks: list[int],
+        ideal_positions: list[openmm.Vec3],
+        residues: list[mmapp.topology.Residue],
         numAtoms: int,
         thresholdRMSD: ScalarQuantity,
         stepFunction: str = "(1+x^4)/(1+x^4+x^8)",
@@ -79,7 +78,7 @@ class BaseRMSDContent(CollectiveVariable, openmm.CustomCVForce):
             )
 
     @classmethod
-    def _loadPositions(cls, filename: str) -> t.List[openmm.Vec3]:
+    def _loadPositions(cls, filename: str) -> list[openmm.Vec3]:
         positions = 0.1 * np.loadtxt(
             str(resources.files("cvpack").joinpath("data").joinpath(filename)),
             delimiter=",",
@@ -87,7 +86,7 @@ class BaseRMSDContent(CollectiveVariable, openmm.CustomCVForce):
         return [openmm.Vec3(*position) for position in positions]
 
     @staticmethod
-    def _getAtomList(residue: mmapp.topology.Residue) -> t.List[int]:
+    def _getAtomList(residue: mmapp.topology.Residue) -> list[int]:
         residue_atoms = {atom.name: atom.index for atom in residue.atoms()}
         if residue.name == "GLY":
             residue_atoms["CB"] = residue_atoms["HA2"]

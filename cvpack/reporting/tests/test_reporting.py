@@ -45,7 +45,7 @@ def test_cv_writer():
             )
             simulation.reporters.append(reporter)
             simulation.step(10)
-        with open(os.path.join(dirpath, "report.csv"), "r", encoding="utf-8") as file:
+        with open(os.path.join(dirpath, "report.csv"), encoding="utf-8") as file:
             assert file.readline() == ",".join(
                 [
                     '#"Step"',
@@ -103,7 +103,7 @@ def test_meta_cv_writer():
             )
             simulation.reporters.append(reporter)
             simulation.step(10)
-        with open(os.path.join(dirpath, "report.csv"), "r", encoding="utf-8") as file:
+        with open(os.path.join(dirpath, "report.csv"), encoding="utf-8") as file:
             assert file.readline() == ",".join(
                 [
                     '#"Step"',

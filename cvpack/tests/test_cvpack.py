@@ -118,7 +118,7 @@ def test_distance():
     context = openmm.Context(model.system, integrator, platform)
     context.setPositions(model.positions)
     value1 = distance.getValue(context).value_in_unit(distance.getUnit())
-    value2 = np.sqrt(np.sum(((model.positions[atom1] - model.positions[atom2]) ** 2)))
+    value2 = np.sqrt(np.sum((model.positions[atom1] - model.positions[atom2]) ** 2))
     assert value1 == pytest.approx(value2)
     perform_common_tests(distance, context)
 

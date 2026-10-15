@@ -38,7 +38,7 @@ class BasePathCV(CollectiveVariable, openmm.CustomCVForce):
         metric: Metric,
         sigma: float,
         squared_distances: t.Sequence[str],
-        variables: t.Dict[str, CollectiveVariable],
+        variables: dict[str, CollectiveVariable],
     ) -> None:
         n = len(squared_distances)
         definitions = OrderedDict(

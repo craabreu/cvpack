@@ -128,11 +128,11 @@ class NumberOfContacts(CollectiveVariable, openmm.CustomNonbondedForce):
         group1: t.Sequence[int],
         group2: t.Sequence[int],
         nonbondedForce: openmm.NonbondedForce,
-        reference: t.Union[Real, openmm.Context] = 1.0,
+        reference: Real | openmm.Context = 1.0,
         stepFunction: str = "1/(1+x^6)",
         thresholdDistance: ScalarQuantity = Quantity(0.3 * mmunit.nanometers),
         cutoffFactor: float = 2.0,
-        switchFactor: t.Optional[float] = 1.5,
+        switchFactor: float | None = 1.5,
         name: str = "number_of_contacts",
     ) -> None:
         num_atoms = nonbondedForce.getNumParticles()

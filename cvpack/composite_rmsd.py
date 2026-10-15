@@ -123,9 +123,9 @@ class CompositeRMSD(BaseRMSD, CompositeRMSDForce):
 
     def __init__(
         self,
-        referencePositions: t.Union[MatrixQuantity, t.Dict[int, VectorQuantity]],
+        referencePositions: MatrixQuantity | dict[int, VectorQuantity],
         groups: t.Iterable[t.Iterable[int]],
-        numAtoms: t.Optional[int] = None,
+        numAtoms: int | None = None,
         name: str = "composite_rmsd",
     ) -> None:
         num_atoms = numAtoms or len(referencePositions)

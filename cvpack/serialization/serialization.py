@@ -52,10 +52,10 @@ class SerializableAtom(Serializable):
             self._residue_index = atom._residue_index
         self.id = atom.id
 
-    def __getstate__(self) -> t.Dict[str, t.Any]:
+    def __getstate__(self) -> dict[str, t.Any]:
         return self.__dict__
 
-    def __setstate__(self, keywords: t.Dict[str, t.Any]) -> None:
+    def __setstate__(self, keywords: dict[str, t.Any]) -> None:
         self.__dict__.update(keywords)
 
     @property
@@ -82,10 +82,10 @@ class SerializableResidue(Serializable):
         self.id = residue.id
         self._atoms = list(map(SerializableAtom, residue.atoms()))
 
-    def __getstate__(self) -> t.Dict[str, t.Any]:
+    def __getstate__(self) -> dict[str, t.Any]:
         return self.__dict__
 
-    def __setstate__(self, keywords: t.Dict[str, t.Any]) -> None:
+    def __setstate__(self, keywords: dict[str, t.Any]) -> None:
         self.__dict__.update(keywords)
 
     def __len__(self) -> int:
@@ -112,10 +112,10 @@ class SerializableForce(openmm.Force, Serializable):
     def __getattr__(self, name: str) -> t.Any:
         return getattr(self.force, name)
 
-    def __getstate__(self) -> t.Dict[str, str]:
+    def __getstate__(self) -> dict[str, str]:
         return {"xml_code": openmm.XmlSerializer.serialize(self)}
 
-    def __setstate__(self, keywords: t.Dict[str, str]) -> None:
+    def __setstate__(self, keywords: dict[str, str]) -> None:
         self.__init__(openmm.XmlSerializer.deserialize(keywords["xml_code"]))
 
 

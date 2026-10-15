@@ -23,8 +23,8 @@ class BaseCustomFunction(CollectiveVariable):
     def _extractParameters(
         self,
         size: int,
-        **parameters: t.Union[ScalarQuantity, VectorQuantity],
-    ) -> t.Tuple[t.Dict[str, ScalarQuantity], t.Dict[str, t.List[ScalarQuantity]]]:
+        **parameters: ScalarQuantity | VectorQuantity,
+    ) -> tuple[dict[str, ScalarQuantity], dict[str, list[ScalarQuantity]]]:
         global_parameters = {}
         perbond_parameters = {}
         for name, data in parameters.items():
@@ -37,9 +37,9 @@ class BaseCustomFunction(CollectiveVariable):
 
     def _addParameters(
         self,
-        overalls: t.Dict[str, ScalarQuantity],
-        perbonds: t.Dict[str, t.List[ScalarQuantity]],
-        groups: t.List[t.Tuple[int, ...]],
+        overalls: dict[str, ScalarQuantity],
+        perbonds: dict[str, list[ScalarQuantity]],
+        groups: list[tuple[int, ...]],
         pbc: bool,
         unit: mmunit.Unit,
     ) -> None:

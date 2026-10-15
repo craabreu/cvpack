@@ -181,7 +181,7 @@ class SheetRMSDContent(BaseRMSDContent):
         residues: t.Sequence[mmapp.topology.Residue],
         numAtoms: int,
         parallel: bool = False,
-        blockSizes: t.Optional[t.Sequence[int]] = None,
+        blockSizes: t.Sequence[int] | None = None,
         thresholdRMSD: ScalarQuantity = Quantity(0.08 * mmunit.nanometers),
         stepFunction: str = "(1+x^4)/(1+x^4+x^8)",
         normalize: bool = False,

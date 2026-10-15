@@ -111,7 +111,7 @@ class MetaCVWriter(CustomWriter):
         self._parameters = {name: all_parameters[name] for name in parameters}
         self._derivatives = {name: all_parameters[name] for name in derivatives}
 
-    def getHeaders(self) -> t.List[str]:
+    def getHeaders(self) -> list[str]:
         headers = []
 
         def add_header(name: str, unit: mmunit.Unit) -> None:
@@ -130,7 +130,7 @@ class MetaCVWriter(CustomWriter):
             )
         return headers
 
-    def getValues(self, simulation: mm.app.Simulation) -> t.List[float]:
+    def getValues(self, simulation: mm.app.Simulation) -> list[float]:
         context = simulation.context
         values = []
         if self._values:

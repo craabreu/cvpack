@@ -30,8 +30,8 @@ from .units import Quantity, Unit, value_in_md_units
 
 
 def evaluate_in_context(
-    forces: t.Union[openmm.Force, t.Iterable[openmm.Force]], context: openmm.Context
-) -> t.Union[float, t.List[float]]:
+    forces: openmm.Force | t.Iterable[openmm.Force], context: openmm.Context
+) -> float | list[float]:
     """Evaluate the potential energies of OpenMM Forces in a given context.
 
     Parameters
@@ -69,7 +69,7 @@ def evaluate_in_context(
     return energies[0] if is_single else tuple(energies)
 
 
-def convert_to_matrix(array: npt.ArrayLike) -> t.Tuple[np.ndarray, int, int]:
+def convert_to_matrix(array: npt.ArrayLike) -> tuple[np.ndarray, int, int]:
     """Convert a 1D or 2D array-like object to a 2D numpy array.
 
     Parameters
@@ -233,7 +233,7 @@ def preprocess_args(func: t.Callable) -> t.Callable:
             return SerializableForce(data)
         if isinstance(data, t.Sequence) and not isinstance(data, str):
             return type(data)(map(convert, data))
-        if isinstance(data, t.Dict):
+        if isinstance(data, dict):
             return type(data)((key, convert(value)) for key, value in data.items())
         return data
 

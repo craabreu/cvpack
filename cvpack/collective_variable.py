@@ -26,13 +26,13 @@ class CollectiveVariable(Serializable):
 
     _unit: Unit = Unit("dimensionless")
     _mass_unit: Unit = Unit("dalton")
-    _args: t.Dict[str, t.Any] = {}
-    _periodic_bounds: t.Optional[Quantity] = None
+    _args: dict[str, t.Any] = {}
+    _periodic_bounds: Quantity | None = None
 
-    def __getstate__(self) -> t.Dict[str, t.Any]:
+    def __getstate__(self) -> dict[str, t.Any]:
         return self._args
 
-    def __setstate__(self, keywords: t.Dict[str, t.Any]) -> None:
+    def __setstate__(self, keywords: dict[str, t.Any]) -> None:
         self.__init__(**keywords)
 
     def __copy__(self) -> "CollectiveVariable":
@@ -137,7 +137,7 @@ class CollectiveVariable(Serializable):
         """
         return self._mass_unit
 
-    def getPeriodicBounds(self) -> t.Union[Quantity, None]:
+    def getPeriodicBounds(self) -> Quantity | None:
         """
         Get the periodic bounds of this collective variable.
 

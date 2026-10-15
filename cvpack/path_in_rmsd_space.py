@@ -123,10 +123,10 @@ class PathInRMSDSpace(BasePathCV):
     def __init__(  # pylint: disable=too-many-branches
         self,
         metric: Metric,
-        milestones: t.Sequence[t.Dict[int, VectorQuantity]],
+        milestones: t.Sequence[dict[int, VectorQuantity]],
         numAtoms: int,
         sigma: mmunit.Quantity,
-        name: t.Optional[str] = None,
+        name: str | None = None,
     ) -> None:
         name = self._generateName(metric, name, "rmsd")
         if mmunit.is_quantity(sigma):

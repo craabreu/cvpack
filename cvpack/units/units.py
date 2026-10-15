@@ -34,7 +34,7 @@ class Unit(mmunit.Unit, Serializable, ast.NodeTransformer):
         The data to be used to create the unit.
     """
 
-    def __init__(self, data: t.Union[str, mmunit.Unit, dict]) -> None:
+    def __init__(self, data: str | mmunit.Unit | dict) -> None:
         if isinstance(data, str):
             expression = self.visit(ast.parse(data, mode="eval"))
             code = compile(ast.fix_missing_locations(expression), "", mode="eval")
@@ -46,10 +46,10 @@ class Unit(mmunit.Unit, Serializable, ast.NodeTransformer):
     def __repr__(self) -> str:
         return self.get_symbol()
 
-    def __getstate__(self) -> t.Dict[str, str]:
+    def __getstate__(self) -> dict[str, str]:
         return {"data": str(self)}
 
-    def __setstate__(self, keywords: t.Dict[str, str]) -> None:
+    def __setstate__(self, keywords: dict[str, str]) -> None:
         self.__init__(keywords["data"])
 
     def visit_Name(  # pylint: disable=invalid-name
@@ -85,10 +85,10 @@ class Quantity(mmunit.Quantity, Serializable):
     def __repr__(self):
         return str(self)
 
-    def __getstate__(self) -> t.Dict[str, t.Any]:
+    def __getstate__(self) -> dict[str, t.Any]:
         return {"value": self.value, "unit": str(self.unit)}
 
-    def __setstate__(self, keywords: t.Dict[str, t.Any]) -> None:
+    def __setstate__(self, keywords: dict[str, t.Any]) -> None:
         self.__init__(keywords["value"], Unit(keywords["unit"]))
 
     @property
@@ -105,7 +105,7 @@ Quantity.registerTag("!cvpack.Quantity")
 
 
 def in_md_units(
-    quantity: t.Union[ScalarQuantity, VectorQuantity, MatrixQuantity],
+    quantity: ScalarQuantity | VectorQuantity | MatrixQuantity,
 ) -> Quantity:
     """
     Return a quantity in the MD unit system (e.g. mass in Da, distance in
@@ -130,7 +130,7 @@ def in_md_units(
 
 
 def value_in_md_units(
-    quantity: t.Union[ScalarQuantity, VectorQuantity, MatrixQuantity],
+    quantity: ScalarQuantity | VectorQuantity | MatrixQuantity,
 ) -> t.Any:
     """
     Return the value of a quantity in the MD unit system (e.g. mass in Da, distance in

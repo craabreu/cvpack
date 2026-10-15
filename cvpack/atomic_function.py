@@ -9,8 +9,6 @@
 
 from __future__ import annotations
 
-import typing as t
-
 import numpy as np
 import openmm
 from numpy.typing import ArrayLike
@@ -134,10 +132,10 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
         function: str,
         unit: mmunit.Unit,
         groups: ArrayLike,
-        periodicBounds: t.Optional[VectorQuantity] = None,
+        periodicBounds: VectorQuantity | None = None,
         pbc: bool = True,
         name: str = "atomic_function",
-        **parameters: t.Union[ScalarQuantity, VectorQuantity],
+        **parameters: ScalarQuantity | VectorQuantity,
     ) -> None:
         groups = np.atleast_2d(groups)
         num_groups, atoms_per_group, *other_dimensions = groups.shape
@@ -164,17 +162,15 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
     @classmethod
     def _fromCustomForce(  # pylint: disable=too-many-branches
         cls,
-        force: t.Union[
-            openmm.CustomAngleForce,
-            openmm.CustomBondForce,
-            openmm.CustomCompoundBondForce,
-            openmm.CustomExternalForce,
-            openmm.CustomTorsionForce,
-        ],
+        force: openmm.CustomAngleForce
+        | openmm.CustomBondForce
+        | openmm.CustomCompoundBondForce
+        | openmm.CustomExternalForce
+        | openmm.CustomTorsionForce,
         unit: mmunit.Unit,
-        periodicBounds: t.Optional[VectorQuantity] = None,
+        periodicBounds: VectorQuantity | None = None,
         pbc: bool = False,
-    ) -> "AtomicFunction":
+    ) -> AtomicFunction:
         """
         Create a :class:`AtomicFunction` from an object of :openmm:`CustomBondForce`,
         :openmm:`CustomAngleForce`, :openmm:`CustomTorsionForce`, or
@@ -226,7 +222,7 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
         force: openmm.HarmonicBondForce,
         unit: mmunit.Unit,
         pbc: bool = False,
-    ) -> "AtomicFunction":
+    ) -> AtomicFunction:
         """
         Create a :class:`AtomicFunction` from an :OpenMM:`HarmonicBondForce`.
         """
@@ -252,7 +248,7 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
         force: openmm.HarmonicAngleForce,
         unit: mmunit.Unit,
         pbc: bool = False,
-    ) -> "AtomicFunction":
+    ) -> AtomicFunction:
         """
         Create a :class:`AtomicFunction` from an :OpenMM:`HarmonicAngleForce`.
         """
@@ -278,7 +274,7 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
         force: openmm.PeriodicTorsionForce,
         unit: mmunit.Unit,
         pbc: bool = False,
-    ) -> "AtomicFunction":
+    ) -> AtomicFunction:
         """
         Create a :class:`AtomicFunction` from an :OpenMM:`PeriodicTorsionForce`.
         """
@@ -304,9 +300,9 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
         cls,
         force: openmm.Force,
         unit: mmunit.Unit,
-        periodicBounds: t.Optional[VectorQuantity] = None,
+        periodicBounds: VectorQuantity | None = None,
         pbc: bool = False,
-    ) -> "AtomicFunction":
+    ) -> AtomicFunction:
         """
         Create an :class:`AtomicFunction` from an :OpenMM:`Force`.
 

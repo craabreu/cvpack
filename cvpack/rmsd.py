@@ -83,9 +83,9 @@ class RMSD(BaseRMSD, openmm.RMSDForce):
 
     def __init__(
         self,
-        referencePositions: t.Union[MatrixQuantity, t.Dict[int, VectorQuantity]],
+        referencePositions: MatrixQuantity | dict[int, VectorQuantity],
         group: t.Iterable[int],
-        numAtoms: t.Optional[int] = None,
+        numAtoms: int | None = None,
         name: str = "rmsd",
     ) -> None:
         group = list(map(int, group))
