@@ -20,18 +20,40 @@ jobs:
     name: Test on ${{ matrix.os }}, Python ${{ matrix.python-version }}, OpenMM ${{ matrix.openmm-version }}
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: ubuntu-latest
+            python-version: "3.14"
+            openmm-version: "8.6"
+
+          - os: ubuntu-latest
+            python-version: "3.13"
+            openmm-version: "8.6"
+
+          - os: ubuntu-latest
+            python-version: "3.12"
+            openmm-version: "8.5"
+
+          - os: ubuntu-latest
             python-version: "3.11"
-            openmm-version: "8.1"
+            openmm-version: "8.4"
 
           - os: ubuntu-latest
             python-version: "3.10"
-            openmm-version: "8.0"
+            openmm-version: "8.4"
+
+          - os: ubuntu-latest
+            python-version: "3.12"
+            openmm-version: "8.1"
+            # openmm-cpp-forces (needed by CompositeRMSD) exists only for OpenMM 8.1
+            cpp-forces: true
+            # The openmmtools version compatible with OpenMM 8.1 imports pkg_resources,
+            # which setuptools removed in version 82
+            extra-specs: setuptools=81
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Additional info about the build
         shell: bash
@@ -40,19 +62,20 @@ jobs:
           df -h
           ulimit -a
 
-      - uses: mamba-org/setup-micromamba@v1
+      - uses: mamba-org/setup-micromamba@v2
         with:
           environment-file: devtools/conda-envs/test_env.yaml
           environment-name: test
           create-args: >-
             python=${{ matrix.python-version }}
             openmm=${{ matrix.openmm-version }}
+            ${{ matrix.extra-specs }}
 
       - name: Install package
         # conda setup requires this special shell
         shell: bash -l {0}
         run: |
-          if ! [[ "${{ matrix.openmm-version }}" < "8.1" ]]; then
+          if [ "${{ matrix.cpp-forces }}" == "true" ]; then
             micromamba install -y -c mdtools openmm-cpp-forces
           fi
           python -m pip install . --no-deps
@@ -65,8 +88,8 @@ jobs:
           pytest
 
       - name: CodeCov
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v4
         with:
-          file: ./coverage.xml
+          files: ./coverage.xml
           flags: unittests
           name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}

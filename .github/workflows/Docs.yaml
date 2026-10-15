@@ -4,20 +4,29 @@ on:
   push:
     branches:
       - "main"
-    tags:
-      - v*
   pull_request:
     branches:
       - "main"
+  release:
+    types: [published]
+  # Rebuild the docs of an existing release tag (also updates latest)
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to rebuild, such as v0.12.2"
+        required: true
 
 jobs:
   build_and_deploy_docs:
     name: Documentation Building and Deployment
     runs-on: ubuntu-latest
+    # Prereleases are not deployed
+    if: github.event_name != 'release' || !github.event.release.prerelease
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
+          ref: ${{ inputs.tag || github.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Additional info about the build
@@ -27,35 +36,36 @@ jobs:
           df -h
           ulimit -a
 
-      - uses: mamba-org/setup-micromamba@v1
+      - uses: mamba-org/setup-micromamba@v2
         with:
           environment-file: devtools/conda-envs/docs_env.yaml
           environment-name: docs
           create-args: >-
-            python=3.11
-            openmm>=8.1
+            python=3.13 openmm=8.6
 
       - name: Install package
+        # conda setup requires this special shell
         shell: bash -l {0}
         run: |
-          micromamba install -y -c mdtools openmm-cpp-forces
           python -m pip install . --no-deps
           micromamba list
-
-      - name: Build Documentation
-        shell: bash -l {0}
-        run: |
-          if [ "$GITHUB_EVENT_NAME" == "push" ] && [ "$GITHUB_REF_TYPE" == "tag" ]; then
-            export CVPACK_VERSION=${{ github.ref_name }}
-          else
-            export CVPACK_VERSION=dev
-          fi
-          sphinx-build ./docs ./html
 
       - name: Run tests
         shell: bash -l {0}
         run: |
           pytest
+
+      - name: Build Documentation
+        shell: bash -l {0}
+        run: |
+          if [ -n "$RELEASE_TAG" ]; then
+            export CVPACK_VERSION=$RELEASE_TAG
+          else
+            export CVPACK_VERSION=dev
+          fi
+          sphinx-build ./docs ./html
+        env:
+          RELEASE_TAG: ${{ inputs.tag || github.event.release.tag_name }}
 
       - name: Get coverage report
         id:  coverage
@@ -85,8 +95,8 @@ jobs:
           if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
             echo "Deployment is deactivated on pull requests"
             exit 0
-          elif [ "$GITHUB_REF_TYPE" == "tag" ]; then
-            subdirs=(${{ github.ref_name }} latest)
+          elif [ -n "$RELEASE_TAG" ]; then
+            subdirs=($RELEASE_TAG latest)
           else
             subdirs=(development)
           fi
@@ -107,3 +117,5 @@ jobs:
           git commit -m "Docs from $GITHUB_REF $GITHUB_SHA" || echo "Branch is up to date"
           git push -f origin gh-pages
           echo "::endgroup::"
+        env:
+          RELEASE_TAG: ${{ inputs.tag || github.event.release.tag_name }}

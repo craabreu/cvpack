@@ -19,7 +19,7 @@ requirements:
     - versioningit
     - pip
   run:
-    - python
+    - python >=3.10
     - numpy
     - openmm
     - pyyaml
@@ -29,14 +29,14 @@ test:
     - cvpack
 
 about:
-  home: https://github.com/RedesignScience/cvpack
+  home: https://github.com/craabreu/cvpack
   summary: Useful Collective Variables for OpenMM
   description: Useful Collective Variables for OpenMM
   license: MIT
   license_family: MIT
   license_file: LICENSE
-  doc_url: https://redesignscience.github.io/cvpack/latest
-  dev_url: https://github.com/RedesignScience/cvpack
+  doc_url: https://craabreu.github.io/cvpack/latest
+  dev_url: https://github.com/craabreu/cvpack
 extra:
   recipe-maintainers:
     - craabreu
