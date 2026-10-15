@@ -57,6 +57,21 @@
 <span class="n">ONE_4PI_EPS0</span> <span class="o">=</span> <span class="mf">138.93545764438198</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_lennard_jones_switch</span><span class="p">(</span><span class="n">nonbondedForce</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">NonbondedForce</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    The factor and definitions that apply the switching function of a</span>
+<span class="sd">    NonbondedForce to a Lennard-Jones term, or an empty string if it uses none.</span>
+<span class="sd">    As in NonbondedForce, the switching function does not apply to electrostatics.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">nonbondedForce</span><span class="o">.</span><span class="n">getUseSwitchingFunction</span><span class="p">():</span>
+        <span class="k">return</span> <span class="s2">""</span>
+    <span class="n">rs</span> <span class="o">=</span> <span class="n">nonbondedForce</span><span class="o">.</span><span class="n">getSwitchingDistance</span><span class="p">()</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">mmunit</span><span class="o">.</span><span class="n">nanometers</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"*select(step(r - </span><span class="si">{</span><span class="n">rs</span><span class="si">}</span><span class="s2">), 1 - t^3*(10 - t*(15 - 6*t)), 1)"</span>
+        <span class="sa">f</span><span class="s2">"; t = (r - </span><span class="si">{</span><span class="n">rs</span><span class="si">}</span><span class="s2">)/</span><span class="si">{</span><span class="n">cutoff</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">rs</span><span class="si">}</span><span class="s2">"</span>
+    <span class="p">)</span>
+
+
 <div class="viewcode-block" id="AttractionStrength">
 <a class="viewcode-back" href="../../api/AttractionStrength.html#cvpack.AttractionStrength">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AttractionStrength</span><span class="p">(</span><span class="n">CollectiveVariable</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">):</span>
@@ -99,9 +114,10 @@
 
 <span class="sd">        Groups :math:`{\bf g}_1` and :math:`{\bf g}_2` can overlap or even be the</span>
 <span class="sd">        same, in which case the collective variable will measure the strength of</span>
-<span class="sd">        the self-attraction of :math:`{\bf g}_1`. On the other hand, the contrast</span>
-<span class="sd">        group :math:`{\bf g}_3` cannot overlap with either :math:`{\bf g}_1` or</span>
-<span class="sd">        :math:`{\bf g}_2`.</span>
+<span class="sd">        the self-attraction of :math:`{\bf g}_1`. Each pair of distinct atoms</span>
+<span class="sd">        contributes a single term, even if both atoms are in both groups. On the</span>
+<span class="sd">        other hand, the contrast group :math:`{\bf g}_3` cannot overlap with either</span>
+<span class="sd">        :math:`{\bf g}_1` or :math:`{\bf g}_2`.</span>
 
 <span class="sd">    The function :math:`u_{\rm disp}(x)` is a Lennard-Jones-like reduced potential with</span>
 <span class="sd">    a highly softened repulsion part, defined as</span>
@@ -131,7 +147,9 @@
 
 <span class="sd">    The Lennard-Jones parameters, atomic charges, cutoff distance, boundary conditions,</span>
 <span class="sd">    as well as whether to use a switching function and its corresponding switching</span>
-<span class="sd">    distance, are taken from the :openmm:`NonbondedForce` object.</span>
+<span class="sd">    distance, are taken from the :openmm:`NonbondedForce` object. As in</span>
+<span class="sd">    :openmm:`NonbondedForce`, the switching function applies only to the</span>
+<span class="sd">    Lennard-Jones term. Pairs with :math:`\sigma_{ij} = 0` have no Lennard-Jones term.</span>
 
 <span class="sd">    .. note::</span>
 <span class="sd">        Any non-exclusion exceptions involving an atom in :math:`{\bf g}_1` and an atom</span>
@@ -186,22 +204,22 @@
 <span class="sd">    &gt;&gt;&gt; context = openmm.Context(model.system, integrator, platform)</span>
 <span class="sd">    &gt;&gt;&gt; context.setPositions(model.positions)</span>
 <span class="sd">    &gt;&gt;&gt; cv1.getValue(context)</span>
-<span class="sd">    4912.5... dimensionless</span>
+<span class="sd">    4912.8... dimensionless</span>
 
 <span class="sd">    &gt;&gt;&gt; water = [a.index for a in model.topology.atoms() if a.residue.name == "HOH"]</span>
 <span class="sd">    &gt;&gt;&gt; cv2 = cvpack.AttractionStrength(guest, water, forces["NonbondedForce"])</span>
 <span class="sd">    &gt;&gt;&gt; cv2.addToSystem(model.system)</span>
 <span class="sd">    &gt;&gt;&gt; context.reinitialize(preserveState=True)</span>
 <span class="sd">    &gt;&gt;&gt; cv2.getValue(context)</span>
-<span class="sd">    2063.3... dimensionless</span>
+<span class="sd">    2090.2... dimensionless</span>
 
 <span class="sd">    &gt;&gt;&gt; cv3 = cvpack.AttractionStrength(guest, host, forces["NonbondedForce"], water)</span>
 <span class="sd">    &gt;&gt;&gt; cv3.addToSystem(model.system)</span>
 <span class="sd">    &gt;&gt;&gt; context.reinitialize(preserveState=True)</span>
 <span class="sd">    &gt;&gt;&gt; cv3.getValue(context)</span>
-<span class="sd">    2849.17... dimensionless</span>
+<span class="sd">    2822.63... dimensionless</span>
 <span class="sd">    &gt;&gt;&gt; print(cv1.getValue(context) - cv2.getValue(context))</span>
-<span class="sd">    2849.17... dimensionless</span>
+<span class="sd">    2822.63... dimensionless</span>
 
 <span class="sd">    &gt;&gt;&gt; cv4 = cvpack.AttractionStrength(</span>
 <span class="sd">    ...     guest, host, forces["NonbondedForce"], water, contrastScaling=0.5</span>
@@ -209,9 +227,9 @@
 <span class="sd">    &gt;&gt;&gt; cv4.addToSystem(model.system)</span>
 <span class="sd">    &gt;&gt;&gt; context.reinitialize(preserveState=True)</span>
 <span class="sd">    &gt;&gt;&gt; cv4.getValue(context)</span>
-<span class="sd">    3880.8... dimensionless</span>
+<span class="sd">    3867.7... dimensionless</span>
 <span class="sd">    &gt;&gt;&gt; 1 * cv1.getValue(context) - 0.5 * cv2.getValue(context)</span>
-<span class="sd">    3880.8...</span>
+<span class="sd">    3867.7...</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -238,9 +256,12 @@
             <span class="k">if</span> <span class="n">contrastScaling</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"contrastScaling must be non-negative"</span><span class="p">)</span>
         <span class="n">cutoff</span> <span class="o">=</span> <span class="n">nonbondedForce</span><span class="o">.</span><span class="n">getCutoffDistance</span><span class="p">()</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">mmunit</span><span class="o">.</span><span class="n">nanometers</span><span class="p">)</span>
+        <span class="c1"># Pairs with sigma = 0 have no Lennard-Jones term, and select() keeps their</span>
+        <span class="c1"># NaN derivatives out of the forces</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">"-(lj + coul)</span><span class="si">{</span><span class="s1">'*sign1*sign2'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">contrasting</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">''</span><span class="si">}</span><span class="s2">/ref"</span>
-            <span class="s2">"; lj = 4*epsilon*(1/y^2 - 1/y)"</span>
+            <span class="s2">"; lj = select(sigma, 4*epsilon*(1/y^2 - 1/y), 0)"</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">_lennard_jones_switch</span><span class="p">(</span><span class="n">nonbondedForce</span><span class="p">,</span><span class="w"> </span><span class="n">cutoff</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
             <span class="sa">f</span><span class="s2">"; coul = </span><span class="si">{</span><span class="n">ONE_4PI_EPS0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">cutoff</span><span class="si">}</span><span class="s2">*q1q2*(1/x + (x^2 - 3)/2)"</span>
             <span class="sa">f</span><span class="s2">"; x = r/</span><span class="si">{</span><span class="n">cutoff</span><span class="si">}</span><span class="s2">"</span>
             <span class="s2">"; y = abs((r/sigma)^6 - 2) + 2"</span>
@@ -272,8 +293,7 @@
         <span class="k">for</span> <span class="n">exception</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nonbondedForce</span><span class="o">.</span><span class="n">getNumExceptions</span><span class="p">()):</span>
             <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">nonbondedForce</span><span class="o">.</span><span class="n">getExceptionParameters</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">addExclusion</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setUseSwitchingFunction</span><span class="p">(</span><span class="n">nonbondedForce</span><span class="o">.</span><span class="n">getUseSwitchingFunction</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setSwitchingDistance</span><span class="p">(</span><span class="n">nonbondedForce</span><span class="o">.</span><span class="n">getSwitchingDistance</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setUseSwitchingFunction</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setUseLongRangeCorrection</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addInteractionGroup</span><span class="p">(</span><span class="n">group1</span><span class="p">,</span> <span class="n">group2</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Context</span><span class="p">):</span>

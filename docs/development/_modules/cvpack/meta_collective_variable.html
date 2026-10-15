@@ -161,6 +161,9 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
         <span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">cv</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span> <span class="k">for</span> <span class="n">cv</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">names</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The names of the variables must be unique: </span><span class="si">{</span><span class="n">names</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cvs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">copy</span><span class="p">,</span> <span class="n">variables</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">in_md_units</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
         <span class="k">for</span> <span class="n">cv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cvs</span><span class="p">:</span>
@@ -241,15 +244,42 @@
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">getCollectiveVariableValues</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>  <span class="c1"># update the inner context positions</span>
         <span class="n">inner_context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getInnerContext</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-        <span class="n">masses</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">compute_effective_mass</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="n">inner_context</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">force</span> <span class="ow">in</span> <span class="n">inner_context</span><span class="o">.</span><span class="n">getSystem</span><span class="p">()</span><span class="o">.</span><span class="n">getForces</span><span class="p">()</span>
-        <span class="p">]</span>
+        <span class="n">forces</span> <span class="o">=</span> <span class="n">inner_context</span><span class="o">.</span><span class="n">getSystem</span><span class="p">()</span><span class="o">.</span><span class="n">getForces</span><span class="p">()</span>
+        <span class="n">system</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">getSystem</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">system</span><span class="o">.</span><span class="n">isVirtualSite</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">system</span><span class="o">.</span><span class="n">getNumParticles</span><span class="p">()))):</span>
+            <span class="c1"># The inner context has no virtual sites, so the forces on them would not</span>
+            <span class="c1"># be distributed to the atoms that define them</span>
+            <span class="n">inner_context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_contextWithVirtualSites</span><span class="p">(</span><span class="n">forces</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+            <span class="n">forces</span> <span class="o">=</span> <span class="n">inner_context</span><span class="o">.</span><span class="n">getSystem</span><span class="p">()</span><span class="o">.</span><span class="n">getForces</span><span class="p">()</span>
+        <span class="n">masses</span> <span class="o">=</span> <span class="p">[</span><span class="n">compute_effective_mass</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="n">inner_context</span><span class="p">)</span> <span class="k">for</span> <span class="n">force</span> <span class="ow">in</span> <span class="n">forces</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="n">cv</span><span class="o">.</span><span class="n">getName</span><span class="p">():</span> <span class="n">Quantity</span><span class="p">(</span><span class="n">mass</span><span class="p">,</span> <span class="n">cv</span><span class="o">.</span><span class="n">getMassUnit</span><span class="p">())</span>
             <span class="k">for</span> <span class="n">cv</span><span class="p">,</span> <span class="n">mass</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cvs</span><span class="p">,</span> <span class="n">masses</span><span class="p">)</span>
         <span class="p">}</span></div>
 
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_contextWithVirtualSites</span><span class="p">(</span>
+        <span class="n">forces</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">openmm</span><span class="o">.</span><span class="n">Force</span><span class="p">],</span> <span class="n">context</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Context</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Context</span><span class="p">:</span>
+        <span class="n">system</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">XmlSerializer</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span>
+            <span class="n">openmm</span><span class="o">.</span><span class="n">XmlSerializer</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">getSystem</span><span class="p">())</span>
+        <span class="p">)</span>
+        <span class="k">while</span> <span class="n">system</span><span class="o">.</span><span class="n">getNumForces</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">system</span><span class="o">.</span><span class="n">removeForce</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">force</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">forces</span><span class="p">):</span>
+            <span class="n">force_copy</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">XmlSerializer</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span>
+                <span class="n">openmm</span><span class="o">.</span><span class="n">XmlSerializer</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="n">force</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">force_copy</span><span class="o">.</span><span class="n">setForceGroup</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+            <span class="n">system</span><span class="o">.</span><span class="n">addForce</span><span class="p">(</span><span class="n">force_copy</span><span class="p">)</span>
+        <span class="n">new_context</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Context</span><span class="p">(</span>
+            <span class="n">system</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">VerletIntegrator</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span> <span class="n">context</span><span class="o">.</span><span class="n">getPlatform</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">getState</span><span class="p">(</span><span class="n">getPositions</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">new_context</span><span class="o">.</span><span class="n">setPeriodicBoxVectors</span><span class="p">(</span><span class="o">*</span><span class="n">state</span><span class="o">.</span><span class="n">getPeriodicBoxVectors</span><span class="p">())</span>
+        <span class="n">new_context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">getPositions</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">new_context</span>
 
 <div class="viewcode-block" id="MetaCollectiveVariable.getParameterDefaultValues">
 <a class="viewcode-back" href="../../api/MetaCollectiveVariable.html#cvpack.MetaCollectiveVariable.getParameterDefaultValues">[docs]</a>

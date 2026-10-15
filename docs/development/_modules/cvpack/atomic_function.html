@@ -217,6 +217,11 @@
 <span class="sd">        :openmm:`CustomCompoundBondForce` class.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomExternalForce</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s2">"periodicdistance"</span> <span class="ow">in</span> <span class="n">force</span><span class="o">.</span><span class="n">getEnergyFunction</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">"Converting a CustomExternalForce that uses periodicdistance is "</span>
+                    <span class="s2">"not supported"</span>
+                <span class="p">)</span>
             <span class="n">number</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">definition</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"Particle"</span><span class="p">,</span> <span class="s2">"; x=x1; y=y1; z=z1"</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomBondForce</span><span class="p">):</span>
             <span class="n">number</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">definition</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">"Bond"</span><span class="p">,</span> <span class="s2">"; r=distance(p1, p2)"</span>
@@ -371,7 +376,8 @@
 <span class="sd">        TypeError</span>
 <span class="sd">            If the force is not convertible to an :class:`AtomicFunction`</span>
 <span class="sd">        ValueError</span>
-<span class="sd">            If the force uses tabulated functions</span>
+<span class="sd">            If the force uses tabulated functions, or if it is a</span>
+<span class="sd">            :OpenMM:`CustomExternalForce` that uses ``periodicdistance``</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>

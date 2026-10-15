@@ -55,6 +55,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_contiguous_residues</span>
 
 <span class="n">PARABETA_POSITIONS</span> <span class="o">=</span> <span class="n">BaseRMSDContent</span><span class="o">.</span><span class="n">_loadPositions</span><span class="p">(</span><span class="s2">"ideal_parallel_beta_sheet.csv"</span><span class="p">)</span>
+<span class="n">PARABETA_SWAPPED_POSITIONS</span> <span class="o">=</span> <span class="n">BaseRMSDContent</span><span class="o">.</span><span class="n">_loadPositions</span><span class="p">(</span>
+    <span class="s2">"ideal_parallel_beta_sheet_swapped.csv"</span>
+<span class="p">)</span>
 <span class="n">ANTIBETA_POSITIONS</span> <span class="o">=</span> <span class="n">BaseRMSDContent</span><span class="o">.</span><span class="n">_loadPositions</span><span class="p">(</span><span class="s2">"ideal_antiparallel_beta_sheet.csv"</span><span class="p">)</span>
 
 
@@ -91,8 +94,9 @@
 <span class="sd">    Every group :math:`{\bf g}_{i,j}` is formed by the N, :math:`{\rm C}_\alpha`,</span>
 <span class="sd">    :math:`{\rm C}_\beta`, C, and O atoms of the six residues involved, thus</span>
 <span class="sd">    comprising 30 atoms in total. In the case of glycine, the missing</span>
-<span class="sd">    :math:`{\rm C}_\beta` atom is replaced by the corresponding H atom. The RMSD is</span>
-<span class="sd">    then defined as</span>
+<span class="sd">    :math:`{\rm C}_\beta` atom is replaced by the hydrogen atom in its position (HA3 in</span>
+<span class="sd">    PDB naming, HA1 in CHARMM naming), whereas PLUMED uses HA2. The RMSD is then</span>
+<span class="sd">    defined as</span>
 
 <span class="sd">    .. math::</span>
 
@@ -144,7 +148,9 @@
 <span class="sd">    step function shown above is identical to the one in the original paper, but written</span>
 <span class="sd">    in a numerically safe form. The ideal beta-sheet configurations are the same as</span>
 <span class="sd">    those used for the collective variables `ANTIBETARMSD`_ and `PARABETARMSD`_ in</span>
-<span class="sd">    `PLUMED v2.8.1 &lt;https://github.com/plumed/plumed2&gt;`_.</span>
+<span class="sd">    `PLUMED v2.8.1 &lt;https://github.com/plumed/plumed2&gt;`_. As in PLUMED, there are two</span>
+<span class="sd">    ideal parallel configurations, which differ mainly in which strand comes first,</span>
+<span class="sd">    and the RMSD of a group in a parallel sheet is the smaller of its RMSDs to them.</span>
 
 <span class="sd">    .. _ANTIBETARMSD:</span>
 <span class="sd">        https://www.plumed.org/doc-v2.8/user-doc/html/_a_n_t_i_b_e_t_a_r_m_s_d.html</span>
@@ -155,7 +161,8 @@
 <span class="sd">    .. note::</span>
 
 <span class="sd">        The present implementation is limited to :math:`1 \leq N_{\rm groups} \leq</span>
-<span class="sd">        1024`.</span>
+<span class="sd">        1024` for antiparallel sheets and :math:`1 \leq N_{\rm groups} \leq 512` for</span>
+<span class="sd">        parallel sheets.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -252,7 +259,11 @@
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">residue_groups</span><span class="p">,</span>
-            <span class="n">PARABETA_POSITIONS</span> <span class="k">if</span> <span class="n">parallel</span> <span class="k">else</span> <span class="n">ANTIBETA_POSITIONS</span><span class="p">,</span>
+            <span class="p">(</span>
+                <span class="p">[</span><span class="n">PARABETA_POSITIONS</span><span class="p">,</span> <span class="n">PARABETA_SWAPPED_POSITIONS</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">parallel</span>
+                <span class="k">else</span> <span class="p">[</span><span class="n">ANTIBETA_POSITIONS</span><span class="p">]</span>
+            <span class="p">),</span>
             <span class="n">residues</span><span class="p">,</span>
             <span class="n">numAtoms</span><span class="p">,</span>
             <span class="n">thresholdRMSD</span><span class="p">,</span>

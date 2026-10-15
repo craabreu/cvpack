@@ -66,8 +66,9 @@ both antiparallel and parallel beta sheets, with different ideal configurations
 <p>Every group <span class="math notranslate nohighlight">\({\bf g}_{i,j}\)</span> is formed by the N, <span class="math notranslate nohighlight">\({\rm C}_\alpha\)</span>,
 <span class="math notranslate nohighlight">\({\rm C}_\beta\)</span>, C, and O atoms of the six residues involved, thus
 comprising 30 atoms in total. In the case of glycine, the missing
-<span class="math notranslate nohighlight">\({\rm C}_\beta\)</span> atom is replaced by the corresponding H atom. The RMSD is
-then defined as</p>
+<span class="math notranslate nohighlight">\({\rm C}_\beta\)</span> atom is replaced by the hydrogen atom in its position (HA3 in
+PDB naming, HA1 in CHARMM naming), whereas PLUMED uses HA2. The RMSD is then
+defined as</p>
 <div class="math notranslate nohighlight">
 \[r_{\rm rmsd}({\bf g}, {\bf g}_{\rm ref}) =
     \sqrt{\frac{1}{30} \sum_{k=1}^{30} \left\|
@@ -105,11 +106,14 @@ number is</p>
 step function shown above is identical to the one in the original paper, but written
 in a numerically safe form. The ideal beta-sheet configurations are the same as
 those used for the collective variables <a class="reference external" href="https://www.plumed.org/doc-v2.8/user-doc/html/_a_n_t_i_b_e_t_a_r_m_s_d.html">ANTIBETARMSD</a> and <a class="reference external" href="https://www.plumed.org/doc-v2.8/user-doc/html/_p_a_r_a_b_e_t_a_r_m_s_d.html">PARABETARMSD</a> in
-<a class="reference external" href="https://github.com/plumed/plumed2">PLUMED v2.8.1</a>.</p>
+<a class="reference external" href="https://github.com/plumed/plumed2">PLUMED v2.8.1</a>. As in PLUMED, there are two
+ideal parallel configurations, which differ mainly in which strand comes first,
+and the RMSD of a group in a parallel sheet is the smaller of its RMSDs to them.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The present implementation is limited to <span class="math notranslate nohighlight">\(1 \leq N_{\rm groups} \leq
-1024\)</span>.</p>
+1024\)</span> for antiparallel sheets and <span class="math notranslate nohighlight">\(1 \leq N_{\rm groups} \leq 512\)</span> for
+parallel sheets.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

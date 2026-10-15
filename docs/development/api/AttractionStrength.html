@@ -74,9 +74,10 @@ interactions. In this case, the collective variable becomes</p>
 <p class="admonition-title">Note</p>
 <p>Groups <span class="math notranslate nohighlight">\({\bf g}_1\)</span> and <span class="math notranslate nohighlight">\({\bf g}_2\)</span> can overlap or even be the
 same, in which case the collective variable will measure the strength of
-the self-attraction of <span class="math notranslate nohighlight">\({\bf g}_1\)</span>. On the other hand, the contrast
-group <span class="math notranslate nohighlight">\({\bf g}_3\)</span> cannot overlap with either <span class="math notranslate nohighlight">\({\bf g}_1\)</span> or
-<span class="math notranslate nohighlight">\({\bf g}_2\)</span>.</p>
+the self-attraction of <span class="math notranslate nohighlight">\({\bf g}_1\)</span>. Each pair of distinct atoms
+contributes a single term, even if both atoms are in both groups. On the
+other hand, the contrast group <span class="math notranslate nohighlight">\({\bf g}_3\)</span> cannot overlap with either
+<span class="math notranslate nohighlight">\({\bf g}_1\)</span> or <span class="math notranslate nohighlight">\({\bf g}_2\)</span>.</p>
 </div>
 <p>The function <span class="math notranslate nohighlight">\(u_{\rm disp}(x)\)</span> is a Lennard-Jones-like reduced potential with
 a highly softened repulsion part, defined as</p>
@@ -99,7 +100,9 @@ adopted reference value.</p>
 </div>
 <p>The Lennard-Jones parameters, atomic charges, cutoff distance, boundary conditions,
 as well as whether to use a switching function and its corresponding switching
-distance, are taken from the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.NonbondedForce.html">openmm.NonbondedForce</a> object.</p>
+distance, are taken from the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.NonbondedForce.html">openmm.NonbondedForce</a> object. As in
+<a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.NonbondedForce.html">openmm.NonbondedForce</a>, the switching function applies only to the
+Lennard-Jones term. Pairs with <span class="math notranslate nohighlight">\(\sigma_{ij} = 0\)</span> have no Lennard-Jones term.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Any non-exclusion exceptions involving an atom in <span class="math notranslate nohighlight">\({\bf g}_1\)</span> and an atom
@@ -148,7 +151,7 @@ interactions. The default is 1.0.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">context</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Context</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">,</span> <span class="n">integrator</span><span class="p">,</span> <span class="n">platform</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cv1</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<span class="go">4912.5... dimensionless</span>
+<span class="go">4912.8... dimensionless</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">water</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">atoms</span><span class="p">()</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">residue</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"HOH"</span><span class="p">]</span>
@@ -156,16 +159,16 @@ interactions. The default is 1.0.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cv2</span><span class="o">.</span><span class="n">addToSystem</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">reinitialize</span><span class="p">(</span><span class="n">preserveState</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cv2</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<span class="go">2063.3... dimensionless</span>
+<span class="go">2090.2... dimensionless</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cv3</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">AttractionStrength</span><span class="p">(</span><span class="n">guest</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">forces</span><span class="p">[</span><span class="s2">"NonbondedForce"</span><span class="p">],</span> <span class="n">water</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cv3</span><span class="o">.</span><span class="n">addToSystem</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">reinitialize</span><span class="p">(</span><span class="n">preserveState</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cv3</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<span class="go">2849.17... dimensionless</span>
+<span class="go">2822.63... dimensionless</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">cv1</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span> <span class="o">-</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>
-<span class="go">2849.17... dimensionless</span>
+<span class="go">2822.63... dimensionless</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cv4</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">AttractionStrength</span><span class="p">(</span>
@@ -174,9 +177,9 @@ interactions. The default is 1.0.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cv4</span><span class="o">.</span><span class="n">addToSystem</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">reinitialize</span><span class="p">(</span><span class="n">preserveState</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cv4</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<span class="go">3880.8... dimensionless</span>
+<span class="go">3867.7... dimensionless</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="mi">1</span> <span class="o">*</span> <span class="n">cv1</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<span class="go">3880.8...</span>
+<span class="go">3867.7...</span>
 </pre></div>
 </div>
 <p class="rubric">Methods</p>
