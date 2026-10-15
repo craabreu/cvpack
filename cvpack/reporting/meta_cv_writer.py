@@ -24,15 +24,23 @@ class MetaCVWriter(CustomWriter):
     ----------
     metaCV
         The meta-collective variable whose associated values will be reported.
-    innerValues
+    values
         The names of the inner variables whose values will be reported.
-    innerMasses
+    emasses
         The names of the inner variables whose effective masses will be reported.
     parameters
         The names of the parameters whose values will be reported.
     derivatives
         The names of the parameters with respect to which the derivatives of the
         meta-collective variable will be reported.
+    allowReinitialization
+        Whether to allow context reinitialization when the meta-collective variable
+        shares its force group with other forces (needed for derivatives only).
+
+    Raises
+    ------
+    ValueError
+        If any name does not match an inner variable or a parameter
 
     Examples
     --------
@@ -102,14 +110,23 @@ class MetaCVWriter(CustomWriter):
         emasses: t.Sequence[str] = (),
         parameters: t.Sequence[str] = (),
         derivatives: t.Sequence[str] = (),
+        allowReinitialization: bool = False,
     ) -> None:
         inner_cvs = {cv.getName(): cv for cv in metaCV.getInnerVariables()}
         all_parameters = metaCV.getParameterDefaultValues()
+
+        def select(names, available, kind):
+            unknown = [name for name in names if name not in available]
+            if unknown:
+                raise ValueError(f"Unknown {kind}: {', '.join(unknown)}")
+            return {name: available[name] for name in names}
+
         self._meta_cv = metaCV
-        self._values = [inner_cvs[name] for name in values]
-        self._masses = [inner_cvs[name] for name in emasses]
-        self._parameters = {name: all_parameters[name] for name in parameters}
-        self._derivatives = {name: all_parameters[name] for name in derivatives}
+        self._values = list(select(values, inner_cvs, "inner variables").values())
+        self._masses = list(select(emasses, inner_cvs, "inner variables").values())
+        self._parameters = select(parameters, all_parameters, "parameters")
+        self._derivatives = select(derivatives, all_parameters, "parameters")
+        self._allow_reinitialization = allowReinitialization
 
     def getHeaders(self) -> list[str]:
         headers = []
@@ -146,7 +163,9 @@ class MetaCVWriter(CustomWriter):
             for name, quantity in self._parameters.items():
                 values.append(parameters[name] / quantity.unit)
         if self._derivatives:
-            derivatives = self._meta_cv.getParameterDerivatives(context)
+            derivatives = self._meta_cv.getParameterDerivatives(
+                context, self._allow_reinitialization
+            )
             for name, quantity in self._derivatives.items():
                 values.append(
                     derivatives[name] / (self._meta_cv.getUnit() / quantity.unit)

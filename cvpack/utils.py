@@ -29,7 +29,7 @@ from .units import Quantity, Unit, value_in_md_units
 
 def evaluate_in_context(
     forces: openmm.Force | t.Iterable[openmm.Force], context: openmm.Context
-) -> float | list[float]:
+) -> float | tuple[float, ...]:
     """Evaluate the potential energies of OpenMM Forces in a given context.
 
     Parameters
@@ -45,8 +45,9 @@ def evaluate_in_context(
             The potential energy of the force in the given context.
     """
     is_single = isinstance(forces, openmm.Force)
-    if is_single:
-        forces = [forces]
+    forces = [forces] if is_single else list(forces)
+    if len(forces) > 32:  # noqa: PLR2004
+        raise ValueError("At most 32 forces can be evaluated at once")
     system = openmm.System()
     for _ in range(context.getSystem().getNumParticles()):
         system.addParticle(1.0)
@@ -55,12 +56,18 @@ def evaluate_in_context(
         force_copy.setForceGroup(i)
         system.addForce(force_copy)
     state = context.getState(getPositions=True)
-    context = openmm.Context(system, openmm.VerletIntegrator(1.0))
-    context.setPositions(state.getPositions())
-    context.setPeriodicBoxVectors(*state.getPeriodicBoxVectors())
+    new_context = openmm.Context(
+        system, openmm.VerletIntegrator(1.0), context.getPlatform()
+    )
+    new_context.setPositions(state.getPositions())
+    new_context.setPeriodicBoxVectors(*state.getPeriodicBoxVectors())
+    parameters = context.getParameters()
+    for name in new_context.getParameters():
+        if name in parameters:
+            new_context.setParameter(name, parameters[name])
     energies = []
     for i in range(len(forces)):
-        state = context.getState(getEnergy=True, groups=1 << i)
+        state = new_context.getState(getEnergy=True, groups=1 << i)
         energies.append(value_in_md_units(state.getPotentialEnergy()))
     return energies[0] if is_single else tuple(energies)
 
@@ -115,6 +122,27 @@ def check_contiguous_residues(residues: t.Sequence) -> None:
             )
 
 
+def find_unused_force_group(system: openmm.System) -> int:
+    """
+    Return the lowest force group not used by any force in a system.
+
+    Parameters
+    ----------
+    system
+        The system to search for unused force groups.
+
+    Raises
+    ------
+    RuntimeError
+        If all force groups are already in use
+    """
+    used_groups = {force.getForceGroup() for force in system.getForces()}
+    for group in range(32):
+        if group not in used_groups:
+            return group
+    raise RuntimeError("All force groups are already in use.")
+
+
 def get_single_force_state(
     force: openmm.Force,
     context: openmm.Context,
@@ -162,12 +190,14 @@ def get_single_force_state(
         return context.getState(groups=1 << self_group, **kwargs)
     if not allowReinitialization:
         raise ValueError("Context reinitialization required, but not allowed.")
-    new_group = force._setUnusedForceGroup(context.getSystem())
-    context.reinitialize(preserveState=True)
-    state = context.getState(groups=1 << new_group, **kwargs)
-    force.setForceGroup(self_group)
-    context.reinitialize(preserveState=True)
-    return state
+    new_group = find_unused_force_group(context.getSystem())
+    force.setForceGroup(new_group)
+    try:
+        context.reinitialize(preserveState=True)
+        return context.getState(groups=1 << new_group, **kwargs)
+    finally:
+        force.setForceGroup(self_group)
+        context.reinitialize(preserveState=True)
 
 
 def compute_effective_mass(
@@ -200,10 +230,11 @@ def compute_effective_mass(
     force_vectors = state.getForces(asNumpy=True)._value
     squared_forces = np.sum(np.square(force_vectors), axis=1)
     nonzeros = np.nonzero(squared_forces)[0]
-    if nonzeros.size == 0:
-        return np.inf
     mass_values = np.fromiter(map(get_mass, nonzeros), dtype=np.float64)
-    return 1.0 / np.sum(squared_forces[nonzeros] / mass_values)
+    movable = mass_values > 0  # OpenMM treats massless particles as fixed
+    if not np.any(movable):
+        return np.inf
+    return 1.0 / np.sum(squared_forces[nonzeros][movable] / mass_values[movable])
 
 
 def preprocess_args(func: t.Callable) -> t.Callable:

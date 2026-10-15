@@ -16,7 +16,12 @@ from openmm import unit as mmunit
 
 from .serialization import Serializable
 from .units import Quantity, ScalarQuantity, Unit
-from .utils import compute_effective_mass, get_single_force_state, preprocess_args
+from .utils import (
+    compute_effective_mass,
+    find_unused_force_group,
+    get_single_force_state,
+    preprocess_args,
+)
 
 
 class CollectiveVariable(Serializable):
@@ -102,7 +107,7 @@ class CollectiveVariable(Serializable):
             upper = upper.value_in_unit(self.getUnit())
         self._periodic_bounds = Quantity((lower, upper), self.getUnit())
 
-    def _setUnusedForceGroup(self, system: openmm.System) -> None:
+    def _setUnusedForceGroup(self, system: openmm.System) -> int:
         """
         Set the force group of this collective variable to the lowest force group not
         used by any force in an :OpenMM:`System`.
@@ -118,16 +123,19 @@ class CollectiveVariable(Serializable):
         system
             The system to search for unused force groups
 
+        Returns
+        -------
+        int
+            The force group assigned to this collective variable
+
         Raises
         ------
         RuntimeError
             If all force groups are already in use
         """
-        used_groups = {force.getForceGroup() for force in system.getForces()}
-        new_group = next(filter(lambda i: i not in used_groups, range(32)), None)
-        if new_group is None:
-            raise RuntimeError("All force groups are already in use.")
+        new_group = find_unused_force_group(system)
         mmswig.Force_setForceGroup(self, new_group)
+        return new_group
 
     def getName(self) -> str:
         """
