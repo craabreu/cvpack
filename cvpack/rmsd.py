@@ -60,6 +60,11 @@ class RMSD(BaseRMSD, openmm.RMSDForce):
     name
         The name of the collective variable.
 
+    Raises
+    ------
+    ValueError
+        If referencePositions is a dict and numAtoms is not given
+
     Example
     -------
     >>> import cvpack
@@ -89,6 +94,8 @@ class RMSD(BaseRMSD, openmm.RMSDForce):
         name: str = "rmsd",
     ) -> None:
         group = list(map(int, group))
+        if numAtoms is None and isinstance(referencePositions, dict):
+            raise ValueError("numAtoms is required when referencePositions is a dict")
         num_atoms = numAtoms or len(referencePositions)
         defined_coords = self._getDefinedCoords(referencePositions, group)
         all_coords = self._getAllCoords(defined_coords, num_atoms)

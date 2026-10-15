@@ -86,6 +86,8 @@ class CompositeRMSD(BaseRMSD, CompositeRMSDForce):
         If the `openmm-cpp-forces`_ conda package is not installed.
     ValueError
         If ``groups`` is not a sequence of disjoint atom groups.
+    ValueError
+        If referencePositions is a dict and numAtoms is not given
 
     Example
     -------
@@ -128,6 +130,8 @@ class CompositeRMSD(BaseRMSD, CompositeRMSDForce):
         numAtoms: int | None = None,
         name: str = "composite_rmsd",
     ) -> None:
+        if numAtoms is None and isinstance(referencePositions, dict):
+            raise ValueError("numAtoms is required when referencePositions is a dict")
         num_atoms = numAtoms or len(referencePositions)
         groups = [[int(atom) for atom in group] for group in groups]
         defined_coords = self._getDefinedCoords(referencePositions, sum(groups, []))

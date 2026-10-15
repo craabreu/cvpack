@@ -9,7 +9,7 @@ from openmm import unit
 from openmmtools import testsystems
 
 import cvpack
-from cvpack.tests.helpers import make_context
+from cvpack.tests.helpers import make_context, single_atom_topology
 
 
 def test_openmm_force_wrapper_rejects_non_md_unit():
@@ -74,3 +74,47 @@ def test_number_of_contacts_accepts_dimensionless_quantity_reference():
     cv2.addToSystem(model.system)
     context = make_context(model.system, model.positions)
     assert cv2.getValue(context) == cv1.getValue(context)
+
+
+@pytest.mark.parametrize("k", [[1.0, 2.0, 3.0], [1.0]])
+def test_atomic_function_rejects_wrong_parameter_length(k):
+    with pytest.raises(ValueError, match="k"):
+        cvpack.AtomicFunction(
+            "k*distance(p1, p2)", unit.kilojoule_per_mole, [[0, 1], [2, 3]], k=k
+        )
+
+
+@pytest.mark.parametrize("cls", ["RMSD", "CompositeRMSD"])
+def test_rmsd_dict_reference_requires_num_atoms(cls):
+    reference = {0: [0, 0, 0], 3: [1, 0, 0], 5: [0, 1, 0]}
+    try:
+        with pytest.raises(ValueError, match="numAtoms"):
+            if cls == "RMSD":
+                cvpack.RMSD(reference, [0, 3, 5])
+            else:
+                cvpack.CompositeRMSD(reference, [[0, 3], [5]])
+    except ImportError:
+        pytest.skip("openmm-cpp-forces is not installed")
+
+
+def test_residue_coordination_rejects_overlapping_groups():
+    residues = list(single_atom_topology(5).residues())
+    with pytest.raises(ValueError, match="disjoint"):
+        cvpack.ResidueCoordination(residues[0:3], residues[2:5])
+
+
+def test_attraction_strength_rejects_overlapping_contrast_group():
+    nonbonded = openmm.NonbondedForce()
+    for _ in range(4):
+        nonbonded.addParticle(0.0, 0.3, 1.0)
+    with pytest.raises(ValueError, match="contrast"):
+        cvpack.AttractionStrength([0], [1, 2], nonbonded, contrastGroup=[2, 3])
+    with pytest.raises(ValueError, match="contrastScaling"):
+        cvpack.AttractionStrength(
+            [0], [1], nonbonded, contrastGroup=[3], contrastScaling=-1.0
+        )
+
+
+def test_torsion_similarity_rejects_lists_of_different_lengths():
+    with pytest.raises(ValueError, match="same length"):
+        cvpack.TorsionSimilarity([[0, 1, 2, 3], [1, 2, 3, 4]], [[2, 3, 4, 5]])

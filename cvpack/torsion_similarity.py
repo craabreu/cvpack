@@ -46,6 +46,11 @@ class TorsionSimilarity(CollectiveVariable, openmm.CustomCompoundBondForce):
     name
         The name of the collective variable.
 
+    Raises
+    ------
+    ValueError
+        If firstList and secondList have different lengths
+
     Example
     -------
     >>> import cvpack
@@ -85,6 +90,8 @@ class TorsionSimilarity(CollectiveVariable, openmm.CustomCompoundBondForce):
     ) -> None:
         firstList = [list(map(int, first)) for first in firstList]
         secondList = [list(map(int, second)) for second in secondList]
+        if len(firstList) != len(secondList):
+            raise ValueError("firstList and secondList must have the same length")
         function = f"0.5*(1 + cos(min(delta, {2 * np.pi} - delta)))"
         definition = "delta = dihedral(p1, p2, p3, p4) - dihedral(p5, p6, p7, p8)"
         super().__init__(8, f"{function}; {definition}")

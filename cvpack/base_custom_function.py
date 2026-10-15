@@ -28,7 +28,13 @@ class BaseCustomFunction(CollectiveVariable):
         for name, value in parameters.items():
             data = value_in_md_units(value)
             if isinstance(data, t.Iterable):
-                perbond_parameters[name] = [data[i] for i in range(size)]
+                data = list(data)
+                if len(data) != size:
+                    raise ValueError(
+                        f"Parameter {name} has {len(data)} values, but there are "
+                        f"{size} groups"
+                    )
+                perbond_parameters[name] = data
             else:
                 global_parameters[name] = data
         return global_parameters, perbond_parameters
