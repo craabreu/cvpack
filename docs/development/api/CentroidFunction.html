@@ -95,7 +95,7 @@ angle in <cite>radians</cite>). If the collective variables does not have a unit
 <cite>dimensionless</cite>.</p></li>
 <li><p><strong>groups</strong> (<em>Iterable</em><em>[</em><em>Iterable</em><em>[</em><em>int</em><em>]</em><em>]</em>) – The groups of atoms to be used in the function. Each group must be specified
 as a list of atom indices with arbitrary length.</p></li>
-<li><p><strong>collections</strong> (<em>_SupportsArray</em><em>[</em><em>dtype</em><em>[</em><em>Any</em><em>]</em><em>] </em><em>| </em><em>_NestedSequence</em><em>[</em><em>_SupportsArray</em><em>[</em><em>dtype</em><em>[</em><em>Any</em><em>]</em><em>]</em><em>] </em><em>| </em><em>bool</em><em> | </em><em>int</em><em> | </em><em>float</em><em> | </em><em>complex</em><em> | </em><em>str</em><em> | </em><em>bytes</em><em> | </em><em>_NestedSequence</em><em>[</em><em>bool</em><em> | </em><em>int</em><em> | </em><em>float</em><em> | </em><em>complex</em><em> | </em><em>str</em><em> | </em><em>bytes</em><em>] </em><em>| </em><em>None</em>) – The indices of the groups in each collection, passed as a 2D array-like object
+<li><p><strong>collections</strong> (<em>ArrayLike</em><em> | </em><em>None</em>) – The indices of the groups in each collection, passed as a 2D array-like object
 of shape <cite>(m, n)</cite>, where <cite>m</cite> is the number of collections and <cite>n</cite> is the number
 groups per collection. If a 1D object is passed, it is assumed that <cite>m</cite> is 1 and
 <cite>n</cite> is the length of the object.</p></li>
@@ -425,7 +425,7 @@ the radius of gyration of an alanine dipeptide molecule in water:</p>
       &#169;2024 C. Abreu & Redesign Science.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.0.4</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |

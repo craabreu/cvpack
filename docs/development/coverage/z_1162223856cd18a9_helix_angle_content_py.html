@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="z_1162223856cd18a9_helix_hbond_content_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.16.2">coverage.py v7.16.2</a>,
-            created at 2026-10-15 14:03 +0000
+            created at 2026-10-15 15:04 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -188,7 +188,7 @@
     <p class="run"><span class="n"><a id="t106" href="#t106">106</a></span><span class="t">                <span class="key">if</span> <span class="nam">atom</span><span class="op">.</span><span class="nam">name</span> <span class="op">==</span> <span class="str">&quot;CA&quot;</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t107" href="#t107">107</a></span><span class="t">                    <span class="key">return</span> <span class="nam">atom</span><span class="op">.</span><span class="nam">index</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t108" href="#t108">108</a></span><span class="t">            <span class="key">raise</span> <span class="nam">ValueError</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run run2"><span class="n"><a id="t109" href="#t109">109</a></span><span class="t">                <span class="str">f&quot;Could not find atom CA in residue {residue.name}{residue.id}&quot;</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t109" href="#t109">109</a></span><span class="t">                <span class="fst">f&quot;</span><span class="fst">Could not find atom CA in residue </span><span class="op">{</span><span class="nam">residue</span><span class="op">.</span><span class="nam">name</span><span class="op">}</span><span class="op">{</span><span class="nam">residue</span><span class="op">.</span><span class="nam">id</span><span class="op">}</span><span class="fst">&quot;</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t110" href="#t110">110</a></span><span class="t">            <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t111" href="#t111">111</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t112" href="#t112">112</a></span><span class="t">        <span class="nam">num_angles</span> <span class="op">=</span> <span class="nam">len</span><span class="op">(</span><span class="nam">residues</span><span class="op">)</span> <span class="op">-</span> <span class="num">2</span>&nbsp;</span><span class="r"></span></p>
@@ -199,7 +199,7 @@
     <p class="run"><span class="n"><a id="t117" href="#t117">117</a></span><span class="t">        <span class="key">if</span> <span class="nam">mmunit</span><span class="op">.</span><span class="nam">is_quantity</span><span class="op">(</span><span class="nam">tol</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t118" href="#t118">118</a></span><span class="t">            <span class="nam">tol</span> <span class="op">=</span> <span class="nam">tol</span><span class="op">.</span><span class="nam">value_in_unit</span><span class="op">(</span><span class="nam">mmunit</span><span class="op">.</span><span class="nam">radians</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t119" href="#t119">119</a></span><span class="t">        <span class="nam">super</span><span class="op">(</span><span class="op">)</span><span class="op">.</span><span class="nam">__init__</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run run2"><span class="n"><a id="t120" href="#t120">120</a></span><span class="t">            <span class="str">f&quot;{numerator}/(1+x^{2 * halfExponent}); x=(theta-{theta0})/{tol}&quot;</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t120" href="#t120">120</a></span><span class="t">            <span class="fst">f&quot;</span><span class="op">{</span><span class="nam">numerator</span><span class="op">}</span><span class="fst">/(1+x^</span><span class="op">{</span><span class="num">2</span> <span class="op">*</span> <span class="nam">halfExponent</span><span class="op">}</span><span class="fst">); x=(theta-</span><span class="op">{</span><span class="nam">theta0</span><span class="op">}</span><span class="fst">)/</span><span class="op">{</span><span class="nam">tol</span><span class="op">}</span><span class="fst">&quot;</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t121" href="#t121">121</a></span><span class="t">        <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t122" href="#t122">122</a></span><span class="t">        <span class="key">for</span> <span class="nam">i</span> <span class="key">in</span> <span class="nam">range</span><span class="op">(</span><span class="num">1</span><span class="op">,</span> <span class="nam">len</span><span class="op">(</span><span class="nam">residues</span><span class="op">)</span> <span class="op">-</span> <span class="num">1</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t123" href="#t123">123</a></span><span class="t">            <span class="nam">self</span><span class="op">.</span><span class="nam">addAngle</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
@@ -231,7 +231,7 @@
             <a class="nav" href="z_1162223856cd18a9_helix_hbond_content_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.16.2">coverage.py v7.16.2</a>,
-            created at 2026-10-15 14:03 +0000
+            created at 2026-10-15 15:04 +0000
         </p>
     </div>
 </footer>
