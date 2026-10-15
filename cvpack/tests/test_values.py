@@ -386,28 +386,26 @@ def _radius_of_gyration_system():
 
 
 @pytest.mark.parametrize("cls", [cvpack.RadiusOfGyration, cvpack.RadiusOfGyrationSq])
-@pytest.mark.parametrize("weigh_by_mass", [False, True])
-def test_radius_of_gyration_uses_rgforce(cls, weigh_by_mass):
-    system, positions, masses = _radius_of_gyration_system()
+def test_radius_of_gyration_uses_rgforce(cls):
+    system, positions, _ = _radius_of_gyration_system()
     group = [8, 1, 5, 3, 0, 6]
-    cv = cls(group, weighByMass=weigh_by_mass)
+    cv = cls(group)
     cv.addToSystem(system)
     context = make_context(system, positions)
-    # Docstring: mean squared distance to the geometric center or the center of mass
     selected = positions[group]
-    center = (
-        np.average(selected, axis=0, weights=masses[group])
-        if weigh_by_mass
-        else selected.mean(axis=0)
-    )
-    expected = np.mean(np.sum((selected - center) ** 2, axis=1))
+    expected = np.mean(np.sum((selected - selected.mean(axis=0)) ** 2, axis=1))
     if cls is cvpack.RadiusOfGyration:
         expected = np.sqrt(expected)
     value = cv.getValue(context)
     assert value / value.unit == pytest.approx(expected)
-    inner = [cv.getCollectiveVariable(i) for i in range(cv.getNumCollectiveVariables())]
-    assert isinstance(inner[0], openmm.RGForce)
-    assert len(inner) == (2 if weigh_by_mass else 1)
+    assert cv.getNumCollectiveVariables() == 1
+    assert isinstance(cv.getCollectiveVariable(0), openmm.RGForce)
+
+
+@pytest.mark.parametrize("cls", [cvpack.RadiusOfGyration, cvpack.RadiusOfGyrationSq])
+def test_radius_of_gyration_rejects_mass_weighting(cls):
+    with pytest.raises(ValueError, match="weighByMass"):
+        cls(range(10), weighByMass=True)
 
 
 @pytest.mark.parametrize("cls", [cvpack.RadiusOfGyration, cvpack.RadiusOfGyrationSq])

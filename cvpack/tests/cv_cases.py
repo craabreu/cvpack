@@ -75,9 +75,7 @@ DIPEPTIDE_CVS = {
     "Angle": lambda model: cvpack.Angle(0, 5, 10),
     "Torsion": lambda model: cvpack.Torsion(4, 6, 8, 14),
     "RadiusOfGyration": lambda model: cvpack.RadiusOfGyration(range(22)),
-    "RadiusOfGyrationSq": lambda model: cvpack.RadiusOfGyrationSq(
-        range(22), weighByMass=True
-    ),
+    "RadiusOfGyrationSq": lambda model: cvpack.RadiusOfGyrationSq(range(22)),
     "NumberOfContacts": lambda model: cvpack.NumberOfContacts(
         *_carbons_and_oxygens(model), _nonbonded(model)
     ),
