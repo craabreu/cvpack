@@ -74,7 +74,8 @@ class ShortestDistance(CollectiveVariable, openmm.CustomCVForce):
     cutoffDistance
         The cutoff distance for evaluating atom pairs.
     pbc
-        Whether to consider periodic boundary conditions in distance calculations.
+        Whether to use periodic boundary conditions in distance calculations. This
+        should be ``True`` for periodic systems.
     name
         The name of the collective variable.
 
@@ -113,7 +114,7 @@ class ShortestDistance(CollectiveVariable, openmm.CustomCVForce):
         numAtoms: int,
         beta: float = 100,
         cutoffDistance: mmunit.Quantity = Quantity(1 * mmunit.nanometers),
-        pbc: bool = True,
+        pbc: bool = False,
         name: str = "shortest_distance",
     ) -> None:
         rc = cutoffDistance

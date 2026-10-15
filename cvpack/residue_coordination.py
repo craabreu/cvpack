@@ -48,7 +48,8 @@ class ResidueCoordination(CollectiveVariable, openmm.CustomCentroidBondForce):
     residueGroup2
         The residues in the second group.
     pbc
-        Whether the system has periodic boundary conditions.
+        Whether to use periodic boundary conditions in distance calculations. This
+        should be ``True`` for periodic systems.
     stepFunction
         The function "step(1-x)" (for analysis only) or a continuous approximation
         thereof.
@@ -98,8 +99,8 @@ class ResidueCoordination(CollectiveVariable, openmm.CustomCentroidBondForce):
     ... )
     >>> context.setPositions(model.positions)
     >>> residue_coordination.getValue(context)
-    26.0 dimensionless
-    >>> residue_coordination.setReferenceValue(26 * unit.dimensionless)
+    7.0 dimensionless
+    >>> residue_coordination.setReferenceValue(7 * unit.dimensionless)
     >>> context.reinitialize(preserveState=True)
     >>> residue_coordination.getValue(context)
     0.99999... dimensionless
@@ -109,7 +110,7 @@ class ResidueCoordination(CollectiveVariable, openmm.CustomCentroidBondForce):
         self,
         residueGroup1: t.Iterable[Residue],
         residueGroup2: t.Iterable[Residue],
-        pbc: bool = True,
+        pbc: bool = False,
         stepFunction: str = "1/(1+x^6)",
         thresholdDistance: ScalarQuantity = Quantity(1.0 * mmunit.nanometers),
         normalize: bool = False,

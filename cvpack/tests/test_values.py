@@ -5,10 +5,11 @@ Regression tests for the values computed by cvpack collective variables.
 import numpy as np
 import openmm
 import pytest
+from openmm import unit
 
 import cvpack
 from cvpack.attraction_strength import ONE_4PI_EPS0
-from cvpack.tests.helpers import make_context, particle_system
+from cvpack.tests.helpers import make_context, particle_system, single_atom_topology
 
 
 @pytest.mark.parametrize("group", [[0, 2], [5, 6, 7], [7, 1, 4, 3]])
@@ -39,3 +40,42 @@ def test_attraction_strength_coulomb_scales_with_cutoff(cutoff):
     # Docstring: -q_i q_j / (4 pi eps0 r_c) * u_elec(x), with u_elec(x) = 1/x + (x^2-3)/2
     expected = ONE_4PI_EPS0 / cutoff * (1 / x + (x**2 - 3) / 2)
     assert cv.getValue(context).value_in_unit(cv.getUnit()) == pytest.approx(expected)
+
+
+def test_residue_coordination_defaults_to_no_pbc():
+    residues = list(single_atom_topology(2).residues())
+    system = particle_system(2)
+    cv = cvpack.ResidueCoordination(
+        residues[:1],
+        residues[1:],
+        stepFunction="step(1-x)",
+        thresholdDistance=0.5 * unit.nanometers,
+    )
+    cv.addToSystem(system)
+    context = make_context(system, [[0, 0, 0], [1.9, 0, 0]])
+    assert cv.getValue(context).value_in_unit(cv.getUnit()) == 0.0
+
+
+def test_residue_coordination_explicit_pbc_still_wraps():
+    residues = list(single_atom_topology(2).residues())
+    system = particle_system(2)
+    system.setDefaultPeriodicBoxVectors([2, 0, 0], [0, 2, 0], [0, 0, 2])
+    cv = cvpack.ResidueCoordination(
+        residues[:1],
+        residues[1:],
+        pbc=True,
+        stepFunction="step(1-x)",
+        thresholdDistance=0.5 * unit.nanometers,
+    )
+    cv.addToSystem(system)
+    context = make_context(system, [[0, 0, 0], [1.9, 0, 0]])
+    assert cv.getValue(context).value_in_unit(cv.getUnit()) == 1.0
+
+
+def test_shortest_distance_defaults_to_no_pbc():
+    system = particle_system(2)
+    cv = cvpack.ShortestDistance([0], [1], 2)
+    cv.addToSystem(system)
+    context = make_context(system, [[0, 0, 0], [1.9, 0, 0]])
+    # No pair within the 1 nm cutoff, so the CV evaluates to the cutoff distance
+    assert cv.getValue(context).value_in_unit(cv.getUnit()) == pytest.approx(1.0)
