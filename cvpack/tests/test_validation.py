@@ -143,6 +143,14 @@ def test_attraction_strength_rejects_overlapping_contrast_group():
         )
 
 
+def test_attraction_strength_rejects_nonbonded_force_without_cutoff():
+    nonbonded = openmm.NonbondedForce()
+    for _ in range(2):
+        nonbonded.addParticle(0.0, 0.3, 1.0)
+    with pytest.raises(ValueError, match="cutoff"):
+        cvpack.AttractionStrength([0], [1], nonbonded)
+
+
 def test_torsion_similarity_rejects_lists_of_different_lengths():
     with pytest.raises(ValueError, match="same length"):
         cvpack.TorsionSimilarity([[0, 1, 2, 3], [1, 2, 3, 4]], [[2, 3, 4, 5]])

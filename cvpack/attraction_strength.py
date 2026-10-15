@@ -22,6 +22,13 @@ from .utils import evaluate_in_context
 ONE_4PI_EPS0 = 138.93545764438198
 
 
+def _cutoff_distance(nonbondedForce: openmm.NonbondedForce) -> float:
+    """The cutoff distance of a NonbondedForce in nm, which the reaction field needs."""
+    if nonbondedForce.getNonbondedMethod() == openmm.NonbondedForce.NoCutoff:
+        raise ValueError("The NonbondedForce must use a cutoff distance")
+    return nonbondedForce.getCutoffDistance().value_in_unit(mmunit.nanometers)
+
+
 def _lennard_jones_switch(nonbondedForce: openmm.NonbondedForce, cutoff: float) -> str:
     """
     The factor and definitions that apply the switching function of a
@@ -150,6 +157,8 @@ class AttractionStrength(CollectiveVariable, openmm.CustomNonbondedForce):
         If the contrast group overlaps with group1 or group2
     ValueError
         If contrastScaling is negative
+    ValueError
+        If the nonbonded force does not use a cutoff distance
 
     Examples
     --------
@@ -218,7 +227,7 @@ class AttractionStrength(CollectiveVariable, openmm.CustomNonbondedForce):
                 )
             if contrastScaling < 0:
                 raise ValueError("contrastScaling must be non-negative")
-        cutoff = nonbondedForce.getCutoffDistance().value_in_unit(mmunit.nanometers)
+        cutoff = _cutoff_distance(nonbondedForce)
         # Pairs with sigma = 0 have no Lennard-Jones term, and select() keeps their
         # NaN derivatives out of the forces
         expression = (

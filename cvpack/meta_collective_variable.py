@@ -202,7 +202,7 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
         if any(map(system.isVirtualSite, range(system.getNumParticles()))):
             # The inner context has no virtual sites, so the forces on them would not
             # be distributed to the atoms that define them
-            inner_context = self._contextWithVirtualSites(forces, context)
+            inner_context = self._getContextWithVirtualSites(forces, context)
             forces = inner_context.getSystem().getForces()
         masses = [compute_effective_mass(force, inner_context) for force in forces]
         return {
@@ -210,8 +210,26 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
             for cv, mass in zip(self._cvs, masses)
         }
 
+    def _getContextWithVirtualSites(
+        self, forces: t.Sequence[openmm.Force], context: openmm.Context
+    ) -> openmm.Context:
+        # Built once per outer context, then updated with its current state
+        cached = getattr(self, "_virtual_site_context", None)
+        if cached is None or cached[0] is not context:
+            cached = (context, self._createContextWithVirtualSites(forces, context))
+            self._virtual_site_context = cached
+        new_context = cached[1]
+        state = context.getState(getPositions=True, getParameters=True)
+        new_context.setPeriodicBoxVectors(*state.getPeriodicBoxVectors())
+        new_context.setPositions(state.getPositions())
+        parameters = state.getParameters()
+        for name in new_context.getParameters():
+            if name in parameters:
+                new_context.setParameter(name, parameters[name])
+        return new_context
+
     @staticmethod
-    def _contextWithVirtualSites(
+    def _createContextWithVirtualSites(
         forces: t.Sequence[openmm.Force], context: openmm.Context
     ) -> openmm.Context:
         system = openmm.XmlSerializer.deserialize(
@@ -225,13 +243,9 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
             )
             force_copy.setForceGroup(group)
             system.addForce(force_copy)
-        new_context = openmm.Context(
+        return openmm.Context(
             system, openmm.VerletIntegrator(1.0), context.getPlatform()
         )
-        state = context.getState(getPositions=True)
-        new_context.setPeriodicBoxVectors(*state.getPeriodicBoxVectors())
-        new_context.setPositions(state.getPositions())
-        return new_context
 
     def getParameterDefaultValues(self) -> dict[str, Quantity]:
         """
