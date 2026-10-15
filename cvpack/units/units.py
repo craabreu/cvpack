@@ -175,12 +175,56 @@ class Quantity(mmunit.Quantity, Serializable):
 Quantity.registerTag("!cvpack.Quantity")
 
 
+_MD_BASE_UNITS = {
+    "mass": "dalton",
+    "length": "nanometer",
+    "time": "picosecond",
+    "charge": "elementary_charge",
+    "temperature": "kelvin",
+    "amount": "mole",
+    "angle": "radian",
+}
+
+
+def _md_exponents(unit: mmunit.Unit) -> dict[str, float]:
+    """Exponents of a unit in the base units of OpenMM's MD unit system."""
+    exponents = {}
+    for base, exponent in unit.iter_all_base_units():
+        name = _MD_BASE_UNITS[base.dimension.name]
+        exponents[name] = exponents.get(name, 0) + exponent
+    if "dalton" in exponents:
+        # openmm.unit defines the dalton as gram/mole
+        exponents["mole"] = exponents.get("mole", 0) + exponents["dalton"]
+    return {name: value for name, value in exponents.items() if value != 0}
+
+
+def _md_unit(exponents: dict[str, float]) -> mmunit.Unit:
+    """Build a unit from MD exponents, writing Da nm^2/ps^2 as kJ/mol if possible."""
+    exponents = dict(exponents)
+    result = mmunit.dimensionless
+    energy = exponents.get("dalton", 0)
+    if energy != 0 and exponents.get("picosecond", 0) == -2 * energy:
+        # The time dimension comes only from energies, so express them in kJ/mol
+        result = result * mmunit.kilojoule_per_mole**energy
+        exponents.pop("dalton")
+        exponents.pop("picosecond")
+        exponents["nanometer"] = exponents.get("nanometer", 0) - 2 * energy
+    for name, exponent in exponents.items():
+        if exponent != 0:
+            result = result * getattr(mmunit, name) ** exponent
+    return result
+
+
 def in_md_units(
     quantity: ScalarQuantity | VectorQuantity | MatrixQuantity,
 ) -> Quantity:
     """
     Return a quantity in the MD unit system (e.g. mass in Da, distance in
     nm, time in ps, temperature in K, energy in kJ/mol, angle in rad).
+
+    As in kJ/mol, amounts of substance follow OpenMM's per-mole convention: a quantity
+    defined per particle, such as a pressure, is multiplied by Avogadro's number
+    (e.g. 1 bar becomes 0.0602 kJ/(mol nm^3)). Energies are written in kJ/mol.
 
     Parameters
     ----------
@@ -192,12 +236,18 @@ def in_md_units(
     Quantity
         The quantity in the MD unit system.
     """
-    if mmunit.is_quantity(quantity):
-        unit_in_md_system = quantity.unit.in_unit_system(mmunit.md_unit_system)
-        if 1 * quantity.unit / unit_in_md_system == 1:
-            return Quantity(quantity)
-        return Quantity(quantity.in_units_of(unit_in_md_system))
-    return quantity * Unit("dimensionless")
+    if not mmunit.is_quantity(quantity):
+        return quantity * Unit("dimensionless")
+    moles = _md_exponents(quantity.unit).get("mole", 0)
+    if moles != 0:
+        quantity = quantity * mmunit.AVOGADRO_CONSTANT_NA**moles
+    exponents = _md_exponents(quantity.unit)
+    exponents.pop("mole", None)
+    unit_in_md_system = _md_unit(exponents)
+    if 1 * quantity.unit / unit_in_md_system == 1:
+        # Keep the original spelling of a unit that is already in the MD system
+        return Quantity(quantity)
+    return Quantity(quantity.in_units_of(unit_in_md_system))
 
 
 def value_in_md_units(
@@ -219,5 +269,5 @@ def value_in_md_units(
 
     """
     if mmunit.is_quantity(quantity):
-        return quantity.value_in_unit_system(mmunit.md_unit_system)
+        return in_md_units(quantity).value
     return quantity
