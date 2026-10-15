@@ -122,6 +122,9 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
     ) -> None:
         super().__init__(function)
         variables = list(variables)
+        names = [cv.getName() for cv in variables]
+        if len(set(names)) != len(names):
+            raise ValueError(f"The names of the variables must be unique: {names}")
         self._cvs = tuple(map(copy, variables))
         self._parameters = {k: in_md_units(v) for k, v in parameters.items()}
         for cv in self._cvs:
@@ -194,14 +197,41 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
         """
         self.getCollectiveVariableValues(context)  # update the inner context positions
         inner_context = self.getInnerContext(context)
-        masses = [
-            compute_effective_mass(force, inner_context)
-            for force in inner_context.getSystem().getForces()
-        ]
+        forces = inner_context.getSystem().getForces()
+        system = context.getSystem()
+        if any(map(system.isVirtualSite, range(system.getNumParticles()))):
+            # The inner context has no virtual sites, so the forces on them would not
+            # be distributed to the atoms that define them
+            inner_context = self._contextWithVirtualSites(forces, context)
+            forces = inner_context.getSystem().getForces()
+        masses = [compute_effective_mass(force, inner_context) for force in forces]
         return {
             cv.getName(): Quantity(mass, cv.getMassUnit())
             for cv, mass in zip(self._cvs, masses)
         }
+
+    @staticmethod
+    def _contextWithVirtualSites(
+        forces: t.Sequence[openmm.Force], context: openmm.Context
+    ) -> openmm.Context:
+        system = openmm.XmlSerializer.deserialize(
+            openmm.XmlSerializer.serialize(context.getSystem())
+        )
+        while system.getNumForces() > 0:
+            system.removeForce(0)
+        for group, force in enumerate(forces):
+            force_copy = openmm.XmlSerializer.deserialize(
+                openmm.XmlSerializer.serialize(force)
+            )
+            force_copy.setForceGroup(group)
+            system.addForce(force_copy)
+        new_context = openmm.Context(
+            system, openmm.VerletIntegrator(1.0), context.getPlatform()
+        )
+        state = context.getState(getPositions=True)
+        new_context.setPeriodicBoxVectors(*state.getPeriodicBoxVectors())
+        new_context.setPositions(state.getPositions())
+        return new_context
 
     def getParameterDefaultValues(self) -> dict[str, Quantity]:
         """

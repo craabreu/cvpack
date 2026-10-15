@@ -158,7 +158,14 @@ class PathInCVSpace(BasePathCV):
             values = variable.getPeriodicBounds()
             if values is not None:
                 periods[i] = value_in_md_units(values[1] - values[0])
-        for values in milestones:
+        lower_bounds = {
+            i: value_in_md_units(variables[i].getPeriodicBounds()[0]) for i in periods
+        }
+        for milestone in milestones:
+            values = list(milestone)
+            for j, period in periods.items():
+                # With the milestone in the CV's periodic range, |delta| <= period
+                values[j] = lower_bounds[j] + (values[j] - lower_bounds[j]) % period
             deltas = [f"({value}-cv{j})" for j, value in enumerate(values)]
             for j, period in periods.items():
                 deltas[j] = f"min(abs{deltas[j]},{period}-abs{deltas[j]})"

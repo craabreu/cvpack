@@ -11,7 +11,6 @@ import typing as t
 
 import openmm
 from openmm import unit as mmunit
-from openmm.app.element import hydrogen
 from openmm.app.topology import Residue
 
 from .collective_variable import CollectiveVariable
@@ -139,7 +138,9 @@ class ResidueCoordination(CollectiveVariable, openmm.CustomCentroidBondForce):
             atoms = [
                 atom.index
                 for atom in res.atoms()
-                if includeHydrogens or atom.element is not hydrogen
+                if includeHydrogens
+                or atom.element is None
+                or atom.element.atomic_number != 1  # hydrogen or deuterium
             ]
             self.addGroup(atoms, *([] if weighByMass else [[1] * len(atoms)]))
         for idx1 in range(nr1):

@@ -46,8 +46,9 @@ class HelixRMSDContent(BaseRMSDContent):
     Every group :math:`{\bf g}_{i,j}` is formed by the N, :math:`{\rm C}_\alpha`,
     :math:`{\rm C}_\beta`, C, and O atoms of the six residues involved, thus
     comprising 30 atoms in total. In the case of glycine, the missing
-    :math:`{\rm C}_\beta` atom is replaced by the corresponding H atom. The RMSD is
-    then defined as
+    :math:`{\rm C}_\beta` atom is replaced by the hydrogen atom in its position (HA3 in
+    PDB naming, HA1 in CHARMM naming), whereas PLUMED uses HA2. The RMSD is then
+    defined as
 
     .. math::
 

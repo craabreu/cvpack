@@ -134,6 +134,9 @@ class CompositeRMSD(BaseRMSD, CompositeRMSDForce):
             raise ValueError("numAtoms is required when referencePositions is a dict")
         num_atoms = numAtoms or len(referencePositions)
         groups = [[int(atom) for atom in group] for group in groups]
+        if not all(groups):
+            # CompositeRMSDForce would interpret an empty group as all atoms
+            raise ValueError("The groups of atoms must not be empty")
         defined_coords = self._getDefinedCoords(referencePositions, sum(groups, []))
         all_coords = self._getAllCoords(defined_coords, num_atoms)
         super().__init__(all_coords)

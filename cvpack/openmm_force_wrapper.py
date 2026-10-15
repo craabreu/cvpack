@@ -47,10 +47,10 @@ class OpenMMForceWrapper(CollectiveVariable, openmm.Force):
     >>> from openmm import unit
     >>> from openmmtools import testsystems
     >>> model = testsystems.AlanineDipeptideVacuum()
-    >>> angle = openmm.CustomAngleForce("theta")
-    >>> _ = angle.addAngle(0, 1, 2)
+    >>> torsion = openmm.CustomTorsionForce("theta")
+    >>> _ = torsion.addTorsion(4, 6, 8, 14)
     >>> cv = cvpack.OpenMMForceWrapper(
-    ...     angle,
+    ...     torsion,
     ...     unit.radian,
     ...     periodicBounds=[-np.pi, np.pi] * unit.radian,
     ... )
@@ -60,9 +60,9 @@ class OpenMMForceWrapper(CollectiveVariable, openmm.Force):
     >>> context = openmm.Context(model.system, integrator, platform)
     >>> context.setPositions(model.positions)
     >>> cv.getValue(context)
-    1.911... rad
+    -3.1415... rad
     >>> cv.getEffectiveMass(context)
-    0.00538... nm**2 Da/(rad**2)
+    0.04795... nm**2 Da/(rad**2)
     """
 
     def __init__(

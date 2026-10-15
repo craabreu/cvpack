@@ -234,3 +234,36 @@ def test_composite_rmsd_value():
 def test_from_openmm_force_rejects_non_forces():
     with pytest.raises(TypeError):
         cvpack.AtomicFunction.fromOpenMMForce("not a force", unit.nanometer)
+
+
+def test_rmsd_rejects_empty_group():
+    with pytest.raises(ValueError, match="empty"):
+        cvpack.RMSD({0: [0, 0, 0]}, [], 3)
+
+
+def test_composite_rmsd_rejects_empty_groups():
+    reference = np.zeros((4, 3))
+    with pytest.raises(ValueError, match="empty"):
+        cvpack.CompositeRMSD(reference, [[0, 1], []])
+
+
+def test_meta_cv_rejects_duplicate_names():
+    first, second = cvpack.Distance(0, 1), cvpack.Distance(1, 2)
+    with pytest.raises(ValueError, match="unique"):
+        cvpack.MetaCollectiveVariable("distance", [first, second], unit.nanometer)
+
+
+def test_path_in_cv_space_wraps_milestones_of_periodic_cvs():
+    expected = _dipeptide_path(RADIANS, np.pi / 6)
+    for shift in (2 * np.pi, 4 * np.pi, -6 * np.pi):
+        assert _dipeptide_path(RADIANS + shift, np.pi / 6) == pytest.approx(expected)
+
+
+def test_from_openmm_force_rejects_periodicdistance():
+    force = openmm.CustomExternalForce("periodicdistance(x, y, z, x0, y0, z0)^2")
+    force.addPerParticleParameter("x0")
+    force.addPerParticleParameter("y0")
+    force.addPerParticleParameter("z0")
+    force.addParticle(0, [0.0, 0.0, 0.0])
+    with pytest.raises(ValueError, match="periodicdistance"):
+        cvpack.AtomicFunction.fromOpenMMForce(force, unit.nanometer)

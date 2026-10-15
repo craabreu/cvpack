@@ -58,6 +58,8 @@ class HelixHBondContent(CollectiveVariable, openmm.CustomBondForce):
         The threshold distance for a hydrogen bond.
     halfExponent
         The parameter :math:`m` of the step function.
+    normalize
+        Whether to normalize the collective variable to the range :math:`[0, 1]`.
     name
         The name of the collective variable.
 
