@@ -70,7 +70,7 @@ the same values of equal-named parameters.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>function</strong> (<em>str</em>) – The function to be evaluated. It must be a valid
+<li><p><strong>function</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The function to be evaluated. It must be a valid
 <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomCompoundBondForce.html">openmm.CustomCompoundBondForce</a> expression.</p></li>
 <li><p><strong>groups</strong> (<em>ArrayLike</em>) – The indices of the atoms in each group, passed as a 2D array-like object of
 shape <cite>(m, n)</cite>, where <cite>m</cite> is the number of groups and <cite>n</cite> is the number of
@@ -81,11 +81,11 @@ with the MD unit system (mass in <cite>daltons</cite>, distance in <cite>nanomet
 in <cite>picoseconds</cite>, temperature in <cite>kelvin</cite>, energy in <cite>kilojoules_per_mol</cite>,
 angle in <cite>radians</cite>). If the collective variable does not have a unit, use
 <cite>unit.dimensionless</cite>.</p></li>
-<li><p><strong>periodicBounds</strong> (<em>VectorQuantity</em><em> | </em><em>None</em>) – The lower and upper bounds of the collective variable if it is periodic, or
+<li><p><strong>periodicBounds</strong> (<a class="reference internal" href="../type_aliases.html#cvpack.units.VectorQuantity" title="cvpack.units.VectorQuantity"><em>VectorQuantity</em></a><em> | </em><em>None</em>) – The lower and upper bounds of the collective variable if it is periodic, or
 <code class="docutils literal notranslate"><span class="pre">None</span></code> if it is not.</p></li>
-<li><p><strong>pbc</strong> (<em>bool</em>) – Whether to use periodic boundary conditions when computing atomic distances.
+<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – Whether to use periodic boundary conditions when computing atomic distances.
 This should be <code class="docutils literal notranslate"><span class="pre">True</span></code> for periodic systems.</p></li>
-<li><p><strong>name</strong> (<em>str</em>) – The name of the collective variable.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The name of the collective variable.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
@@ -96,8 +96,8 @@ case, it will define a global <a class="extlink-OpenMM reference external" href=
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ValueError</strong> – If the groups are not specified as a 1D or 2D array-like object.</p></li>
-<li><p><strong>ValueError</strong> – If the unit of the collective variable is not compatible with the MD unit
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the groups are not specified as a 1D or 2D array-like object.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the unit of the collective variable is not compatible with the MD unit
     system.</p></li>
 </ul>
 </dd>
@@ -147,7 +147,7 @@ case, it will define a global <a class="extlink-OpenMM reference external" href=
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>system</strong> (<em>System</em>) – The system to which this collective variable should be added</p></li>
-<li><p><strong>setUnusedForceGroup</strong> (<em>bool</em>) – If True, the force group of this collective variable will be set to the
+<li><p><strong>setUnusedForceGroup</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the force group of this collective variable will be set to the
 first available force group in the system</p></li>
 </ul>
 </dd>
@@ -167,17 +167,17 @@ compatible with the MD unit system (mass in <cite>daltons</cite>, distance in
 <cite>nanometers</cite>, time in <cite>picoseconds</cite>, temperature in <cite>kelvin</cite>, energy in
 <cite>kilojoules_per_mol</cite>, angle in <cite>radians</cite>). If the collective variable
 does not have a unit, use <cite>unit.dimensionless</cite>.</p></li>
-<li><p><strong>periodicBounds</strong> (<em>Quantity</em><em> | </em><em>ndarray</em><em> | </em><em>Vec3</em><em> | </em><em>None</em>) – The lower and upper bounds of the collective variable if it is periodic,
+<li><p><strong>periodicBounds</strong> (<em>TypeAliasForwardRef</em><em>(</em><em>'cvpack.units.VectorQuantity'</em><em>) </em><em>| </em><em>None</em>) – The lower and upper bounds of the collective variable if it is periodic,
 or <code class="docutils literal notranslate"><span class="pre">None</span></code> if it is not. This parameter is considered only if <cite>force</cite> is
 a custom <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Force.html">openmm.Force</a>.</p></li>
-<li><p><strong>pbc</strong> (<em>bool</em><em> | </em><em>None</em>) – Whether to use periodic boundary conditions when computing atomic
+<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em> | </em><em>None</em>) – Whether to use periodic boundary conditions when computing atomic
 distances. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, use the setting of <cite>force</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>TypeError</strong> – If the force is not convertible to an <a class="reference internal" href="#cvpack.AtomicFunction" title="cvpack.AtomicFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomicFunction</span></code></a></p></li>
-<li><p><strong>ValueError</strong> – If the force uses tabulated functions, or if it is a
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.15)"><strong>TypeError</strong></a> – If the force is not convertible to an <a class="reference internal" href="#cvpack.AtomicFunction" title="cvpack.AtomicFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomicFunction</span></code></a></p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the force uses tabulated functions, or if it is a
     <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomExternalForce.html">openmm.CustomExternalForce</a> that uses <code class="docutils literal notranslate"><span class="pre">periodicdistance</span></code></p></li>
 </ul>
 </dd>
@@ -270,7 +270,7 @@ is set to an available force group in the system by default.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>context</strong> (<em>Context</em>) – The context at which this collective variable’s effective mass should be
 evaluated.</p></li>
-<li><p><strong>allowReinitialization</strong> (<em>bool</em>) – If True, the context will be reinitialized if necessary.</p></li>
+<li><p><strong>allowReinitialization</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the context will be reinitialized if necessary.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -327,7 +327,7 @@ angles and the radius of gyration of an alanine dipeptide molecule in water:</p>
 <dd><p>Get the name of this collective variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -376,7 +376,7 @@ is set to an available force group in the system by default.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>context</strong> (<em>Context</em>) – The context at which this collective variable should be evaluated.</p></li>
-<li><p><strong>allowReinitialization</strong> (<em>bool</em>) – If True, the context will be reinitialized if necessary.</p></li>
+<li><p><strong>allowReinitialization</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the context will be reinitialized if necessary.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -468,6 +468,7 @@ the radius of gyration of an alanine dipeptide molecule in water:</p>
 <li class="toctree-l2"><a class="reference internal" href="TorsionSimilarity.html">TorsionSimilarity</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../type_aliases.html">Type Aliases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reporting.html">Reporting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../serialization.html">Serialization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">Bibliography</a></li>

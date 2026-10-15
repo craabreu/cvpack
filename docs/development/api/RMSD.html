@@ -68,18 +68,18 @@ molecules, it is possible to circumvent the issue by calling the method
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>referencePositions</strong> (<em>Quantity</em><em> | </em><em>ndarray</em><em> | </em><em>Sequence</em><em>[</em><em>Vec3</em><em>] </em><em>| </em><em>Sequence</em><em>[</em><em>ndarray</em><em>] </em><em>| </em><em>dict</em><em>[</em><em>int</em><em>, </em><em>Quantity</em><em> | </em><em>ndarray</em><em> | </em><em>Vec3</em><em>]</em>) – The reference coordinates, which can be either a coordinate matrix or a mapping
+<li><p><strong>referencePositions</strong> (<a class="reference internal" href="../type_aliases.html#cvpack.units.MatrixQuantity" title="cvpack.units.MatrixQuantity"><em>MatrixQuantity</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>, </em><a class="reference internal" href="../type_aliases.html#cvpack.units.VectorQuantity" title="cvpack.units.VectorQuantity"><em>VectorQuantity</em></a><em>]</em>) – The reference coordinates, which can be either a coordinate matrix or a mapping
 from atom indices to coordinate vectors. It must contain all atoms in <code class="docutils literal notranslate"><span class="pre">group</span></code>,
 and does not need to contain all atoms in the system. See <code class="docutils literal notranslate"><span class="pre">numAtoms</span></code> below.</p></li>
-<li><p><strong>group</strong> (<em>Iterable</em><em>[</em><em>int</em><em>]</em>) – A sequence of atom indices.</p></li>
-<li><p><strong>numAtoms</strong> (<em>int</em><em> | </em><em>None</em>) – The total number of atoms in the system, including those that are not in
+<li><p><strong>group</strong> (<em>t.Iterable</em><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>]</em>) – A sequence of atom indices.</p></li>
+<li><p><strong>numAtoms</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em> | </em><em>None</em>) – The total number of atoms in the system, including those that are not in
 <code class="docutils literal notranslate"><span class="pre">group</span></code>. This argument is necessary only if <code class="docutils literal notranslate"><span class="pre">referencePositions</span></code> does not
 contain all atoms in the system.</p></li>
-<li><p><strong>name</strong> (<em>str</em>) – The name of the collective variable.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The name of the collective variable.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If referencePositions is a dict and numAtoms is not given</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If referencePositions is a dict and numAtoms is not given</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
@@ -110,7 +110,7 @@ contain all atoms in the system.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>system</strong> (<em>System</em>) – The system to which this collective variable should be added</p></li>
-<li><p><strong>setUnusedForceGroup</strong> (<em>bool</em>) – If True, the force group of this collective variable will be set to the
+<li><p><strong>setUnusedForceGroup</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the force group of this collective variable will be set to the
 first available force group in the system</p></li>
 </ul>
 </dd>
@@ -143,7 +143,7 @@ is set to an available force group in the system by default.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>context</strong> (<em>Context</em>) – The context at which this collective variable’s effective mass should be
 evaluated.</p></li>
-<li><p><strong>allowReinitialization</strong> (<em>bool</em>) – If True, the context will be reinitialized if necessary.</p></li>
+<li><p><strong>allowReinitialization</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the context will be reinitialized if necessary.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -200,7 +200,7 @@ angles and the radius of gyration of an alanine dipeptide molecule in water:</p>
 <dd><p>Get the name of this collective variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -292,7 +292,7 @@ is set to an available force group in the system by default.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>context</strong> (<em>Context</em>) – The context at which this collective variable should be evaluated.</p></li>
-<li><p><strong>allowReinitialization</strong> (<em>bool</em>) – If True, the context will be reinitialized if necessary.</p></li>
+<li><p><strong>allowReinitialization</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the context will be reinitialized if necessary.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -384,6 +384,7 @@ the radius of gyration of an alanine dipeptide molecule in water:</p>
 <li class="toctree-l2"><a class="reference internal" href="TorsionSimilarity.html">TorsionSimilarity</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../type_aliases.html">Type Aliases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reporting.html">Reporting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../serialization.html">Serialization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">Bibliography</a></li>

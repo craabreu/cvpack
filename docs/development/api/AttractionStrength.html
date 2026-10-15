@@ -112,27 +112,27 @@ this collective variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>group1</strong> (<em>Iterable</em><em>[</em><em>int</em><em>]</em>) – The first atom group.</p></li>
-<li><p><strong>group2</strong> (<em>Iterable</em><em>[</em><em>int</em><em>]</em>) – The second atom group.</p></li>
-<li><p><strong>nonbondedForce</strong> (<em>NonbondedForce</em>) – The <code class="xref py py-class docutils literal notranslate"><span class="pre">openmm.NonbondedForce</span></code> object from which to collect the necessary
+<li><p><strong>group1</strong> (<em>t.Iterable</em><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>]</em>) – The first atom group.</p></li>
+<li><p><strong>group2</strong> (<em>t.Iterable</em><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>]</em>) – The second atom group.</p></li>
+<li><p><strong>nonbondedForce</strong> (<em>openmm.NonbondedForce</em>) – The <code class="xref py py-class docutils literal notranslate"><span class="pre">openmm.NonbondedForce</span></code> object from which to collect the necessary
 parameters.</p></li>
-<li><p><strong>contrastGroup</strong> (<em>Iterable</em><em>[</em><em>int</em><em>] </em><em>| </em><em>None</em>) – An optional third atom group to contrast the attraction strength between
+<li><p><strong>contrastGroup</strong> (<em>t.Iterable</em><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>] </em><em>| </em><em>None</em>) – An optional third atom group to contrast the attraction strength between
 <span class="math notranslate nohighlight">\({\bf g}_1\)</span> and <span class="math notranslate nohighlight">\({\bf g}_2\)</span> with that between <span class="math notranslate nohighlight">\({\bf g}_1\)</span>
 and <span class="math notranslate nohighlight">\({\bf g}_3\)</span>.</p></li>
-<li><p><strong>reference</strong> (<em>Quantity</em><em> | </em><em>Real</em><em> | </em><em>Context</em>) – A reference value (in energy units per mole) to which the collective variable
+<li><p><strong>reference</strong> (<a class="reference internal" href="../type_aliases.html#cvpack.units.ScalarQuantity" title="cvpack.units.ScalarQuantity"><em>ScalarQuantity</em></a><em> | </em><em>openmm.Context</em>) – A reference value (in energy units per mole) to which the collective variable
 should be normalized. One can also provide a <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a> object from
 which to extract a reference attraction strength. The extracted value will be
 <span class="math notranslate nohighlight">\(S_{1,2}({\bf r})\)</span> for <span class="math notranslate nohighlight">\(E_{\rm ref} = 1\)</span>, regardless of whether
 <cite>contrastGroup</cite> is provided or not.</p></li>
-<li><p><strong>contrastScaling</strong> (<em>float</em>) – A scaling factor <span class="math notranslate nohighlight">\(\alpha\)</span> to balance the contributions of the two
+<li><p><strong>contrastScaling</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – A scaling factor <span class="math notranslate nohighlight">\(\alpha\)</span> to balance the contributions of the two
 interactions. The default is 1.0.</p></li>
-<li><p><strong>name</strong> (<em>str</em>) – The name of the collective variable.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The name of the collective variable.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>ValueError</strong> – If the contrast group overlaps with group1 or group2</p></li>
-<li><p><strong>ValueError</strong> – If contrastScaling is negative</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the contrast group overlaps with group1 or group2</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If contrastScaling is negative</p></li>
 </ul>
 </dd>
 </dl>
@@ -191,7 +191,7 @@ interactions. The default is 1.0.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>system</strong> (<em>System</em>) – The system to which this collective variable should be added</p></li>
-<li><p><strong>setUnusedForceGroup</strong> (<em>bool</em>) – If True, the force group of this collective variable will be set to the
+<li><p><strong>setUnusedForceGroup</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the force group of this collective variable will be set to the
 first available force group in the system</p></li>
 </ul>
 </dd>
@@ -224,7 +224,7 @@ is set to an available force group in the system by default.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>context</strong> (<em>Context</em>) – The context at which this collective variable’s effective mass should be
 evaluated.</p></li>
-<li><p><strong>allowReinitialization</strong> (<em>bool</em>) – If True, the context will be reinitialized if necessary.</p></li>
+<li><p><strong>allowReinitialization</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the context will be reinitialized if necessary.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -281,7 +281,7 @@ angles and the radius of gyration of an alanine dipeptide molecule in water:</p>
 <dd><p>Get the name of this collective variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -330,7 +330,7 @@ is set to an available force group in the system by default.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>context</strong> (<em>Context</em>) – The context at which this collective variable should be evaluated.</p></li>
-<li><p><strong>allowReinitialization</strong> (<em>bool</em>) – If True, the context will be reinitialized if necessary.</p></li>
+<li><p><strong>allowReinitialization</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the context will be reinitialized if necessary.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -422,6 +422,7 @@ the radius of gyration of an alanine dipeptide molecule in water:</p>
 <li class="toctree-l2"><a class="reference internal" href="TorsionSimilarity.html">TorsionSimilarity</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../type_aliases.html">Type Aliases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reporting.html">Reporting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../serialization.html">Serialization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">Bibliography</a></li>

@@ -75,24 +75,24 @@ into exclusions in this collective variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>group1</strong> (<em>Sequence</em><em>[</em><em>int</em><em>]</em>) – The indices of the atoms in the first group.</p></li>
-<li><p><strong>group2</strong> (<em>Sequence</em><em>[</em><em>int</em><em>]</em>) – The indices of the atoms in the second group.</p></li>
-<li><p><strong>nonbondedForce</strong> (<em>NonbondedForce</em>) – The <code class="xref py py-class docutils literal notranslate"><span class="pre">openmm.NonbondedForce</span></code> object from which the total number of
+<li><p><strong>group1</strong> (<em>t.Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>]</em>) – The indices of the atoms in the first group.</p></li>
+<li><p><strong>group2</strong> (<em>t.Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>]</em>) – The indices of the atoms in the second group.</p></li>
+<li><p><strong>nonbondedForce</strong> (<em>openmm.NonbondedForce</em>) – The <code class="xref py py-class docutils literal notranslate"><span class="pre">openmm.NonbondedForce</span></code> object from which the total number of
 atoms, the exclusions, and whether to use periodic boundary conditions are
 taken.</p></li>
-<li><p><strong>reference</strong> (<em>Quantity</em><em> | </em><em>Real</em><em> | </em><em>Context</em>) – A dimensionless reference value to which the collective variable should be
+<li><p><strong>reference</strong> (<a class="reference internal" href="../type_aliases.html#cvpack.units.ScalarQuantity" title="cvpack.units.ScalarQuantity"><em>ScalarQuantity</em></a><em> | </em><em>openmm.Context</em>) – A dimensionless reference value to which the collective variable should be
 normalized. One can also provide a <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a> object from which to
 obtain the reference number of contacts.</p></li>
-<li><p><strong>stepFunction</strong> (<em>str</em>) – The function “step(1-x)” (for analysis only) or a continuous approximation
+<li><p><strong>stepFunction</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The function “step(1-x)” (for analysis only) or a continuous approximation
 thereof.</p></li>
-<li><p><strong>thresholdDistance</strong> (<em>Quantity</em><em> | </em><em>Real</em>) – The threshold distance (<span class="math notranslate nohighlight">\(r_0\)</span>) for considering two atoms as being in
+<li><p><strong>thresholdDistance</strong> (<a class="reference internal" href="../type_aliases.html#cvpack.units.ScalarQuantity" title="cvpack.units.ScalarQuantity"><em>ScalarQuantity</em></a>) – The threshold distance (<span class="math notranslate nohighlight">\(r_0\)</span>) for considering two atoms as being in
 contact.</p></li>
-<li><p><strong>cutoffFactor</strong> (<em>float</em>) – The factor <span class="math notranslate nohighlight">\(x_c\)</span> that multiplies the threshold distance to define
+<li><p><strong>cutoffFactor</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The factor <span class="math notranslate nohighlight">\(x_c\)</span> that multiplies the threshold distance to define
 the cutoff distance.</p></li>
-<li><p><strong>switchFactor</strong> (<em>float</em><em> | </em><em>None</em>) – The factor <span class="math notranslate nohighlight">\(x_s\)</span> that multiplies the threshold distance to define
+<li><p><strong>switchFactor</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em> | </em><em>None</em>) – The factor <span class="math notranslate nohighlight">\(x_s\)</span> that multiplies the threshold distance to define
 the distance at which the step function starts switching off smoothly.
 If None, it switches off abruptly at the cutoff distance.</p></li>
-<li><p><strong>name</strong> (<em>str</em>) – The name of the collective variable.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The name of the collective variable.</p></li>
 </ul>
 </dd>
 </dl>
@@ -142,7 +142,7 @@ If None, it switches off abruptly at the cutoff distance.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>system</strong> (<em>System</em>) – The system to which this collective variable should be added</p></li>
-<li><p><strong>setUnusedForceGroup</strong> (<em>bool</em>) – If True, the force group of this collective variable will be set to the
+<li><p><strong>setUnusedForceGroup</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the force group of this collective variable will be set to the
 first available force group in the system</p></li>
 </ul>
 </dd>
@@ -175,7 +175,7 @@ is set to an available force group in the system by default.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>context</strong> (<em>Context</em>) – The context at which this collective variable’s effective mass should be
 evaluated.</p></li>
-<li><p><strong>allowReinitialization</strong> (<em>bool</em>) – If True, the context will be reinitialized if necessary.</p></li>
+<li><p><strong>allowReinitialization</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the context will be reinitialized if necessary.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -232,7 +232,7 @@ angles and the radius of gyration of an alanine dipeptide molecule in water:</p>
 <dd><p>Get the name of this collective variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -281,7 +281,7 @@ is set to an available force group in the system by default.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>context</strong> (<em>Context</em>) – The context at which this collective variable should be evaluated.</p></li>
-<li><p><strong>allowReinitialization</strong> (<em>bool</em>) – If True, the context will be reinitialized if necessary.</p></li>
+<li><p><strong>allowReinitialization</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the context will be reinitialized if necessary.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -373,6 +373,7 @@ the radius of gyration of an alanine dipeptide molecule in water:</p>
 <li class="toctree-l2"><a class="reference internal" href="TorsionSimilarity.html">TorsionSimilarity</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../type_aliases.html">Type Aliases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reporting.html">Reporting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../serialization.html">Serialization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">Bibliography</a></li>

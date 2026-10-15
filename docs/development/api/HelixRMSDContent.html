@@ -90,13 +90,13 @@ used for the collective variable <a class="reference external" href="https://www
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>residues</strong> (<em>Sequence</em><em>[</em><em>Residue</em><em>]</em>) – The residue sequence to be used in the calculation.</p></li>
-<li><p><strong>numAtoms</strong> (<em>int</em>) – The total number of atoms in the system (required by OpenMM).</p></li>
-<li><p><strong>thresholdRMSD</strong> (<em>Quantity</em><em> | </em><em>Real</em>) – The threshold RMSD value for considering a group of residues as a close
+<li><p><strong>residues</strong> (<em>t.Sequence</em><em>[</em><em>mmapp.topology.Residue</em><em>]</em>) – The residue sequence to be used in the calculation.</p></li>
+<li><p><strong>numAtoms</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – The total number of atoms in the system (required by OpenMM).</p></li>
+<li><p><strong>thresholdRMSD</strong> (<a class="reference internal" href="../type_aliases.html#cvpack.units.ScalarQuantity" title="cvpack.units.ScalarQuantity"><em>ScalarQuantity</em></a>) – The threshold RMSD value for considering a group of residues as a close
 match to an ideal alpha-helix.</p></li>
-<li><p><strong>stepFunction</strong> (<em>str</em>) – The form of the step function <span class="math notranslate nohighlight">\(S(x)\)</span>.</p></li>
-<li><p><strong>normalize</strong> (<em>bool</em>) – Whether to normalize the collective variable to the range <span class="math notranslate nohighlight">\([0, 1]\)</span>.</p></li>
-<li><p><strong>name</strong> (<em>str</em>) – The name of the collective variable.</p></li>
+<li><p><strong>stepFunction</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The form of the step function <span class="math notranslate nohighlight">\(S(x)\)</span>.</p></li>
+<li><p><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – Whether to normalize the collective variable to the range <span class="math notranslate nohighlight">\([0, 1]\)</span>.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The name of the collective variable.</p></li>
 </ul>
 </dd>
 </dl>
@@ -139,7 +139,7 @@ match to an ideal alpha-helix.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>system</strong> (<em>System</em>) – The system to which this collective variable should be added</p></li>
-<li><p><strong>setUnusedForceGroup</strong> (<em>bool</em>) – If True, the force group of this collective variable will be set to the
+<li><p><strong>setUnusedForceGroup</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the force group of this collective variable will be set to the
 first available force group in the system</p></li>
 </ul>
 </dd>
@@ -172,7 +172,7 @@ is set to an available force group in the system by default.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>context</strong> (<em>Context</em>) – The context at which this collective variable’s effective mass should be
 evaluated.</p></li>
-<li><p><strong>allowReinitialization</strong> (<em>bool</em>) – If True, the context will be reinitialized if necessary.</p></li>
+<li><p><strong>allowReinitialization</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the context will be reinitialized if necessary.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -229,7 +229,7 @@ angles and the radius of gyration of an alanine dipeptide molecule in water:</p>
 <dd><p>Get the name of this collective variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -278,7 +278,7 @@ is set to an available force group in the system by default.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>context</strong> (<em>Context</em>) – The context at which this collective variable should be evaluated.</p></li>
-<li><p><strong>allowReinitialization</strong> (<em>bool</em>) – If True, the context will be reinitialized if necessary.</p></li>
+<li><p><strong>allowReinitialization</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the context will be reinitialized if necessary.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -370,6 +370,7 @@ the radius of gyration of an alanine dipeptide molecule in water:</p>
 <li class="toctree-l2"><a class="reference internal" href="TorsionSimilarity.html">TorsionSimilarity</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../type_aliases.html">Type Aliases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reporting.html">Reporting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../serialization.html">Serialization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">Bibliography</a></li>
