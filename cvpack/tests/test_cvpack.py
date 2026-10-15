@@ -230,9 +230,9 @@ def test_radius_of_gyration_squared():
 
 
 @pytest.mark.parametrize(
-    "cv_class", [cvpack.RadiusOfGyration, cvpack.RadiusOfGyrationSq]
+    "cvClass", [cvpack.RadiusOfGyration, cvpack.RadiusOfGyrationSq]
 )
-def test_radius_of_gyration_with_massless_atoms(cv_class):
+def test_radius_of_gyration_with_massless_atoms(cvClass):
     """
     Test whether a radius of gyration can be computed for a group containing massless
     particles (e.g., virtual sites or rigid-body members).
@@ -246,14 +246,14 @@ def test_radius_of_gyration_with_massless_atoms(cv_class):
         model.system.setParticleMass(atom, 0)
     positions = model.positions.value_in_unit(unit.nanometers)
     rgsq = np.sum((positions - positions.mean(axis=0)) ** 2) / num_atoms
-    cv = cv_class(range(num_atoms))
+    cv = cvClass(range(num_atoms))
     cv.addToSystem(model.system)
     integrator = openmm.CustomIntegrator(0)
     platform = openmm.Platform.getPlatformByName("Reference")
     context = openmm.Context(model.system, integrator, platform)
     context.setPositions(model.positions)
     value = value_in_md_units(cv.getValue(context))
-    if cv_class is cvpack.RadiusOfGyration:
+    if cvClass is cvpack.RadiusOfGyration:
         value = value**2
     assert value == pytest.approx(rgsq)
 

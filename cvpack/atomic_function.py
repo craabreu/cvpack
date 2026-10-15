@@ -162,7 +162,7 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
             self._registerPeriodicBounds(*periodicBounds)
 
     @classmethod
-    def _fromCustomForce(
+    def _fromCustomForce(  # pylint: disable=too-many-branches
         cls,
         force: t.Union[
             openmm.CustomAngleForce,
@@ -190,6 +190,8 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
             number, item, definition = 4, "Torsion", "; theta=dihedral(p1, p2, p3, p4)"
         elif isinstance(force, openmm.CustomCompoundBondForce):
             number, item, definition = force.getNumParticlesPerBond(), "Bond", ""
+        else:
+            raise TypeError(f"Unsupported force type: {type(force).__name__}")
         function = force.getEnergyFunction() + definition
         parameters = {}
         for i in range(force.getNumGlobalParameters()):
