@@ -55,20 +55,21 @@ rounded to seven decimal places, and printed to the screen::
         cvpack.HelixTorsionContent(residues, normalize=True),
     ]
     for cv in helix_content:
-        model.system.addForce(cv)
+        cv.addToSystem(model.system)
     platform = openmm.Platform.getPlatformByName('Reference')
     integrator = openmm.VerletIntegrator(1.0 * unit.femtoseconds)
     context = openmm.Context(model.system, integrator, platform)
     context.setPositions(model.positions)
     for cv in helix_content:
-        print(f"{cv.getName()}: {cv.getValue(context)}")
+        value = cv.getValue(context) / cv.getUnit()
+        print(f"{type(cv).__name__}: {value:.7f}")
 
 The output should be::
 
-    HelixAngleContent: 0.9873989 dimensionless
-    HelixHBondContent: 0.93414 dimensionless
-    HelixRMSDContent: 0.9946999 dimensionless
-    HelixTorsionContent: 0.918571 dimensionless
+    HelixAngleContent: 0.9873989
+    HelixHBondContent: 0.9341400
+    HelixRMSDContent: 0.9992768
+    HelixTorsionContent: 0.9185710
 
 The output shows that the normalized helix content of residues LYS60-ARG80 of the T4 lysozyme L99A
 molecule is close to one, as expected, no matter which measure is used.

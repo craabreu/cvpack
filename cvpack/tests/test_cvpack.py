@@ -960,8 +960,8 @@ def test_meta_collective_variable():
 
     """
     model = testsystems.AlanineDipeptideVacuum()
-    phi = cvpack.Torsion(6, 8, 14, 16, name="phi")
-    psi = cvpack.Torsion(8, 14, 16, 18, name="psi")
+    phi = cvpack.Torsion(4, 6, 8, 14, name="phi")
+    psi = cvpack.Torsion(6, 8, 14, 16, name="psi")
     meta = cvpack.MetaCollectiveVariable(
         "0.5*kappa*(phi^2 + psi^2)",
         [phi, psi],
