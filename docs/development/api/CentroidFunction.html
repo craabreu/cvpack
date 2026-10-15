@@ -42,7 +42,7 @@
 <h1>CentroidFunction<a class="headerlink" href="#centroidfunction" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="cvpack.CentroidFunction">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">cvpack.</span></span><span class="sig-name descname"><span class="pre">CentroidFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groups</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collections</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodicBounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighByMass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'centroid_function'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cvpack/centroid_function.html#CentroidFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cvpack.CentroidFunction" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">cvpack.</span></span><span class="sig-name descname"><span class="pre">CentroidFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groups</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collections</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodicBounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighByMass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'centroid_function'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cvpack/centroid_function.html#CentroidFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cvpack.CentroidFunction" title="Link to this definition">¶</a></dt>
 <dd><p>A generic function of the centroids of <span class="math notranslate nohighlight">\(m \times n\)</span> atoms groups split
 into <cite>m</cite> collections of <cite>n</cite> groups:</p>
 <div class="math notranslate nohighlight">
@@ -52,7 +52,7 @@ into <cite>m</cite> collections of <cite>n</cite> groups:</p>
     \dots,
     {\bf g}^i_n({\bf r})
 \Big)\]</div>
-<p>where <span class="math notranslate nohighlight">\(F\)</span> is a user-defined function and <span class="math notranslate nohighlight">\({\bf g}^i_1({\bf r})\)</span> is the
+<p>where <span class="math notranslate nohighlight">\(F\)</span> is a user-defined function and <span class="math notranslate nohighlight">\({\bf g}^i_j({\bf r})\)</span> is the
 centroid of the <span class="math notranslate nohighlight">\(j\)</span>-th group of atoms of the <span class="math notranslate nohighlight">\(i\)</span>-th collection of
 groups.</p>
 <p>The centroid of a group of atoms is defined as:</p>
@@ -60,23 +60,23 @@ groups.</p>
 \[{\bf g}_j({\bf r}) = \frac{1}{N_j} \sum_{k=1}^{N_j} {\bf r}_{k,j}\]</div>
 <p>where <span class="math notranslate nohighlight">\(N_j\)</span> is the number of atoms in group <span class="math notranslate nohighlight">\(j\)</span> and
 <span class="math notranslate nohighlight">\({\bf r}_{k,j}\)</span> is the coordinate of the <span class="math notranslate nohighlight">\(k\)</span>-th atom of group
-<span class="math notranslate nohighlight">\(j\)</span>. Optionally, the centroid can be weighted by the mass of each atom
-in the group. In this case, it is redefined as:</p>
+<span class="math notranslate nohighlight">\(j\)</span>. Optionally (and by default), the centroid can be weighted by the mass of
+each atom in the group. In this case, it is redefined as:</p>
 <div class="math notranslate nohighlight">
 \[{\bf g}_j({\bf r}) = \frac{1}{M_j} \sum_{k=1}^{N_j} m_{k,j} {\bf r}_{k,j}\]</div>
 <p>where <span class="math notranslate nohighlight">\(M_j\)</span> is the total mass of atom group <span class="math notranslate nohighlight">\(j\)</span> and <span class="math notranslate nohighlight">\(m_{k,j}\)</span> is
 the mass of the <span class="math notranslate nohighlight">\(k\)</span>-th atom in group <span class="math notranslate nohighlight">\(j\)</span>.</p>
 <p>The function <span class="math notranslate nohighlight">\(F\)</span> is defined as a string and can be any expression supported
-by <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomCompoundBondForce.html">openmm.CustomCompoundBondForce</a>. If the expression contains named parameters,
+by <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomCentroidBondForce.html">openmm.CustomCentroidBondForce</a>. If the expression contains named parameters,
 the value of each parameter can be passed in one of three ways:</p>
 <ol class="arabic simple">
 <li><p>By a semicolon-separated definition in the function string, such as described
-in the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomCompoundBondForce.html">openmm.CustomCompoundBondForce</a> documentation. In this case, the
+in the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomCentroidBondForce.html">openmm.CustomCentroidBondForce</a> documentation. In this case, the
 parameter value will be the same for all collections of atom groups.</p></li>
 <li><p>By a 1D array or list of length <span class="math notranslate nohighlight">\(m\)</span> passed as a keyword argument to
-the <a class="reference internal" href="AtomicFunction.html#cvpack.AtomicFunction" title="cvpack.AtomicFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomicFunction</span></code></a> constructor. In this case, each value will be
+the <a class="reference internal" href="#cvpack.CentroidFunction" title="cvpack.CentroidFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">CentroidFunction</span></code></a> constructor. In this case, each value will be
 assigned to a different collection of atom groups.</p></li>
-<li><p>By a scalar passed as a keyword argument to the <a class="reference internal" href="AtomicFunction.html#cvpack.AtomicFunction" title="cvpack.AtomicFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomicFunction</span></code></a>
+<li><p>By a scalar passed as a keyword argument to the <a class="reference internal" href="#cvpack.CentroidFunction" title="cvpack.CentroidFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">CentroidFunction</span></code></a>
 constructor. In this case, the parameter will apply to all collections of atom
 groups and will become available for on-the-fly modification during a simulation
 via the <code class="docutils literal notranslate"><span class="pre">setParameter</span></code> method of an <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a> object. <strong>Warning</strong>:
@@ -101,7 +101,8 @@ groups per collection. If a 1D object is passed, it is assumed that <cite>m</cit
 <cite>n</cite> is the length of the object.</p></li>
 <li><p><strong>periodicBounds</strong> (<em>Quantity</em><em> | </em><em>ndarray</em><em> | </em><em>Vec3</em><em> | </em><em>None</em>) – The periodic bounds of the collective variable if it is periodic, or <cite>None</cite> if
 it is not.</p></li>
-<li><p><strong>pbc</strong> (<em>bool</em>) – Whether to use periodic boundary conditions.</p></li>
+<li><p><strong>pbc</strong> (<em>bool</em>) – Whether to use periodic boundary conditions. This should be <code class="docutils literal notranslate"><span class="pre">True</span></code> for
+periodic systems.</p></li>
 <li><p><strong>weighByMass</strong> (<em>bool</em>) – Whether to define the centroid as the center of mass of the group instead of
 the geometric center.</p></li>
 <li><p><strong>name</strong> (<em>str</em>) – The name of the collective variable.</p></li>
@@ -145,7 +146,7 @@ the latter case, it will define a global <a class="extlink-OpenMM reference exte
 <span class="gp">&gt;&gt;&gt; </span><span class="n">context</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Context</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">,</span> <span class="n">integrator</span><span class="p">,</span> <span class="n">platform</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">res_coord</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<span class="go">33.0 dimensionless</span>
+<span class="go">28.0 dimensionless</span>
 </pre></div>
 </div>
 <p>Recompute the residue coordination using the centroid function:</p>
@@ -159,7 +160,7 @@ the latter case, it will define a global <a class="extlink-OpenMM reference exte
 <span class="gp">&gt;&gt;&gt; </span><span class="n">colvar</span><span class="o">.</span><span class="n">addToSystem</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">reinitialize</span><span class="p">(</span><span class="n">preserveState</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">colvar</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<span class="go">33.0 dimensionless</span>
+<span class="go">28.0 dimensionless</span>
 </pre></div>
 </div>
 <p class="rubric">Methods</p>

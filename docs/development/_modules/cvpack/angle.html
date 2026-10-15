@@ -44,7 +44,6 @@
 
 <span class="sd">"""</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">openmm</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">openmm</span><span class="w"> </span><span class="kn">import</span> <span class="n">unit</span> <span class="k">as</span> <span class="n">mmunit</span>
 
@@ -113,8 +112,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">setUsesPeriodicBoundaryConditions</span><span class="p">(</span><span class="n">pbc</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_registerCV</span><span class="p">(</span>
             <span class="n">name</span><span class="p">,</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">radians</span><span class="p">,</span> <span class="n">atom1</span><span class="o">=</span><span class="n">atom1</span><span class="p">,</span> <span class="n">atom2</span><span class="o">=</span><span class="n">atom2</span><span class="p">,</span> <span class="n">atom3</span><span class="o">=</span><span class="n">atom3</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_registerPeriodicBounds</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span></div>
+        <span class="p">)</span></div>
 
 
 

@@ -54,10 +54,10 @@ by the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org
 the value of each parameter can be passed in one of two ways:</p>
 <ol class="arabic simple">
 <li><p>By a semicolon-separated definition in the function string, such as described
-in the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomCompoundBondForce.html">openmm.CustomCompoundBondForce</a> documentation. In this case, the
-parameter value will be the same for all groups of atoms.</p></li>
-<li><p>By a scalar passed as a keyword argument to the <a class="reference internal" href="AtomicFunction.html#cvpack.AtomicFunction" title="cvpack.AtomicFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomicFunction</span></code></a>
-constructor. In this case, the parameter will apply to all atom groups and will
+in the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomCVForce.html">openmm.CustomCVForce</a> documentation. In this case, the parameter value
+is fixed.</p></li>
+<li><p>By a scalar passed as a keyword argument to the
+<a class="reference internal" href="#cvpack.MetaCollectiveVariable" title="cvpack.MetaCollectiveVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaCollectiveVariable</span></code></a> constructor. In this case, the parameter will
 become available for on-the-fly modification during a simulation via the
 <code class="docutils literal notranslate"><span class="pre">setParameter</span></code> method of an <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a> object. <strong>Warning</strong>: other
 collective variables or <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Force.html">openmm.Force</a> objects in the same system will share

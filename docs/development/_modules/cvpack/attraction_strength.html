@@ -228,7 +228,7 @@
         <span class="n">expression</span> <span class="o">=</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">"-(lj + coul)</span><span class="si">{</span><span class="s1">'*sign1*sign2'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">contrasting</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">''</span><span class="si">}</span><span class="s2">/ref"</span>
             <span class="s2">"; lj = 4*epsilon*(1/y^2 - 1/y)"</span>
-            <span class="sa">f</span><span class="s2">"; coul = </span><span class="si">{</span><span class="n">ONE_4PI_EPS0</span><span class="si">}</span><span class="s2">*q1q2*(1/x + (x^2 - 3)/2)"</span>
+            <span class="sa">f</span><span class="s2">"; coul = </span><span class="si">{</span><span class="n">ONE_4PI_EPS0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">cutoff</span><span class="si">}</span><span class="s2">*q1q2*(1/x + (x^2 - 3)/2)"</span>
             <span class="sa">f</span><span class="s2">"; x = r/</span><span class="si">{</span><span class="n">cutoff</span><span class="si">}</span><span class="s2">"</span>
             <span class="s2">"; y = abs((r/sigma)^6 - 2) + 2"</span>
             <span class="s2">"; q1q2 = min(0, charge1*charge2)"</span>

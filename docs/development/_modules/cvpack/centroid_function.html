@@ -71,7 +71,7 @@
 <span class="sd">            {\bf g}^i_n({\bf r})</span>
 <span class="sd">        \Big)</span>
 
-<span class="sd">    where :math:`F` is a user-defined function and :math:`{\bf g}^i_1({\bf r})` is the</span>
+<span class="sd">    where :math:`F` is a user-defined function and :math:`{\bf g}^i_j({\bf r})` is the</span>
 <span class="sd">    centroid of the :math:`j`-th group of atoms of the :math:`i`-th collection of</span>
 <span class="sd">    groups.</span>
 
@@ -83,8 +83,8 @@
 
 <span class="sd">    where :math:`N_j` is the number of atoms in group :math:`j` and</span>
 <span class="sd">    :math:`{\bf r}_{k,j}` is the coordinate of the :math:`k`-th atom of group</span>
-<span class="sd">    :math:`j`. Optionally, the centroid can be weighted by the mass of each atom</span>
-<span class="sd">    in the group. In this case, it is redefined as:</span>
+<span class="sd">    :math:`j`. Optionally (and by default), the centroid can be weighted by the mass of</span>
+<span class="sd">    each atom in the group. In this case, it is redefined as:</span>
 
 <span class="sd">    .. math::</span>
 
@@ -94,18 +94,18 @@
 <span class="sd">    the mass of the :math:`k`-th atom in group :math:`j`.</span>
 
 <span class="sd">    The function :math:`F` is defined as a string and can be any expression supported</span>
-<span class="sd">    by :OpenMM:`CustomCompoundBondForce`. If the expression contains named parameters,</span>
+<span class="sd">    by :OpenMM:`CustomCentroidBondForce`. If the expression contains named parameters,</span>
 <span class="sd">    the value of each parameter can be passed in one of three ways:</span>
 
 <span class="sd">    #. By a semicolon-separated definition in the function string, such as described</span>
-<span class="sd">       in the :OpenMM:`CustomCompoundBondForce` documentation. In this case, the</span>
+<span class="sd">       in the :OpenMM:`CustomCentroidBondForce` documentation. In this case, the</span>
 <span class="sd">       parameter value will be the same for all collections of atom groups.</span>
 
 <span class="sd">    #. By a 1D array or list of length :math:`m` passed as a keyword argument to</span>
-<span class="sd">       the :class:`AtomicFunction` constructor. In this case, each value will be</span>
+<span class="sd">       the :class:`CentroidFunction` constructor. In this case, each value will be</span>
 <span class="sd">       assigned to a different collection of atom groups.</span>
 
-<span class="sd">    #. By a scalar passed as a keyword argument to the :class:`AtomicFunction`</span>
+<span class="sd">    #. By a scalar passed as a keyword argument to the :class:`CentroidFunction`</span>
 <span class="sd">       constructor. In this case, the parameter will apply to all collections of atom</span>
 <span class="sd">       groups and will become available for on-the-fly modification during a simulation</span>
 <span class="sd">       via the ``setParameter`` method of an :OpenMM:`Context` object. **Warning**:</span>
@@ -135,7 +135,8 @@
 <span class="sd">        The periodic bounds of the collective variable if it is periodic, or `None` if</span>
 <span class="sd">        it is not.</span>
 <span class="sd">    pbc</span>
-<span class="sd">        Whether to use periodic boundary conditions.</span>
+<span class="sd">        Whether to use periodic boundary conditions. This should be ``True`` for</span>
+<span class="sd">        periodic systems.</span>
 <span class="sd">    weighByMass</span>
 <span class="sd">        Whether to define the centroid as the center of mass of the group instead of</span>
 <span class="sd">        the geometric center.</span>
@@ -184,7 +185,7 @@
 <span class="sd">    &gt;&gt;&gt; context = openmm.Context(model.system, integrator, platform)</span>
 <span class="sd">    &gt;&gt;&gt; context.setPositions(model.positions)</span>
 <span class="sd">    &gt;&gt;&gt; res_coord.getValue(context)</span>
-<span class="sd">    33.0 dimensionless</span>
+<span class="sd">    28.0 dimensionless</span>
 
 <span class="sd">    Recompute the residue coordination using the centroid function:</span>
 
@@ -198,7 +199,7 @@
 <span class="sd">    &gt;&gt;&gt; colvar.addToSystem(model.system)</span>
 <span class="sd">    &gt;&gt;&gt; context.reinitialize(preserveState=True)</span>
 <span class="sd">    &gt;&gt;&gt; colvar.getValue(context)</span>
-<span class="sd">    33.0 dimensionless</span>
+<span class="sd">    28.0 dimensionless</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -208,7 +209,7 @@
         <span class="n">groups</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
         <span class="n">collections</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">periodicBounds</span><span class="p">:</span> <span class="n">VectorQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">pbc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">pbc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">weighByMass</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"centroid_function"</span><span class="p">,</span>
         <span class="o">**</span><span class="n">parameters</span><span class="p">:</span> <span class="n">ScalarQuantity</span> <span class="o">|</span> <span class="n">VectorQuantity</span><span class="p">,</span>

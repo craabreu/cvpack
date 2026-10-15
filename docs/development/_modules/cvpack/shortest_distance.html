@@ -38,7 +38,7 @@
 <span></span><span class="sd">"""</span>
 <span class="sd">.. class:: ShortestDistance</span>
 <span class="sd">   :platform: Linux, MacOS, Windows</span>
-<span class="sd">   :synopsis: The number of contacts between two atom groups</span>
+<span class="sd">   :synopsis: A smooth approximation for the shortest distance between two atom groups</span>
 
 <span class="sd">.. classauthor:: Charlles Abreu &lt;craabreu@gmail.com&gt;</span>
 
@@ -77,7 +77,7 @@
 
 <span class="sd">        S_w({\bf r}) = e^{-\beta} +</span>
 <span class="sd">            \sum_{i \in {\bf g}_1} \sum_{j \in {\bf g}_2 \atop r_{ij} &lt; r_c}</span>
-<span class="sd">                r_{ij} e^{-\beta \frac{r_{ij}}{r_c}}</span>
+<span class="sd">                e^{-\beta \frac{r_{ij}}{r_c}}</span>
 
 <span class="sd">    where :math:`r_{ij} = \|{\bf r}_j - {\bf r}_i\|` is the distance between atoms</span>
 <span class="sd">    :math:`i` and :math:`j`, :math:`{\bf g}_1` and :math:`{\bf g}_2` are the sets of</span>
@@ -113,7 +113,8 @@
 <span class="sd">    cutoffDistance</span>
 <span class="sd">        The cutoff distance for evaluating atom pairs.</span>
 <span class="sd">    pbc</span>
-<span class="sd">        Whether to consider periodic boundary conditions in distance calculations.</span>
+<span class="sd">        Whether to use periodic boundary conditions in distance calculations. This</span>
+<span class="sd">        should be ``True`` for periodic systems.</span>
 <span class="sd">    name</span>
 <span class="sd">        The name of the collective variable.</span>
 
@@ -152,7 +153,7 @@
         <span class="n">numAtoms</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
         <span class="n">cutoffDistance</span><span class="p">:</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">Quantity</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">nanometers</span><span class="p">),</span>
-        <span class="n">pbc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">pbc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"shortest_distance"</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">rc</span> <span class="o">=</span> <span class="n">cutoffDistance</span>

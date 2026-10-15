@@ -42,7 +42,7 @@
 <h1>ShortestDistance<a class="headerlink" href="#shortestdistance" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="cvpack.ShortestDistance">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">cvpack.</span></span><span class="sig-name descname"><span class="pre">ShortestDistance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numAtoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoffDistance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span> <span class="pre">nm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'shortest_distance'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cvpack/shortest_distance.html#ShortestDistance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cvpack.ShortestDistance" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">cvpack.</span></span><span class="sig-name descname"><span class="pre">ShortestDistance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numAtoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoffDistance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span> <span class="pre">nm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'shortest_distance'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cvpack/shortest_distance.html#ShortestDistance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cvpack.ShortestDistance" title="Link to this definition">¶</a></dt>
 <dd><p>A smooth approximation for the shortest distance between two atom groups:</p>
 <div class="math notranslate nohighlight">
 \[r_{\rm min}({\bf r}) = \frac{S_{rw}({\bf r})}{S_w({\bf r})}\]</div>
@@ -55,7 +55,7 @@
 <div class="math notranslate nohighlight">
 \[S_w({\bf r}) = e^{-\beta} +
     \sum_{i \in {\bf g}_1} \sum_{j \in {\bf g}_2 \atop r_{ij} &lt; r_c}
-        r_{ij} e^{-\beta \frac{r_{ij}}{r_c}}\]</div>
+        e^{-\beta \frac{r_{ij}}{r_c}}\]</div>
 <p>where <span class="math notranslate nohighlight">\(r_{ij} = \|{\bf r}_j - {\bf r}_i\|\)</span> is the distance between atoms
 <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span>, <span class="math notranslate nohighlight">\({\bf g}_1\)</span> and <span class="math notranslate nohighlight">\({\bf g}_2\)</span> are the sets of
 indices of the atoms in the first and second groups, respectively, <span class="math notranslate nohighlight">\(r_c\)</span> is
@@ -82,7 +82,8 @@ of the groups. This is necessary for the correct initialization of the
 collective variable.</p></li>
 <li><p><strong>beta</strong> (<em>float</em>) – The parameter that controls the degree of approximation.</p></li>
 <li><p><strong>cutoffDistance</strong> (<em>Quantity</em>) – The cutoff distance for evaluating atom pairs.</p></li>
-<li><p><strong>pbc</strong> (<em>bool</em>) – Whether to consider periodic boundary conditions in distance calculations.</p></li>
+<li><p><strong>pbc</strong> (<em>bool</em>) – Whether to use periodic boundary conditions in distance calculations. This
+should be <code class="docutils literal notranslate"><span class="pre">True</span></code> for periodic systems.</p></li>
 <li><p><strong>name</strong> (<em>str</em>) – The name of the collective variable.</p></li>
 </ul>
 </dd>

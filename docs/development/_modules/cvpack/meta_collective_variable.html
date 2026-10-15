@@ -76,11 +76,11 @@
 <span class="sd">    the value of each parameter can be passed in one of two ways:</span>
 
 <span class="sd">    #. By a semicolon-separated definition in the function string, such as described</span>
-<span class="sd">       in the :OpenMM:`CustomCompoundBondForce` documentation. In this case, the</span>
-<span class="sd">       parameter value will be the same for all groups of atoms.</span>
+<span class="sd">       in the :OpenMM:`CustomCVForce` documentation. In this case, the parameter value</span>
+<span class="sd">       is fixed.</span>
 
-<span class="sd">    #. By a scalar passed as a keyword argument to the :class:`AtomicFunction`</span>
-<span class="sd">       constructor. In this case, the parameter will apply to all atom groups and will</span>
+<span class="sd">    #. By a scalar passed as a keyword argument to the</span>
+<span class="sd">       :class:`MetaCollectiveVariable` constructor. In this case, the parameter will</span>
 <span class="sd">       become available for on-the-fly modification during a simulation via the</span>
 <span class="sd">       ``setParameter`` method of an :OpenMM:`Context` object. **Warning**: other</span>
 <span class="sd">       collective variables or :OpenMM:`Force` objects in the same system will share</span>

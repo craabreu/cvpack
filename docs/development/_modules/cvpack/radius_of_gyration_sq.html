@@ -68,7 +68,7 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">        {\bf r}_c({\bf r}) = \frac{1}{n} \sum_{i=j}^n {\bf r}_j</span>
+<span class="sd">        {\bf r}_c({\bf r}) = \frac{1}{n} \sum_{j=1}^n {\bf r}_j</span>
 
 <span class="sd">    Optionally, the radius of gyration can be computed with respect to the center of</span>
 <span class="sd">    mass of the group. In this case, the geometric center is replaced by:</span>
@@ -124,8 +124,8 @@
         <span class="n">group</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="n">num_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"distance(g1, g2)^2/</span><span class="si">{</span><span class="n">num_atoms</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">pbc</span><span class="p">,</span> <span class="n">weighByMass</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">group</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">addBond</span><span class="p">([</span><span class="n">atom</span><span class="p">,</span> <span class="n">num_atoms</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_atoms</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addBond</span><span class="p">([</span><span class="n">index</span><span class="p">,</span> <span class="n">num_atoms</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_registerCV</span><span class="p">(</span>
             <span class="n">name</span><span class="p">,</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">nanometers</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="n">weighByMass</span><span class="o">=</span><span class="n">weighByMass</span>
         <span class="p">)</span></div>

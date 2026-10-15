@@ -110,6 +110,7 @@
 <span class="sd">        ``None`` if it is not.</span>
 <span class="sd">    pbc</span>
 <span class="sd">        Whether to use periodic boundary conditions when computing atomic distances.</span>
+<span class="sd">        This should be ``True`` for periodic systems.</span>
 <span class="sd">    name</span>
 <span class="sd">        The name of the collective variable.</span>
 
@@ -172,7 +173,7 @@
         <span class="n">unit</span><span class="p">:</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">Unit</span><span class="p">,</span>
         <span class="n">groups</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
         <span class="n">periodicBounds</span><span class="p">:</span> <span class="n">VectorQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">pbc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">pbc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"atomic_function"</span><span class="p">,</span>
         <span class="o">**</span><span class="n">parameters</span><span class="p">:</span> <span class="n">ScalarQuantity</span> <span class="o">|</span> <span class="n">VectorQuantity</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -302,7 +303,7 @@
             <span class="s2">"(k/2)*(angle(p1, p2, p3)-theta0)^2"</span><span class="p">,</span>
             <span class="n">unit</span><span class="p">,</span>
             <span class="n">atoms</span><span class="p">,</span>
-            <span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span>
+            <span class="kc">None</span><span class="p">,</span>
             <span class="n">pbc</span><span class="p">,</span>
             <span class="o">**</span><span class="n">parameters</span><span class="p">,</span>
         <span class="p">)</span>
@@ -329,7 +330,7 @@
             <span class="s2">"k*(1 + cos(periodicity*dihedral(p1, p2, p3, p4) - phase))"</span><span class="p">,</span>
             <span class="n">unit</span><span class="p">,</span>
             <span class="n">atoms</span><span class="p">,</span>
-            <span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span>
+            <span class="kc">None</span><span class="p">,</span>
             <span class="n">pbc</span><span class="p">,</span>
             <span class="o">**</span><span class="n">parameters</span><span class="p">,</span>
         <span class="p">)</span>
