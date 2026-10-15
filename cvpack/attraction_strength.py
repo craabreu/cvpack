@@ -189,7 +189,7 @@ class AttractionStrength(CollectiveVariable, openmm.CustomNonbondedForce):
         expression = (
             f"-(lj + coul){'*sign1*sign2' if contrasting else ''}/ref"
             "; lj = 4*epsilon*(1/y^2 - 1/y)"
-            f"; coul = {ONE_4PI_EPS0}*q1q2*(1/x + (x^2 - 3)/2)"
+            f"; coul = {ONE_4PI_EPS0 / cutoff}*q1q2*(1/x + (x^2 - 3)/2)"
             f"; x = r/{cutoff}"
             "; y = abs((r/sigma)^6 - 2) + 2"
             "; q1q2 = min(0, charge1*charge2)"

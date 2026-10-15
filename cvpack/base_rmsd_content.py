@@ -7,6 +7,7 @@
 
 """
 
+import re
 from importlib import resources
 
 import numpy as np
@@ -53,7 +54,7 @@ class BaseRMSDContent(CollectiveVariable, openmm.CustomCVForce):
             summands = []
             definitions = []
             for i in range(start, min(start + CHUNK_SIZE, num_residue_blocks)):
-                summands.append(stepFunction.replace("x", f"x{i}"))
+                summands.append(re.sub(r"\bx\b", f"x{i}", stepFunction))
                 definitions.append(f"x{i}=rmsd{i}/{value_in_md_units(thresholdRMSD)}")
             summation = "+".join(summands)
             if normalize:
@@ -94,7 +95,14 @@ class BaseRMSDContent(CollectiveVariable, openmm.CustomCVForce):
     def _getAtomList(residue: mmapp.topology.Residue) -> list[int]:
         residue_atoms = {atom.name: atom.index for atom in residue.atoms()}
         if residue.name == "GLY":
-            residue_atoms["CB"] = residue_atoms["HA2"]
+            # The hydrogen on the CB side is HA3 in PDB/Amber naming (HA2, HA3) and
+            # HA1 in CHARMM naming (HA1, HA2), as in OpenMM's pdbNames.xml
+            hydrogen = next((h for h in ("HA3", "HA1") if h in residue_atoms), None)
+            if hydrogen is None:
+                raise ValueError(
+                    f"Atom HA3 or HA1 not found in residue {residue.name}{residue.id}"
+                )
+            residue_atoms["CB"] = residue_atoms[hydrogen]
         atom_list = []
         for atom in ("N", "CA", "CB", "C", "O"):
             try:

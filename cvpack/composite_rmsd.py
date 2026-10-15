@@ -49,7 +49,7 @@ class CompositeRMSD(BaseRMSD, CompositeRMSDForce):
     :math:`{\bf A}(\bf q)` is the rotation matrix corresponding to a unit quaternion
     :math:`{\bf q}`, :math:`{\bf r}_i` and :math:`{\bf r}_i^{\rm ref}` are the
     positions of atom :math:`i` in the current and reference structures, respectively,
-    :math:`{\bf c}_j` is the position of atom :math:`i`, given by
+    :math:`{\bf c}_j` is the centroid of group :math:`j`, given by
 
     .. math::
 

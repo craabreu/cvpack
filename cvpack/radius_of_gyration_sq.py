@@ -29,7 +29,7 @@ class RadiusOfGyrationSq(BaseRadiusOfGyration):
 
     .. math::
 
-        {\bf r}_c({\bf r}) = \frac{1}{n} \sum_{i=j}^n {\bf r}_j
+        {\bf r}_c({\bf r}) = \frac{1}{n} \sum_{j=1}^n {\bf r}_j
 
     Optionally, the radius of gyration can be computed with respect to the center of
     mass of the group. In this case, the geometric center is replaced by:
@@ -85,8 +85,8 @@ class RadiusOfGyrationSq(BaseRadiusOfGyration):
         group = list(group)
         num_atoms = len(group)
         super().__init__(2, f"distance(g1, g2)^2/{num_atoms}", group, pbc, weighByMass)
-        for atom in group:
-            self.addBond([atom, num_atoms])
+        for index in range(num_atoms):
+            self.addBond([index, num_atoms])
         self._registerCV(
             name, mmunit.nanometers**2, group=group, pbc=pbc, weighByMass=weighByMass
         )

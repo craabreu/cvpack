@@ -407,8 +407,12 @@ def test_helix_torsion_content():
     traj = mdtraj.Trajectory(positions, mdtraj.Topology.from_openmm(model.topology))
     _, phi = mdtraj.compute_phi(traj)
     _, psi = mdtraj.compute_psi(traj)
-    x = (np.rad2deg(phi.ravel()[:-1]) + 63.8) / 25
-    y = (np.rad2deg(psi.ravel()[1:]) + 41.1) / 25
+
+    def wrap(angle):
+        return (angle + 180) % 360 - 180
+
+    x = wrap(np.rad2deg(phi.ravel()[:-1]) + 63.8) / 25
+    y = wrap(np.rad2deg(psi.ravel()[1:]) + 41.1) / 25
     computed_value = np.sum(1 / (1 + x**6) + 1 / (1 + y**6)) / 2
 
     residues = list(model.topology.residues())
@@ -541,7 +545,7 @@ def test_helix_rmsd_content(normalize: bool):
         for residue in residues[stard:end]:
             residue_atoms = {atom.name: atom.index for atom in residue.atoms()}
             if residue.name == "GLY":
-                residue_atoms["CB"] = residue_atoms["HA2"]
+                residue_atoms["CB"] = residue_atoms["HA3"]
             atoms += tuple(residue_atoms[name] for name in ["N", "CA", "CB", "C", "O"])
         return atoms
 

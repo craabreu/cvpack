@@ -43,8 +43,7 @@ class HelixHBondContent(CollectiveVariable, openmm.CustomBondForce):
     .. note::
 
         The residues must be a contiguous sequence from a single chain, ordered from the
-        N- to the C-terminus. Due to an OpenMM limitation, the maximum supported number
-        of residues is 37.
+        N- to the C-terminus.
 
     Parameters
     ----------

@@ -122,7 +122,7 @@ class HelixRMSDContent(BaseRMSDContent):
     >>> helix_content.getValue(context)
     15.98... dimensionless
     >>> normalized_helix_content.getValue(context)
-    0.998... dimensionless
+    0.999... dimensionless
     """
 
     def __init__(
