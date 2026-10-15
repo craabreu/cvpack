@@ -764,6 +764,27 @@ def test_path_in_cv_space(metric: cvpack.path.Metric):
 
 
 @pytest.mark.parametrize("metric", [cvpack.path.progress, cvpack.path.deviation])
+def test_path_in_cv_space_is_stable_far_from_the_path(metric):
+    # With sigma = 1 pm, the unshifted Gaussian weights underflow to zero
+    milestones = np.array([[0.1], [0.2], [0.3]])
+    sigma, distance = 0.001, 1.5
+    cv = cvpack.PathInCVSpace(metric, [cvpack.Distance(0, 1)], milestones, sigma)
+    system = openmm.System()
+    for _ in range(2):
+        system.addParticle(1.0)
+    cv.addToSystem(system)
+    context = make_context(system, [[0, 0, 0], [distance, 0, 0]])
+    exponents = -((distance - milestones.ravel()) ** 2) / (2 * sigma**2)
+    if metric is cvpack.path.progress:
+        weights = np.exp(exponents - exponents.max())
+        expected = np.sum(np.arange(3) * weights) / np.sum(weights) / 2
+    else:
+        expected = -2 * sigma**2 * logsumexp(exponents)
+    value = cv.getValue(context)
+    assert value / value.unit == pytest.approx(expected)
+
+
+@pytest.mark.parametrize("metric", [cvpack.path.progress, cvpack.path.deviation])
 def test_path_in_rmsd_space(metric: cvpack.path.Metric):
     """
     Test whether a path in RMSD space is computed correctly.
