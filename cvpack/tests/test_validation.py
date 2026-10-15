@@ -5,7 +5,7 @@ Tests for argument validation and unit conversion in cvpack collective variables
 import numpy as np
 import openmm
 import pytest
-from openmm import unit
+from openmm import app, unit
 from openmmtools import testsystems
 
 import cvpack
@@ -118,3 +118,62 @@ def test_attraction_strength_rejects_overlapping_contrast_group():
 def test_torsion_similarity_rejects_lists_of_different_lengths():
     with pytest.raises(ValueError, match="same length"):
         cvpack.TorsionSimilarity([[0, 1, 2, 3], [1, 2, 3, 4]], [[2, 3, 4, 5]])
+
+
+@pytest.fixture(scope="module")
+def lysozyme_residues():
+    return list(testsystems.LysozymeImplicit().topology.residues())
+
+
+@pytest.mark.parametrize(
+    "factory",
+    [
+        cvpack.HelixAngleContent,
+        cvpack.HelixTorsionContent,
+        cvpack.HelixHBondContent,
+        lambda residues: cvpack.HelixRMSDContent(residues, 5000),
+    ],
+)
+def test_helix_cvs_reject_non_contiguous_residues(lysozyme_residues, factory):
+    residues = lysozyme_residues[59:66] + lysozyme_residues[67:75]
+    with pytest.raises(ValueError, match="contiguous"):
+        factory(residues)
+
+
+def test_sheet_rmsd_content_checks_each_block(lysozyme_residues):
+    residues = lysozyme_residues[0:8] + lysozyme_residues[20:28]
+    cvpack.SheetRMSDContent(residues, 5000, blockSizes=[8, 8])
+    with pytest.raises(ValueError, match="contiguous"):
+        cvpack.SheetRMSDContent(residues, 5000)
+
+
+def test_contiguity_check_detects_chain_breaks():
+    topology = app.Topology()
+    for _ in range(2):
+        chain = topology.addChain()
+        for _ in range(3):
+            residue = topology.addResidue("ALA", chain)
+            topology.addAtom("CA", app.element.carbon, residue)
+    with pytest.raises(ValueError, match="contiguous"):
+        cvpack.utils.check_contiguous_residues(list(topology.residues()))
+
+
+@pytest.mark.parametrize(
+    "factory, size",
+    [
+        (cvpack.HelixAngleContent, 2),
+        (cvpack.HelixTorsionContent, 2),
+        (cvpack.HelixHBondContent, 4),
+    ],
+)
+def test_normalized_helix_cvs_reject_short_sequences(lysozyme_residues, factory, size):
+    with pytest.raises(ValueError, match="at least"):
+        factory(lysozyme_residues[60 : 60 + size], normalize=True)
+
+
+def test_helix_hbond_content_skips_proline_donors(lysozyme_residues):
+    proline = next(r for r in lysozyme_residues if r.name == "PRO" and r.index >= 10)
+    residues = lysozyme_residues[proline.index - 6 : proline.index + 3]
+    cv = cvpack.HelixHBondContent(residues, normalize=True)
+    expected_bonds = sum(1 for r in residues[4:] if r.name != "PRO")
+    assert cv.getNumBonds() == expected_bonds == len(residues) - 5

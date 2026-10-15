@@ -41,8 +41,8 @@ class BaseRMSDContent(CollectiveVariable, openmm.CustomCVForce):
         num_residue_blocks = self._num_residue_blocks = len(residue_blocks)
         if not 1 <= num_residue_blocks <= MAX_NUM_BLOCKS:
             raise ValueError(
-                f"{len(residues)} residues yield {num_residue_blocks} blocks, "
-                f"which is not between 1 and {MAX_NUM_BLOCKS}"
+                f"{num_residue_blocks} residue blocks were defined, which is not "
+                f"between 1 and {MAX_NUM_BLOCKS}"
             )
         residue_atoms = list(map(self._getAtomList, residues))
         block_atoms = [

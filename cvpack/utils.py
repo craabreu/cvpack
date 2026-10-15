@@ -89,6 +89,32 @@ def convert_to_matrix(array: npt.ArrayLike) -> tuple[np.ndarray, int, int]:
     return array, numrows, numcols
 
 
+def check_contiguous_residues(residues: t.Sequence) -> None:
+    """
+    Raise a ValueError unless the residues are consecutive members of one chain.
+
+    Parameters
+    ----------
+    residues
+        The residues to check, as OpenMM or serializable residues.
+    """
+
+    def chain_index(residue):
+        if hasattr(residue, "_chain_index"):
+            return residue._chain_index
+        return residue.chain.index
+
+    for previous, current in zip(residues[:-1], residues[1:]):
+        if current.index != previous.index + 1 or chain_index(current) != chain_index(
+            previous
+        ):
+            raise ValueError(
+                "The residues must be a contiguous sequence from a single chain, but "
+                f"{previous.name}{previous.id} is not followed by "
+                f"{current.name}{current.id}"
+            )
+
+
 def get_single_force_state(
     force: openmm.Force,
     context: openmm.Context,

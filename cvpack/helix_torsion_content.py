@@ -16,6 +16,7 @@ from openmm import unit as mmunit
 
 from .collective_variable import CollectiveVariable
 from .units import Quantity, ScalarQuantity
+from .utils import check_contiguous_residues
 
 
 class HelixTorsionContent(CollectiveVariable, openmm.CustomTorsionForce):
@@ -112,6 +113,11 @@ class HelixTorsionContent(CollectiveVariable, openmm.CustomTorsionForce):
         normalize: bool = False,
         name: str = "helix_torsion_content",
     ) -> None:
+        residues = list(residues)
+        check_contiguous_residues(residues)
+        if normalize and len(residues) < 3:  # noqa: PLR2004
+            raise ValueError("Normalization requires at least 3 residues")
+
         def find_atom(residue: mmapp.topology.Residue, name: str) -> int:
             for atom in residue.atoms():
                 if atom.name == name:
