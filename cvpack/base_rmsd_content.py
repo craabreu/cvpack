@@ -68,7 +68,7 @@ class BaseRMSDContent(CollectiveVariable, openmm.CustomCVForce):
         for index in range(num_residue_blocks):
             if num_residue_blocks > 32 and index % 32 == 0:
                 force = openmm.CustomCVForce(get_expression(index))
-                self.addCollectiveVariable(f"chunk{index//32}", force)
+                self.addCollectiveVariable(f"chunk{index // 32}", force)
             force.addCollectiveVariable(
                 f"rmsd{index}",
                 RMSD(

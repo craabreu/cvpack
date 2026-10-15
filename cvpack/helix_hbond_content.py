@@ -102,7 +102,7 @@ class HelixHBondContent(CollectiveVariable, openmm.CustomBondForce):
         threshold = thresholdDistance
         if mmunit.is_quantity(threshold):
             threshold = threshold.value_in_unit_system(mmunit.md_unit_system)
-        super().__init__(f"{numerator}/(1+x^{2*halfExponent}); x=r/{threshold}")
+        super().__init__(f"{numerator}/(1+x^{2 * halfExponent}); x=r/{threshold}")
         hydrogen_pattern = regex.compile(r"\b(H|1H|HN1|HT1|H1|HN)\b")
         oxygen_pattern = regex.compile(r"\b(O|OCT1|OC1|OT1|O1)\b")
         for i in range(4, len(residues)):

@@ -47,7 +47,7 @@ class BasePathCV(CollectiveVariable, openmm.CustomCVForce):
         definitions["lambda"] = 1 / (2 * sigma**2)
         definitions["xmin0"] = "min(x0,x1)"
         for i in range(n - 2):
-            definitions[f"xmin{i+1}"] = f"min(xmin{i},x{i+2})"
+            definitions[f"xmin{i + 1}"] = f"min(xmin{i},x{i + 2})"
         for i in range(n):
             definitions[f"w{i}"] = f"exp(lambda*(xmin{n - 2}-x{i}))"
         definitions["wsum"] = "+".join(f"w{i}" for i in range(n))

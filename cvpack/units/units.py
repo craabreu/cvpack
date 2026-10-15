@@ -105,7 +105,7 @@ Quantity.registerTag("!cvpack.Quantity")
 
 
 def in_md_units(
-    quantity: t.Union[ScalarQuantity, VectorQuantity, MatrixQuantity]
+    quantity: t.Union[ScalarQuantity, VectorQuantity, MatrixQuantity],
 ) -> Quantity:
     """
     Return a quantity in the MD unit system (e.g. mass in Da, distance in
@@ -130,7 +130,7 @@ def in_md_units(
 
 
 def value_in_md_units(
-    quantity: t.Union[ScalarQuantity, VectorQuantity, MatrixQuantity]
+    quantity: t.Union[ScalarQuantity, VectorQuantity, MatrixQuantity],
 ) -> t.Any:
     """
     Return the value of a quantity in the MD unit system (e.g. mass in Da, distance in

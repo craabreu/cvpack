@@ -117,7 +117,7 @@ class HelixAngleContent(CollectiveVariable, openmm.CustomAngleForce):
         if mmunit.is_quantity(tol):
             tol = tol.value_in_unit(mmunit.radians)
         super().__init__(
-            f"{numerator}/(1+x^{2*halfExponent}); x=(theta-{theta0})/{tol}"
+            f"{numerator}/(1+x^{2 * halfExponent}); x=(theta-{theta0})/{tol}"
         )
         for i in range(1, len(residues) - 1):
             self.addAngle(

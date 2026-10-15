@@ -65,7 +65,7 @@ def test_meta_cv_writer():
     phi = cvpack.Torsion(6, 8, 14, 16, name="phi")
     psi = cvpack.Torsion(8, 14, 16, 18, name="psi")
     umbrella = cvpack.MetaCollectiveVariable(
-        f"0.5*kappa*(min(dphi,{2*pi}-dphi)^2+min(dpsi,{2*pi}-dpsi)^2)"
+        f"0.5*kappa*(min(dphi,{2 * pi}-dphi)^2+min(dpsi,{2 * pi}-dpsi)^2)"
         "; dphi=abs(phi-phi0); dpsi=abs(psi-psi0)",
         [phi, psi],
         unit.kilojoules_per_mole,
