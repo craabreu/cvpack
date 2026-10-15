@@ -2,12 +2,14 @@
 Tests for evaluating collective variables in OpenMM contexts and reporting them.
 """
 
+import openmm
 import pytest
 from openmm import unit
 from openmmtools import testsystems
 
 import cvpack
 from cvpack.tests.helpers import make_context, particle_system
+from cvpack.utils import evaluate_in_context
 
 
 @pytest.fixture
@@ -61,3 +63,14 @@ def test_inner_effective_masses_follow_current_positions(dipeptide):
         inner = meta.getInnerEffectiveMasses(context)["phi"]
         expected = direct.getEffectiveMass(context)
         assert inner / inner.unit == pytest.approx(expected / expected.unit)
+
+
+def test_evaluate_in_context_uses_context_parameters():
+    system = particle_system(2)
+    force = openmm.CustomBondForce("k*r")
+    force.addGlobalParameter("k", 1.0)
+    force.addBond(0, 1)
+    system.addForce(force)
+    context = make_context(system, [[0, 0, 0], [0.5, 0, 0]])
+    context.setParameter("k", 2.0)
+    assert evaluate_in_context(force, context) == pytest.approx(1.0)
