@@ -16,18 +16,10 @@ from openmm import app as mmapp
 class CustomWriter(t.Protocol):
     """
     An abstract class for StateDataReporter writers
+
+    A writer may also define ``initialize(simulation)``, which is called once before
+    the first report and can be used to perform any necessary setup.
     """
-
-    def initialize(self, simulation: mmapp.Simulation) -> None:
-        """
-        Initializes the writer. This method is called before the first report and
-        can be used to perform any necessary setup.
-
-        Parameters
-        ----------
-        simulation
-            The simulation object.
-        """
 
     def getHeaders(self) -> list[str]:
         """

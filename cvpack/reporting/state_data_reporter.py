@@ -128,12 +128,15 @@ class StateDataReporter(mmapp.StateDataReporter):
         self,
         file: str | io.TextIOBase,
         reportInterval: int,
-        writers: t.Sequence[CustomWriter] = (),
+        writers: t.Iterable[CustomWriter] = (),
         **kwargs,
     ) -> None:
         super().__init__(file, reportInterval, **kwargs)
+        writers = tuple(writers)
         if not all(isinstance(w, CustomWriter) for w in writers):
-            raise TypeError("All items in writers must satisfy the Writer protocol")
+            raise TypeError(
+                "All items in writers must satisfy the CustomWriter protocol"
+            )
         self._writers = writers
         self._back_steps = sum([self._speed, self._elapsedTime, self._remainingTime])
 

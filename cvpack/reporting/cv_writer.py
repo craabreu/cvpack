@@ -25,6 +25,9 @@ class CVWriter(CustomWriter):
         If `True`, report the values of the collective variable.
     emass
         If `True`, report the effective masses of the collective variable.
+    allowReinitialization
+        Whether to allow context reinitialization when the collective variable shares
+        its force group with other forces (see :meth:`CollectiveVariable.getValue`).
 
     Examples
     --------
@@ -55,6 +58,8 @@ class CVWriter(CustomWriter):
     ...     2 * unit.femtosecond,
     ... )
     >>> integrator.setRandomNumberSeed(1234)
+    >>> # Integrate only the physical forces, so that phi and psi do not bias dynamics
+    >>> integrator.setIntegrationForceGroups({0})
     >>> simulation = app.Simulation(model.topology, model.system, integrator)
     >>> simulation.context.setPositions(model.positions)
     >>> simulation.context.setVelocitiesToTemperature(300 * unit.kelvin, 5678)
@@ -78,6 +83,7 @@ class CVWriter(CustomWriter):
         variable: CollectiveVariable,
         value: bool = False,
         emass: bool = False,
+        allowReinitialization: bool = False,
     ) -> None:
         if not isinstance(variable, CollectiveVariable):
             raise TypeError("variable must be a CollectiveVariable object")
@@ -86,6 +92,7 @@ class CVWriter(CustomWriter):
         self._cv = variable
         self._value = value
         self._emass = emass
+        self._allow_reinitialization = allowReinitialization
 
     def getHeaders(self) -> list[str]:
         headers = []
@@ -101,7 +108,9 @@ class CVWriter(CustomWriter):
         context = simulation.context
         values = []
         if self._value:
-            values.append(self._cv.getValue(context) / self._cv.getUnit())
+            value = self._cv.getValue(context, self._allow_reinitialization)
+            values.append(value / self._cv.getUnit())
         if self._emass:
-            values.append(self._cv.getEffectiveMass(context) / self._cv.getMassUnit())
+            mass = self._cv.getEffectiveMass(context, self._allow_reinitialization)
+            values.append(mass / self._cv.getMassUnit())
         return values
