@@ -229,3 +229,8 @@ def test_composite_rmsd_value():
     expected = _kabsch_rmsd(*centered)
     value = cv.getValue(context).value_in_unit(unit.nanometer)
     assert value == pytest.approx(expected, rel=1e-5)
+
+
+def test_from_openmm_force_rejects_non_forces():
+    with pytest.raises(TypeError):
+        cvpack.AtomicFunction.fromOpenMMForce("not a force", unit.nanometer)

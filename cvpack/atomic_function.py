@@ -389,6 +389,8 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
         CustomExternalForce: original=5.02155..., copy=5.02155... kJ/mol
         HelixTorsionContent: original=17.4528..., copy=17.4528... dimensionless
         """
+        if not isinstance(force, openmm.Force):
+            raise TypeError(f"Force {force} is not convertible to an AtomicFunction")
         if pbc is None:
             pbc = force.usesPeriodicBoundaryConditions()
         if getattr(force, "getNumTabulatedFunctions", lambda: 0)() > 0:
