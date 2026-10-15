@@ -2,12 +2,12 @@ Collective Variable Package
 ===========================
 
 [//]: # (Badges)
-[![GitHub Actions Build Status](https://github.com/RedesignScience/cvpack/workflows/Linux/badge.svg)](https://github.com/RedesignScience/cvpack/actions?query=workflow%3ALinux)
-[![GitHub Actions Build Status](https://github.com/RedesignScience/cvpack/workflows/MacOS/badge.svg)](https://github.com/RedesignScience/cvpack/actions?query=workflow%3AMacOS)
-[![GitHub Actions Build Status](https://github.com/RedesignScience/cvpack/workflows/Windows/badge.svg)](https://github.com/RedesignScience/cvpack/actions?query=workflow%3AWindows)
-[![GitHub Actions Build Status](https://github.com/RedesignScience/cvpack/workflows/Linter/badge.svg)](https://github.com/RedesignScience/cvpack/actions?query=workflow%3ALinter)
-[![Documentation Status](https://github.com/RedesignScience/cvpack/workflows/Docs/badge.svg)](https://redesignscience.github.io/cvpack/development)
-[![Coverage Report](https://redesignscience.github.io/cvpack/development/coverage/coverage.svg)](https://redesignscience.github.io/cvpack/development/coverage)
+[![Linux](https://github.com/craabreu/cvpack/actions/workflows/Linux.yaml/badge.svg?branch=main)](https://github.com/craabreu/cvpack/actions/workflows/Linux.yaml)
+[![MacOS](https://github.com/craabreu/cvpack/actions/workflows/MacOS.yaml/badge.svg?branch=main)](https://github.com/craabreu/cvpack/actions/workflows/MacOS.yaml)
+[![Windows](https://github.com/craabreu/cvpack/actions/workflows/Windows.yaml/badge.svg?branch=main)](https://github.com/craabreu/cvpack/actions/workflows/Windows.yaml)
+[![Linter](https://github.com/craabreu/cvpack/actions/workflows/Linter.yaml/badge.svg?branch=main)](https://github.com/craabreu/cvpack/actions/workflows/Linter.yaml)
+[![Docs](https://github.com/craabreu/cvpack/actions/workflows/Docs.yaml/badge.svg?branch=main)](https://craabreu.github.io/cvpack/development)
+[![Coverage Report](https://craabreu.github.io/cvpack/development/coverage/coverage.svg)](https://craabreu.github.io/cvpack/development/coverage)
 
 [![Conda version](https://img.shields.io/conda/v/mdtools/cvpack.svg)](https://anaconda.org/mdtools/cvpack)
 [![Conda platforms](https://img.shields.io/conda/pn/mdtools/cvpack.svg)](https://anaconda.org/mdtools/cvpack)
@@ -16,7 +16,7 @@ Collective Variable Package
 [![PyPI version](https://img.shields.io/pypi/pyversions/cvpack.svg)](https://pypi.org/project/cvpack)
 [![PyPI version](https://img.shields.io/pypi/dm/cvpack.svg)](https://pypi.org/project/cvpack)
 
-[![License](https://img.shields.io/badge/License-MIT-yellowgreen.svg?style=flat)](https://github.com/RedesignScience/cvpack/blob/main/LICENSE.md)
+[![License](https://img.shields.io/badge/License-MIT-yellowgreen.svg?style=flat)](https://github.com/craabreu/cvpack/blob/main/LICENSE)
 [![Twitter](https://badgen.net/badge/About/RedesignScience)](https://www.redesignscience.com)
 
 Overview
@@ -89,7 +89,7 @@ To use CVPack in your own Python script or Jupyter notebook, simply import it as
 Documentation
 -------------
 
-Documentation for the latest CVPack version is available on [Github Pages](https://redesignscience.github.io/cvpack/latest).
+Documentation for the latest CVPack version is available on [Github Pages](https://craabreu.github.io/cvpack/latest).
 
 Copyright
 ---------
@@ -110,26 +110,26 @@ Initial project based on the [CMS Cookiecutter] version 1.1.
 [Metadynamics]:       http://docs.openmm.org/latest/api-python/generated/openmm.app.metadynamics.Metadynamics.html
 [OpenMM]:             http://openmm.org
 
-[Angle]:                  https://redesignscience.github.io/cvpack/latest/api/Angle.html
-[Atomic Function]:        https://redesignscience.github.io/cvpack/latest/api/AtomicFunction.html
-[Attraction Strength]:    https://redesignscience.github.io/cvpack/latest/api/AttractionStrength.html
-[Centroid Function]:      https://redesignscience.github.io/cvpack/latest/api/CentroidFunction.html
-[Composite RMSD]:         https://redesignscience.github.io/cvpack/latest/api/CompositeRMSD.html
-[Distance]:               https://redesignscience.github.io/cvpack/latest/api/Distance.html
-[Helix angle content]:    https://redesignscience.github.io/cvpack/latest/api/HelixAngleContent.html
-[Helix H-bond content]:   https://redesignscience.github.io/cvpack/latest/api/HelixHBondContent.html
-[Helix RMSD content]:     https://redesignscience.github.io/cvpack/latest/api/HelixRMSDContent.html
-[Helix torsion content]:  https://redesignscience.github.io/cvpack/latest/api/HelixTorsionContent.html
-[Meta CV]:                https://redesignscience.github.io/cvpack/latest/api/MetaCollectiveVariable.html
-[Number of contacts]:     https://redesignscience.github.io/cvpack/latest/api/NumberOfContacts.html
-[OpenMM Force wrapper]:   https://redesignscience.github.io/cvpack/latest/api/OpenMMForceWrapper.html
-[Path in CV space]:       https://redesignscience.github.io/cvpack/latest/api/PathInCVSpace.html
-[Path in RMSD space]:     https://redesignscience.github.io/cvpack/latest/api/PathInRMSDSpace.html
-[Radius of gyration]:     https://redesignscience.github.io/cvpack/latest/api/RadiusOfGyration.html
-[(Radius of gyration)^2]: https://redesignscience.github.io/cvpack/latest/api/RadiusOfGyrationSq.html
-[Residue coordination]:   https://redesignscience.github.io/cvpack/latest/api/ResidueCoordination.html
-[RMSD]:                   https://redesignscience.github.io/cvpack/latest/api/RMSD.html
-[Sheet RMSD content]:     https://redesignscience.github.io/cvpack/latest/api/SheetRMSDContent.html
-[Shortest Distance]:      https://redesignscience.github.io/cvpack/latest/api/ShortestDistance.html
-[Torsion]:                https://redesignscience.github.io/cvpack/latest/api/Torsion.html
-[Torsion similarity]:     https://redesignscience.github.io/cvpack/latest/api/TorsionSimilarity.html
+[Angle]:                  https://craabreu.github.io/cvpack/latest/api/Angle.html
+[Atomic Function]:        https://craabreu.github.io/cvpack/latest/api/AtomicFunction.html
+[Attraction Strength]:    https://craabreu.github.io/cvpack/latest/api/AttractionStrength.html
+[Centroid Function]:      https://craabreu.github.io/cvpack/latest/api/CentroidFunction.html
+[Composite RMSD]:         https://craabreu.github.io/cvpack/latest/api/CompositeRMSD.html
+[Distance]:               https://craabreu.github.io/cvpack/latest/api/Distance.html
+[Helix angle content]:    https://craabreu.github.io/cvpack/latest/api/HelixAngleContent.html
+[Helix H-bond content]:   https://craabreu.github.io/cvpack/latest/api/HelixHBondContent.html
+[Helix RMSD content]:     https://craabreu.github.io/cvpack/latest/api/HelixRMSDContent.html
+[Helix torsion content]:  https://craabreu.github.io/cvpack/latest/api/HelixTorsionContent.html
+[Meta CV]:                https://craabreu.github.io/cvpack/latest/api/MetaCollectiveVariable.html
+[Number of contacts]:     https://craabreu.github.io/cvpack/latest/api/NumberOfContacts.html
+[OpenMM Force wrapper]:   https://craabreu.github.io/cvpack/latest/api/OpenMMForceWrapper.html
+[Path in CV space]:       https://craabreu.github.io/cvpack/latest/api/PathInCVSpace.html
+[Path in RMSD space]:     https://craabreu.github.io/cvpack/latest/api/PathInRMSDSpace.html
+[Radius of gyration]:     https://craabreu.github.io/cvpack/latest/api/RadiusOfGyration.html
+[(Radius of gyration)^2]: https://craabreu.github.io/cvpack/latest/api/RadiusOfGyrationSq.html
+[Residue coordination]:   https://craabreu.github.io/cvpack/latest/api/ResidueCoordination.html
+[RMSD]:                   https://craabreu.github.io/cvpack/latest/api/RMSD.html
+[Sheet RMSD content]:     https://craabreu.github.io/cvpack/latest/api/SheetRMSDContent.html
+[Shortest Distance]:      https://craabreu.github.io/cvpack/latest/api/ShortestDistance.html
+[Torsion]:                https://craabreu.github.io/cvpack/latest/api/Torsion.html
+[Torsion similarity]:     https://craabreu.github.io/cvpack/latest/api/TorsionSimilarity.html
