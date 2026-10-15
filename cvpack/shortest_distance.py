@@ -57,7 +57,8 @@ class ShortestDistance(CollectiveVariable, openmm.CustomCVForce):
     .. note::
 
         Atoms are allowed to be in both groups. In this case, terms for which
-        :math:`i = j` are ignored.
+        :math:`i = j` are ignored, and each pair of distinct atoms contributes a
+        single term, even if both atoms are in both groups.
 
     Parameters
     ----------

@@ -22,6 +22,7 @@ from scipy.special import logsumexp
 
 import cvpack
 from cvpack import serialization
+from cvpack.tests.helpers import make_context, shortest_distance_reference
 from cvpack.units import value_in_md_units
 
 
@@ -925,31 +926,19 @@ def test_shortest_distance():
     for residue in model.topology.residues():
         group = group1 if residue.name == "B2" else group2
         group.extend(atom.index for atom in residue.atoms())
-    coords = model.positions.value_in_unit(unit.nanometers)
+    positions = model.positions.value_in_unit(unit.nanometers)
     num_atoms = model.system.getNumParticles()
     beta = 100
     rc = 1
     min_dist = cvpack.ShortestDistance(group1, group2, num_atoms, beta, rc)
     min_dist.addToSystem(model.system)
-    platform = openmm.Platform.getPlatformByName("Reference")
-    integrator = openmm.LangevinMiddleIntegrator(
-        300 * unit.kelvin, 1 / unit.picosecond, 0.004 * unit.picoseconds
-    )
-    context = openmm.Context(model.system, integrator, platform)
-    context.setPositions(model.positions)
-    for _ in range(10):
-        integrator.step(100)
-        state = context.getState(getPositions=True)
-        coords = state.getPositions(asNumpy=True).value_in_unit(unit.nanometers)
+    context = make_context(model.system, positions)
+    rng = np.random.default_rng(5)
+    for _ in range(5):
+        coords = positions + rng.normal(0, 0.01, positions.shape)
+        context.setPositions(coords)
         cv_value = min_dist.getValue(context) / unit.nanometer
-        distances = np.linalg.norm(
-            coords[group1][:, None, :] - coords[group2], axis=2
-        ).flatten()
-        distances = np.append(distances, rc)
-        exponents = beta * (1 - distances / rc)
-        computed_value = np.exp(
-            logsumexp(exponents, b=distances) - logsumexp(exponents)
-        )
+        computed_value = shortest_distance_reference(coords, group1, group2, beta, rc)
         assert cv_value == pytest.approx(computed_value)
     perform_common_tests(min_dist, context)
 
