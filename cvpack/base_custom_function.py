@@ -9,8 +9,6 @@
 
 import typing as t
 
-from openmm import unit as mmunit
-
 from .collective_variable import CollectiveVariable
 from .units import ScalarQuantity, VectorQuantity, value_in_md_units
 
@@ -30,7 +28,13 @@ class BaseCustomFunction(CollectiveVariable):
         for name, value in parameters.items():
             data = value_in_md_units(value)
             if isinstance(data, t.Iterable):
-                perbond_parameters[name] = [data[i] for i in range(size)]
+                data = list(data)
+                if len(data) != size:
+                    raise ValueError(
+                        f"Parameter {name} has {len(data)} values, but there are "
+                        f"{size} groups"
+                    )
+                perbond_parameters[name] = data
             else:
                 global_parameters[name] = data
         return global_parameters, perbond_parameters
@@ -41,7 +45,6 @@ class BaseCustomFunction(CollectiveVariable):
         perbonds: dict[str, list[ScalarQuantity]],
         groups: list[tuple[int, ...]],
         pbc: bool,
-        unit: mmunit.Unit,
     ) -> None:
 
         for name, value in overalls.items():
@@ -51,5 +54,3 @@ class BaseCustomFunction(CollectiveVariable):
         for group, *values in zip(groups, *perbonds.values()):
             self.addBond(group, values)
         self.setUsesPeriodicBoundaryConditions(pbc)
-        if (1 * unit).value_in_unit_system(mmunit.md_unit_system) != 1:
-            raise ValueError(f"Unit {unit} is not compatible with the MD unit system.")

@@ -15,6 +15,7 @@ from openmm import unit as mmunit
 
 from .base_rmsd_content import BaseRMSDContent
 from .units import Quantity, ScalarQuantity
+from .utils import check_contiguous_residues
 
 PARABETA_POSITIONS = BaseRMSDContent._loadPositions("ideal_parallel_beta_sheet.csv")
 ANTIBETA_POSITIONS = BaseRMSDContent._loadPositions("ideal_antiparallel_beta_sheet.csv")
@@ -185,7 +186,9 @@ class SheetRMSDContent(BaseRMSDContent):
         normalize: bool = False,
         name: str = "sheet_rmsd_content",
     ) -> None:
+        residues = list(residues)
         if blockSizes is None:
+            check_contiguous_residues(residues)
             min_distance = 6 if parallel else 5
             residue_groups = [
                 [i, i + 1, i + 2, j, j + 1, j + 2]
@@ -194,6 +197,8 @@ class SheetRMSDContent(BaseRMSDContent):
             ]
         elif sum(blockSizes) == len(residues):
             bounds = np.insert(np.cumsum(blockSizes), 0, 0)
+            for k in range(len(blockSizes)):
+                check_contiguous_residues(residues[bounds[k] : bounds[k + 1]])
             residue_groups = [
                 [i, i + 1, i + 2, j, j + 1, j + 2]
                 for k in range(len(blockSizes) - 1)

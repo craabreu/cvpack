@@ -120,6 +120,8 @@ class ResidueCoordination(CollectiveVariable, openmm.CustomCentroidBondForce):
     ) -> None:
         residueGroup1 = list(residueGroup1)
         residueGroup2 = list(residueGroup2)
+        if {r.index for r in residueGroup1} & {r.index for r in residueGroup2}:
+            raise ValueError("The two groups of residues must be disjoint")
         nr1 = len(residueGroup1)
         nr2 = len(residueGroup2)
         self._ref_val = nr1 * nr2 if normalize else 1.0

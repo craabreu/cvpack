@@ -64,7 +64,16 @@ class CollectiveVariable(Serializable):
             temperature in K, energy in kJ/mol, angle in rad).
         kwargs
             The keyword arguments needed to construct this collective variable
+
+        Raises
+        ------
+        ValueError
+            If the unit is not compatible with the MD unit system
         """
+        if (1 * cvUnit).value_in_unit_system(mmunit.md_unit_system) != 1:
+            raise ValueError(
+                f"Unit {cvUnit} is not compatible with the MD unit system."
+            )
         mmswig.Force_setName(self, name)
         self._unit = cvUnit
         self._mass_unit = Unit(mmunit.dalton * (mmunit.nanometers / self._unit) ** 2)

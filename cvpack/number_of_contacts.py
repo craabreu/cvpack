@@ -8,13 +8,12 @@
 """
 
 import typing as t
-from numbers import Real
 
 import openmm
 from openmm import unit as mmunit
 
 from .collective_variable import CollectiveVariable
-from .units import Quantity, ScalarQuantity
+from .units import Quantity, ScalarQuantity, value_in_md_units
 from .utils import evaluate_in_context
 
 
@@ -128,7 +127,7 @@ class NumberOfContacts(CollectiveVariable, openmm.CustomNonbondedForce):
         group1: t.Sequence[int],
         group2: t.Sequence[int],
         nonbondedForce: openmm.NonbondedForce,
-        reference: Real | openmm.Context = 1.0,
+        reference: ScalarQuantity | openmm.Context = 1.0,
         stepFunction: str = "1/(1+x^6)",
         thresholdDistance: ScalarQuantity = Quantity(0.3 * mmunit.nanometers),
         cutoffFactor: float = 2.0,
@@ -158,6 +157,8 @@ class NumberOfContacts(CollectiveVariable, openmm.CustomNonbondedForce):
         self.addInteractionGroup(group1, group2)
         if isinstance(reference, openmm.Context):
             reference = evaluate_in_context(self, reference)
+        else:
+            reference = value_in_md_units(reference)
         self.setEnergyFunction(expression.replace("/1;", f"/{reference};"))
         self._registerCV(
             name,

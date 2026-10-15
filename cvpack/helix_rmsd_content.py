@@ -14,6 +14,7 @@ from openmm import unit as mmunit
 
 from .base_rmsd_content import BaseRMSDContent
 from .units import Quantity, ScalarQuantity
+from .utils import check_contiguous_residues
 
 ALPHA_POSITIONS = BaseRMSDContent._loadPositions("ideal_alpha_helix.csv")
 
@@ -134,6 +135,8 @@ class HelixRMSDContent(BaseRMSDContent):
         normalize: bool = False,
         name: str = "helix_rmsd_content",
     ) -> None:
+        residues = list(residues)
+        check_contiguous_residues(residues)
         residue_blocks = [
             list(range(index, index + 6)) for index in range(len(residues) - 5)
         ]

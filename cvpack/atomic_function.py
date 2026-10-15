@@ -144,7 +144,7 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
             raise ValueError("Array `groups` cannot have more than 2 dimensions")
         super().__init__(atoms_per_group, function)
         overalls, perbonds = self._extractParameters(num_groups, **parameters)
-        self._addParameters(overalls, perbonds, groups, pbc, unit)
+        self._addParameters(overalls, perbonds, groups, pbc)
         groups = [[int(atom) for atom in group] for group in groups]
         self._registerCV(
             name,
@@ -302,7 +302,7 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
         force: openmm.Force,
         unit: mmunit.Unit,
         periodicBounds: VectorQuantity | None = None,
-        pbc: bool = False,
+        pbc: bool | None = None,
     ) -> AtomicFunction:
         """
         Create an :class:`AtomicFunction` from an :OpenMM:`Force`.
@@ -323,12 +323,14 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
             a custom :OpenMM:`Force`.
         pbc
             Whether to use periodic boundary conditions when computing atomic
-            distances.
+            distances. If ``None``, use the setting of `force`.
 
         Raises
         ------
         TypeError
             If the force is not convertible to an :class:`AtomicFunction`
+        ValueError
+            If the force uses tabulated functions
 
         Examples
         --------
@@ -387,6 +389,12 @@ class AtomicFunction(BaseCustomFunction, openmm.CustomCompoundBondForce):
         CustomExternalForce: original=5.02155..., copy=5.02155... kJ/mol
         HelixTorsionContent: original=17.4528..., copy=17.4528... dimensionless
         """
+        if not isinstance(force, openmm.Force):
+            raise TypeError(f"Force {force} is not convertible to an AtomicFunction")
+        if pbc is None:
+            pbc = force.usesPeriodicBoundaryConditions()
+        if getattr(force, "getNumTabulatedFunctions", lambda: 0)() > 0:
+            raise ValueError("Forces with tabulated functions are not supported")
         if isinstance(
             force,
             (

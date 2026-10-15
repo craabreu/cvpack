@@ -124,6 +124,13 @@ class AttractionStrength(CollectiveVariable, openmm.CustomNonbondedForce):
     name
         The name of the collective variable.
 
+    Raises
+    ------
+    ValueError
+        If the contrast group overlaps with group1 or group2
+    ValueError
+        If contrastScaling is negative
+
     Examples
     --------
     >>> import cvpack
@@ -185,6 +192,12 @@ class AttractionStrength(CollectiveVariable, openmm.CustomNonbondedForce):
         contrasting = contrastGroup is not None
         if contrasting:
             contrastGroup = list(contrastGroup)
+            if set(contrastGroup) & (set(group1) | set(group2)):
+                raise ValueError(
+                    "The contrast group must be disjoint from group1 and group2"
+                )
+            if contrastScaling < 0:
+                raise ValueError("contrastScaling must be non-negative")
         cutoff = nonbondedForce.getCutoffDistance().value_in_unit(mmunit.nanometers)
         expression = (
             f"-(lj + coul){'*sign1*sign2' if contrasting else ''}/ref"

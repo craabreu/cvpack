@@ -482,7 +482,7 @@ def test_helix_hbond_content():
 
     residues = list(model.topology.residues())
     with pytest.raises(ValueError):
-        helix_content = cvpack.HelixHBondContent(residues)
+        helix_content = cvpack.HelixHBondContent(residues[58:70] + residues[71:79])
     helix_content = cvpack.HelixHBondContent(residues[58:79])
     helix_content.addToSystem(model.system)
     integrator = openmm.VerletIntegrator(0)

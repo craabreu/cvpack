@@ -16,6 +16,7 @@ from openmm import unit as mmunit
 
 from .collective_variable import CollectiveVariable
 from .units import Quantity, ScalarQuantity
+from .utils import check_contiguous_residues
 
 
 class HelixHBondContent(CollectiveVariable, openmm.CustomBondForce):
@@ -43,7 +44,9 @@ class HelixHBondContent(CollectiveVariable, openmm.CustomBondForce):
     .. note::
 
         The residues must be a contiguous sequence from a single chain, ordered from the
-        N- to the C-terminus.
+        N- to the C-terminus. Proline residues, which have no amide hydrogen, are
+        skipped as donors, and the normalization uses the number of remaining
+        donor-acceptor pairs.
 
     Parameters
     ----------
@@ -87,6 +90,11 @@ class HelixHBondContent(CollectiveVariable, openmm.CustomBondForce):
         normalize: bool = False,
         name: str = "helix_hbond_content",
     ) -> None:
+        residues = list(residues)
+        check_contiguous_residues(residues)
+        if normalize and len(residues) < 5:  # noqa: PLR2004
+            raise ValueError("Normalization requires at least 5 residues")
+
         def find_atom(residue: mmapp.topology.Residue, pattern: t.Pattern) -> int:
             for atom in residue.atoms():
                 if regex.match(pattern, atom.name):
@@ -97,17 +105,24 @@ class HelixHBondContent(CollectiveVariable, openmm.CustomBondForce):
                 f" in residue {residue.name}{residue.id}"
             )
 
-        numerator = 1 / (len(residues) - 4) if normalize else 1
+        pairs = [
+            (residues[i - 4], residues[i])
+            for i in range(4, len(residues))
+            if residues[i].name != "PRO"  # proline has no amide hydrogen
+        ]
+        if normalize and not pairs:
+            raise ValueError("No hydrogen-bond donors found in the residue sequence")
+        numerator = 1 / len(pairs) if normalize else 1
         threshold = thresholdDistance
         if mmunit.is_quantity(threshold):
             threshold = threshold.value_in_unit_system(mmunit.md_unit_system)
         super().__init__(f"{numerator}/(1+x^{2 * halfExponent}); x=r/{threshold}")
         hydrogen_pattern = regex.compile(r"\b(H|1H|HN1|HT1|H1|HN)\b")
         oxygen_pattern = regex.compile(r"\b(O|OCT1|OC1|OT1|O1)\b")
-        for i in range(4, len(residues)):
+        for acceptor, donor in pairs:
             self.addBond(
-                find_atom(residues[i - 4], oxygen_pattern),
-                find_atom(residues[i], hydrogen_pattern),
+                find_atom(acceptor, oxygen_pattern),
+                find_atom(donor, hydrogen_pattern),
                 [],
             )
         self.setUsesPeriodicBoundaryConditions(pbc)
