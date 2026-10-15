@@ -48,6 +48,9 @@ jobs:
             openmm-version: "8.1"
             # openmm-cpp-forces (needed by CompositeRMSD) exists only for OpenMM 8.1
             cpp-forces: true
+            # The openmmtools version compatible with OpenMM 8.1 imports pkg_resources,
+            # which setuptools removed in version 82
+            extra-specs: setuptools=81
 
     steps:
       - uses: actions/checkout@v4
@@ -66,6 +69,7 @@ jobs:
           create-args: >-
             python=${{ matrix.python-version }}
             openmm=${{ matrix.openmm-version }}
+            ${{ matrix.extra-specs }}
 
       - name: Install package
         # conda setup requires this special shell
