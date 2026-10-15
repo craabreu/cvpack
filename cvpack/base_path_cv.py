@@ -48,15 +48,21 @@ class BasePathCV(CollectiveVariable, openmm.CustomCVForce):
         definitions["xmin0"] = "min(x0,x1)"
         for i in range(n - 2):
             definitions[f"xmin{i + 1}"] = f"min(xmin{i},x{i + 2})"
+        # Shifting all exponents by about the smallest squared distance keeps the
+        # weights between exp(-1) and 1 for the nearest milestone. The metrics do not
+        # depend on the shift, and floor() has a zero derivative, so the derivatives
+        # of the expression do not contain those of the chain of minima, which made
+        # Context creation scale steeply with the number of milestones.
+        definitions["shift"] = f"floor(lambda*xmin{n - 2})/lambda"
         for i in range(n):
-            definitions[f"w{i}"] = f"exp(lambda*(xmin{n - 2}-x{i}))"
+            definitions[f"w{i}"] = f"exp(lambda*(shift-x{i}))"
         definitions["wsum"] = "+".join(f"w{i}" for i in range(n))
         expressions = [f"{key}={value}" for key, value in definitions.items()]
         if metric == progress:
             numerator = "+".join(f"{i}*w{i}" for i in range(1, n))
             expressions.append(f"({numerator})/({n - 1}*wsum)")
         else:
-            expressions.append(f"xmin{n - 2}-log(wsum)/lambda")
+            expressions.append("shift-log(wsum)/lambda")
         super().__init__("; ".join(reversed(expressions)))
         for name, variable in variables.items():
             self.addCollectiveVariable(name, variable)
