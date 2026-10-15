@@ -7,6 +7,8 @@
 
 """
 
+from __future__ import annotations
+
 import numpy as np
 
 from .collective_variable import CollectiveVariable

@@ -7,6 +7,8 @@
 
 """
 
+from __future__ import annotations
+
 import typing as t
 
 import openmm
@@ -41,10 +43,10 @@ class CollectiveVariable(Serializable):
     def __setstate__(self, keywords: dict[str, t.Any]) -> None:
         self.__init__(**keywords)
 
-    def __copy__(self) -> "CollectiveVariable":
+    def __copy__(self) -> CollectiveVariable:
         return yaml.safe_load(yaml.safe_dump(self))
 
-    def __deepcopy__(self, _) -> "CollectiveVariable":
+    def __deepcopy__(self, _) -> CollectiveVariable:
         return yaml.safe_load(yaml.safe_dump(self))
 
     @preprocess_args
