@@ -9,6 +9,7 @@
 
 import typing as t
 
+import numpy as np
 import openmm
 from openmm import app as mmapp
 from openmm import unit as mmunit
@@ -125,7 +126,9 @@ class HelixTorsionContent(CollectiveVariable, openmm.CustomTorsionForce):
         if mmunit.is_quantity(tol):
             tol = tol.value_in_unit_system(mmunit.md_unit_system)
         super().__init__(
-            f"{numerator}/(1+x^{2 * halfExponent}); x=(theta-theta_ref)/{tol}"
+            f"{numerator}/(1+x^{2 * halfExponent})"
+            f"; x=(delta-{2 * np.pi}*floor(delta/{2 * np.pi}+0.5))/{tol}"
+            "; delta=theta-theta_ref"
         )
         self.addPerTorsionParameter("theta_ref")
         for i in range(1, len(residues) - 1):

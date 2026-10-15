@@ -139,3 +139,21 @@ def test_glycine_without_hydrogens_raises_value_error():
     residue, _ = _glycine([])
     with pytest.raises(ValueError, match="GLY"):
         BaseRMSDContent._getAtomList(residue)
+
+
+def test_helix_torsion_content_reference_is_periodic():
+    model = testsystems.LysozymeImplicit()
+    residues = [r for r in model.topology.residues() if 59 <= r.index <= 79]
+    cv1 = cvpack.HelixTorsionContent(residues, name="a")
+    cv2 = cvpack.HelixTorsionContent(
+        residues,
+        phiReference=(360 - 63.8) * unit.degrees,
+        psiReference=(360 - 41.1) * unit.degrees,
+        name="b",
+    )
+    cv1.addToSystem(model.system)
+    cv2.addToSystem(model.system)
+    context = make_context(model.system, model.positions)
+    value1 = cv1.getValue(context).value_in_unit(cv1.getUnit())
+    value2 = cv2.getValue(context).value_in_unit(cv2.getUnit())
+    assert value2 == pytest.approx(value1)
