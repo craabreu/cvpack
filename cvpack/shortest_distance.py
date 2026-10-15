@@ -90,10 +90,10 @@ class ShortestDistance(CollectiveVariable, openmm.CustomCVForce):
     ...     group = group1 if residue.name == "B2" else group2
     ...     group.extend(atom.index for atom in residue.atoms())
     >>> coords = model.positions.value_in_unit(mmunit.nanometers)
-    >>> np.linalg.norm(
+    >>> print(np.linalg.norm(
     ...     coords[group1, None, :] - coords[None, group2, :],
     ...     axis=-1,
-    ... ).min()
+    ... ).min())
     0.1757...
     >>> num_atoms = model.system.getNumParticles()
     >>> min_dist = cvpack.ShortestDistance(group1, group2, num_atoms)

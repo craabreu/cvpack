@@ -114,7 +114,7 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
     def __init__(
         self,
         function: str,
-        variables: t.Iterable[str],
+        variables: t.Iterable[CollectiveVariable],
         unit: mmunit.Unit,
         periodicBounds: t.Optional[VectorQuantity] = None,
         name: str = "meta_collective_variable",

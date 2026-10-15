@@ -12,7 +12,7 @@ max-locals=20  # Maximum number of local variables for function/method body
 
 method-naming-style=camelCase
 argument-naming-style=camelCase
-disable=too-many-arguments,duplicate-code
+disable=too-many-arguments,too-many-positional-arguments,duplicate-code
 
 [FORMAT]
 good-names=i,j,k,_,x,y,z
