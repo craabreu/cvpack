@@ -177,3 +177,23 @@ def test_helix_hbond_content_skips_proline_donors(lysozyme_residues):
     cv = cvpack.HelixHBondContent(residues, normalize=True)
     expected_bonds = sum(1 for r in residues[4:] if r.name != "PRO")
     assert cv.getNumBonds() == expected_bonds == len(residues) - 5
+
+
+def test_from_openmm_force_inherits_pbc():
+    force = openmm.CustomBondForce("r")
+    force.addBond(0, 1)
+    force.setUsesPeriodicBoundaryConditions(True)
+    cv = cvpack.AtomicFunction.fromOpenMMForce(force, unit.nanometer)
+    assert cv.usesPeriodicBoundaryConditions()
+    cv = cvpack.AtomicFunction.fromOpenMMForce(force, unit.nanometer, pbc=False)
+    assert not cv.usesPeriodicBoundaryConditions()
+
+
+def test_from_openmm_force_rejects_tabulated_functions():
+    force = openmm.CustomCompoundBondForce(2, "tab(distance(p1, p2))")
+    force.addTabulatedFunction(
+        "tab", openmm.Continuous1DFunction([0.0, 1.0, 2.0], 0.0, 2.0)
+    )
+    force.addBond([0, 1], [])
+    with pytest.raises(ValueError, match="tabulated"):
+        cvpack.AtomicFunction.fromOpenMMForce(force, unit.kilojoule_per_mole)
