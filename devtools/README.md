@@ -41,19 +41,11 @@ This directory contains OS agnostic helper scripts which don't fall in any of th
 - [ ] Create the PR, referencing the issue
 - [ ] Debug the PR as needed until tests pass
 - [ ] Get the PR merged in
-- [ ] Commit `cvpack/_version.py` with `__version__ = "X.Y.Z"` on `main`, so that the tagged
-      tree is clean and the package builds report the exact release version
 - [ ] Publish a GitHub Release from `main` with a new tag `vX.Y.Z`
    *  `gh release create vX.Y.Z --target main --generate-notes`
    *  Publishing the release deploys the docs, PyPI, and conda packages; prereleases are not deployed
 
-## Versioneer Auto-version
-[Versioneer](https://github.com/warner/python-versioneer) will automatically infer what version
-is installed by looking at the `git` tags and how many commits ahead this version is. The format follows
-[PEP 440](https://www.python.org/dev/peps/pep-0440/) and has the regular expression of:
-```regexp
-\d+.\d+.\d+(?\+\d+-[a-z0-9]+)
-```
-If the version of this commit is the same as a `git` tag, the installed version is the same as the tag,
-e.g. `cvpack-0.1.2`, otherwise it will be appended with `+X` where `X` is the number of commits
-ahead from the last tag, and then `-YYYYYY` where the `Y`'s are replaced with the `git` commit hash.
+## Versioning
+The version is computed by [versioningit](https://versioningit.readthedocs.io) from the latest
+`vX.Y.Z` tag and written to `cvpack/_version.py` (untracked) at build or install time. A tagged
+commit builds as `X.Y.Z`; later commits get a `+N.gHASH` local suffix.

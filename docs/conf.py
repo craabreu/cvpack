@@ -18,12 +18,11 @@ import inspect
 import os
 import sys
 
-# Incase the project was not installed
-import cvpack
-from cvpack import CollectiveVariable
-from cvpack import reporting
-
+# In case the project was not installed
 sys.path.insert(0, os.path.abspath(".."))
+
+import cvpack  # noqa: E402
+from cvpack import CollectiveVariable, reporting  # noqa: E402
 
 
 def create_rst_file(module, cls):

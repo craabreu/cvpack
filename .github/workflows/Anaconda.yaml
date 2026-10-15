@@ -11,11 +11,17 @@ on:
         required: true
 
 jobs:
-  test:
-    name: Build on ${{ matrix.os }}, Python ${{ matrix.python-version }}
-    runs-on: ${{ matrix.os }}
+  tests:
     # Prereleases are not deployed
     if: github.event_name != 'release' || !github.event.release.prerelease
+    uses: ./.github/workflows/Linux.yaml
+    with:
+      ref: ${{ inputs.tag || github.ref }}
+
+  deploy:
+    name: Build and upload on ${{ matrix.os }}, Python ${{ matrix.python-version }}
+    needs: tests
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest]

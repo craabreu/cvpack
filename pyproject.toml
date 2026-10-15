@@ -32,9 +32,13 @@ dependencies = [
 "Documentation" = "https://craabreu.github.io/cvpack/latest"
 
 [project.optional-dependencies]
+# openmmtools, also needed by the tests, is distributed only through conda-forge
 test = [
-  "pytest>=6.1.2",
-  "pytest-runner"
+  "pytest>=7",
+  "pytest-cov",
+  "mdtraj",
+  "networkx",
+  "scipy",
 ]
 
 [tool.setuptools]
@@ -123,6 +127,9 @@ extend-immutable-calls = ["cvpack.units.Quantity", "cvpack.units.units.Quantity"
 quote-style = "double"
 indent-style = "space"
 line-ending = "auto"
+
+[tool.coverage.run]
+omit = ["*/tests/*", "cvpack/_version.py"]
 
 [tool.pytest.ini_options]
 minversion = "7.0"

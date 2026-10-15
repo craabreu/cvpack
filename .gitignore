@@ -106,7 +106,7 @@ ENV/
 *profraw
 
 # In-tree generated files
-#*/_version.py
+cvpack/_version.py
 
 # VSCode
 .vscode/
