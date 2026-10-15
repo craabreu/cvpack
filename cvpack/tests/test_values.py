@@ -39,7 +39,7 @@ def test_attraction_strength_coulomb_scales_with_cutoff(cutoff):
     distance = 0.4
     context = make_context(system, [[0, 0, 0], [distance, 0, 0]])
     x = distance / cutoff
-    # Docstring: -q_i q_j / (4 pi eps0 r_c) * u_elec(x), with u_elec(x) = 1/x + (x^2-3)/2
+    # Docstring: -q_i q_j/(4 pi eps0 r_c) u_elec(x), with u_elec(x) = 1/x + (x^2-3)/2
     expected = ONE_4PI_EPS0 / cutoff * (1 / x + (x**2 - 3) / 2)
     assert cv.getValue(context).value_in_unit(cv.getUnit()) == pytest.approx(expected)
 
@@ -109,7 +109,9 @@ def test_pseudo_cb_has_the_same_chirality_as_cb():
     model = testsystems.LysozymeImplicit()
     positions = model.positions.value_in_unit(unit.nanometers)
     amino_acids = [
-        r for r in model.topology.residues() if {"N", "CA"} <= {a.name for a in r.atoms()}
+        residue
+        for residue in model.topology.residues()
+        if {"N", "CA"} <= {atom.name for atom in residue.atoms()}
     ]
     for residue in amino_acids:
         n, ca, cb, c, _ = BaseRMSDContent._getAtomList(residue)

@@ -28,7 +28,7 @@ class RadiusOfGyration(BaseRadiusOfGyration):
 
     .. math::
 
-        {\bf r}_c({\bf r}) = \frac{1}{n} \sum_{i=j}^n {\bf r}_j
+        {\bf r}_c({\bf r}) = \frac{1}{n} \sum_{j=1}^n {\bf r}_j
 
     Optionally, the radius of gyration can be computed with respect to the center of
     mass of the group. In this case, the geometric center is replaced by:

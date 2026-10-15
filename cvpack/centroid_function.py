@@ -32,7 +32,7 @@ class CentroidFunction(BaseCustomFunction, openmm.CustomCentroidBondForce):
             {\bf g}^i_n({\bf r})
         \Big)
 
-    where :math:`F` is a user-defined function and :math:`{\bf g}^i_1({\bf r})` is the
+    where :math:`F` is a user-defined function and :math:`{\bf g}^i_j({\bf r})` is the
     centroid of the :math:`j`-th group of atoms of the :math:`i`-th collection of
     groups.
 
@@ -44,8 +44,8 @@ class CentroidFunction(BaseCustomFunction, openmm.CustomCentroidBondForce):
 
     where :math:`N_j` is the number of atoms in group :math:`j` and
     :math:`{\bf r}_{k,j}` is the coordinate of the :math:`k`-th atom of group
-    :math:`j`. Optionally, the centroid can be weighted by the mass of each atom
-    in the group. In this case, it is redefined as:
+    :math:`j`. Optionally (and by default), the centroid can be weighted by the mass of
+    each atom in the group. In this case, it is redefined as:
 
     .. math::
 
@@ -55,18 +55,18 @@ class CentroidFunction(BaseCustomFunction, openmm.CustomCentroidBondForce):
     the mass of the :math:`k`-th atom in group :math:`j`.
 
     The function :math:`F` is defined as a string and can be any expression supported
-    by :OpenMM:`CustomCompoundBondForce`. If the expression contains named parameters,
+    by :OpenMM:`CustomCentroidBondForce`. If the expression contains named parameters,
     the value of each parameter can be passed in one of three ways:
 
     #. By a semicolon-separated definition in the function string, such as described
-       in the :OpenMM:`CustomCompoundBondForce` documentation. In this case, the
+       in the :OpenMM:`CustomCentroidBondForce` documentation. In this case, the
        parameter value will be the same for all collections of atom groups.
 
     #. By a 1D array or list of length :math:`m` passed as a keyword argument to
-       the :class:`AtomicFunction` constructor. In this case, each value will be
+       the :class:`CentroidFunction` constructor. In this case, each value will be
        assigned to a different collection of atom groups.
 
-    #. By a scalar passed as a keyword argument to the :class:`AtomicFunction`
+    #. By a scalar passed as a keyword argument to the :class:`CentroidFunction`
        constructor. In this case, the parameter will apply to all collections of atom
        groups and will become available for on-the-fly modification during a simulation
        via the ``setParameter`` method of an :OpenMM:`Context` object. **Warning**:

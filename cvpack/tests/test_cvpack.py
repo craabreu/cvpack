@@ -407,6 +407,7 @@ def test_helix_torsion_content():
     traj = mdtraj.Trajectory(positions, mdtraj.Topology.from_openmm(model.topology))
     _, phi = mdtraj.compute_phi(traj)
     _, psi = mdtraj.compute_psi(traj)
+
     def wrap(angle):
         return (angle + 180) % 360 - 180
 

@@ -57,7 +57,7 @@ class CollectiveVariable(Serializable):
         ----------
         name
             The name of this collective variable.
-        unit
+        cvUnit
             The unit of measurement of this collective variable. It must be a unit
             in the MD unit system (mass in Da, distance in nm, time in ps,
             temperature in K, energy in kJ/mol, angle in rad).
@@ -94,8 +94,8 @@ class CollectiveVariable(Serializable):
 
     def _setUnusedForceGroup(self, system: openmm.System) -> None:
         """
-        Set the force group of this collective variable to the one at a given position
-        in the ascending ordered list of unused force groups in an :OpenMM:`System`.
+        Set the force group of this collective variable to the lowest force group not
+        used by any force in an :OpenMM:`System`.
 
         .. note::
 

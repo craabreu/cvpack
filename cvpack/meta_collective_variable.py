@@ -37,11 +37,11 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
     the value of each parameter can be passed in one of two ways:
 
     #. By a semicolon-separated definition in the function string, such as described
-       in the :OpenMM:`CustomCompoundBondForce` documentation. In this case, the
-       parameter value will be the same for all groups of atoms.
+       in the :OpenMM:`CustomCVForce` documentation. In this case, the parameter value
+       is fixed.
 
-    #. By a scalar passed as a keyword argument to the :class:`AtomicFunction`
-       constructor. In this case, the parameter will apply to all atom groups and will
+    #. By a scalar passed as a keyword argument to the
+       :class:`MetaCollectiveVariable` constructor. In this case, the parameter will
        become available for on-the-fly modification during a simulation via the
        ``setParameter`` method of an :OpenMM:`Context` object. **Warning**: other
        collective variables or :OpenMM:`Force` objects in the same system will share

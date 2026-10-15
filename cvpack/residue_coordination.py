@@ -1,5 +1,5 @@
 """
-.. class:: Distance
+.. class:: ResidueCoordination
    :platform: Linux, MacOS, Windows
    :synopsis: The number of contacts between two groups of residues
 

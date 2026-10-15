@@ -1,7 +1,7 @@
 """
 .. class:: ShortestDistance
    :platform: Linux, MacOS, Windows
-   :synopsis: The number of contacts between two atom groups
+   :synopsis: A smooth approximation for the shortest distance between two atom groups
 
 .. classauthor:: Charlles Abreu <craabreu@gmail.com>
 
@@ -38,7 +38,7 @@ class ShortestDistance(CollectiveVariable, openmm.CustomCVForce):
 
         S_w({\bf r}) = e^{-\beta} +
             \sum_{i \in {\bf g}_1} \sum_{j \in {\bf g}_2 \atop r_{ij} < r_c}
-                r_{ij} e^{-\beta \frac{r_{ij}}{r_c}}
+                e^{-\beta \frac{r_{ij}}{r_c}}
 
     where :math:`r_{ij} = \|{\bf r}_j - {\bf r}_i\|` is the distance between atoms
     :math:`i` and :math:`j`, :math:`{\bf g}_1` and :math:`{\bf g}_2` are the sets of
