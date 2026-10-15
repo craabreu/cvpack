@@ -2,6 +2,8 @@
 Tests for argument validation and unit conversion in cvpack collective variables.
 """
 
+import itertools as it
+
 import numpy as np
 import openmm
 import pytest
@@ -197,3 +199,33 @@ def test_from_openmm_force_rejects_tabulated_functions():
     force.addBond([0, 1], [])
     with pytest.raises(ValueError, match="tabulated"):
         cvpack.AtomicFunction.fromOpenMMForce(force, unit.kilojoule_per_mole)
+
+
+def _kabsch_rmsd(p, q):
+    u, s, vt = np.linalg.svd(p.T @ q)
+    s[-1] *= np.sign(np.linalg.det(u @ vt))
+    return np.sqrt(max((np.sum(p**2) + np.sum(q**2) - 2 * np.sum(s)) / len(p), 0.0))
+
+
+def test_composite_rmsd_value():
+    model = testsystems.HostGuestExplicit()
+    host, guest = (
+        [a.index for a in r.atoms()] for r in it.islice(model.topology.residues(), 0, 2)
+    )
+    reference = model.positions.value_in_unit(unit.nanometers)
+    try:
+        cv = cvpack.CompositeRMSD(reference, [host, guest])
+    except ImportError:
+        pytest.skip("openmm-cpp-forces is not installed")
+    cv.addToSystem(model.system)
+    rng = np.random.default_rng(7)
+    current = reference + rng.normal(0, 0.02, reference.shape)
+    current[guest] += 0.7
+    context = make_context(model.system, current)
+    centered = [
+        np.vstack([x[g] - x[g].mean(axis=0) for g in (host, guest)])
+        for x in (current, reference)
+    ]
+    expected = _kabsch_rmsd(*centered)
+    value = cv.getValue(context).value_in_unit(unit.nanometer)
+    assert value == pytest.approx(expected, rel=1e-5)
