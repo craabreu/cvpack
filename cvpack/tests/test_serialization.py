@@ -10,10 +10,11 @@ import numpy as np
 import openmm
 import pytest
 import yaml
-from openmm import unit
+from openmm import app, unit
 from openmmtools import testsystems
 
 import cvpack
+from cvpack.serialization import SerializableAtom
 from cvpack.tests.helpers import make_context
 from cvpack.utils import preprocess_args
 
@@ -174,3 +175,12 @@ def test_path_in_rmsd_space_with_quantity_milestones(dipeptide, as_vec3):
     )
     cv.addToSystem(dipeptide.system)
     assert_round_trip(cv, make_context(dipeptide.system, dipeptide.positions))
+
+
+def test_serializable_atom_without_element():
+    topology = app.Topology()
+    residue = topology.addResidue("HOH", topology.addChain())
+    topology.addAtom("EPW", None, residue)
+    atom = SerializableAtom(next(topology.atoms()))
+    assert atom.element is None
+    assert yaml.safe_load(yaml.safe_dump(atom)).element is None
