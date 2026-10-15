@@ -5,7 +5,7 @@ dependencies:
     # Base depends
   - python
   - pip
-  - openmm
+  - openmm>=8.4
   - numpy
   - pyyaml
 

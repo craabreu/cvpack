@@ -9,12 +9,14 @@
 
 import typing as t
 
+import openmm
 from openmm import unit as mmunit
 
-from .base_radius_of_gyration import BaseRadiusOfGyration
+from .collective_variable import CollectiveVariable
+from .radius_of_gyration_sq import RadiusOfGyrationSq
 
 
-class RadiusOfGyration(BaseRadiusOfGyration):
+class RadiusOfGyration(CollectiveVariable, openmm.CustomCVForce):
     r"""
     The radius of gyration of a group of :math:`n` atoms:
 
@@ -41,8 +43,9 @@ class RadiusOfGyration(BaseRadiusOfGyration):
 
     .. note::
 
-        This collective variable lacks parallelization and might be slow when the group
-        of atoms is large. In this case, :class:`RadiusOfGyrationSq` might be preferred.
+        Without mass weighting and periodic boundary conditions, the computation is
+        done by OpenMM's :OpenMM:`RGForce`. Otherwise, this collective variable is the
+        square root of a :class:`RadiusOfGyrationSq`.
 
     Parameters
     ----------
@@ -81,15 +84,17 @@ class RadiusOfGyration(BaseRadiusOfGyration):
         name: str = "radius_of_gyration",
     ) -> None:
         group = list(group)
-        num_atoms = len(group)
-        num_groups = num_atoms + 1
-        sum_dist_sq = "+".join(
-            [f"distance(g{i + 1}, g{num_atoms + 1})^2" for i in range(num_atoms)]
-        )
-        super().__init__(
-            num_groups, f"sqrt(({sum_dist_sq})/{num_atoms})", group, pbc, weighByMass
-        )
-        self.addBond(list(range(num_groups)))
+        if not group:
+            # OpenMM's RGForce would interpret an empty group as all atoms
+            raise ValueError("The group of atoms must not be empty")
+        if pbc or weighByMass:
+            super().__init__("sqrt(rgsq)")
+            self.addCollectiveVariable(
+                "rgsq", RadiusOfGyrationSq(group, pbc=pbc, weighByMass=weighByMass)
+            )
+        else:
+            super().__init__("rg")
+            self.addCollectiveVariable("rg", openmm.RGForce(group))
         self._registerCV(
             name, mmunit.nanometers, group=group, pbc=pbc, weighByMass=weighByMass
         )

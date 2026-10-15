@@ -373,3 +373,26 @@ def test_rmsd_content_accepts_charmm_terminal_oxygen():
     renamed.addToSystem(model.system)
     context = make_context(model.system, model.positions)
     assert renamed.getValue(context) == reference.getValue(context)
+
+
+@pytest.mark.parametrize("pbc", [False, True])
+@pytest.mark.parametrize("weigh_by_mass", [False, True])
+def test_radius_of_gyration_is_square_root_of_squared(pbc, weigh_by_mass):
+    rng = np.random.default_rng(6)
+    positions = rng.uniform(0, 1.5, (10, 3))
+    system = particle_system(10)
+    system.setDefaultPeriodicBoxVectors(*(2.0 * np.eye(3)))
+    for atom, mass in enumerate(rng.uniform(1, 30, 10)):
+        system.setParticleMass(atom, mass)
+    group = [8, 1, 5, 3, 0, 6]
+    rg = cvpack.RadiusOfGyration(group, pbc=pbc, weighByMass=weigh_by_mass, name="rg")
+    rgsq = cvpack.RadiusOfGyrationSq(group, pbc=pbc, weighByMass=weigh_by_mass)
+    rg.addToSystem(system)
+    rgsq.addToSystem(system)
+    context = make_context(system, positions)
+    value = rg.getValue(context).value_in_unit(unit.nanometer)
+    squared = rgsq.getValue(context).value_in_unit(unit.nanometer**2)
+    assert value == pytest.approx(np.sqrt(squared))
+    # Without mass weighting and PBC, OpenMM's RGForce does the computation
+    inner = rg.getCollectiveVariable(0)
+    assert isinstance(inner, openmm.RGForce) == (not pbc and not weigh_by_mass)

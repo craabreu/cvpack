@@ -22,7 +22,7 @@ requires-python = ">=3.10"
 # Declare any run-time dependencies that should be installed with the package.
 dependencies = [
     "numpy",
-    "openmm",
+    "openmm>=8.4",
     "pyyaml",
 ]
 

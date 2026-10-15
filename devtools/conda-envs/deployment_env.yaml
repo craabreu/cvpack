@@ -6,7 +6,7 @@ dependencies:
   - python
   - pip
   - numpy
-  - openmm
+  - openmm>=8.4
   - pyyaml
 
   # Conda build

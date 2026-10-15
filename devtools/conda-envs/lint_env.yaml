@@ -4,7 +4,7 @@ channels:
 dependencies:
     # Base depends
   - python
-  - openmm>=7.6
+  - openmm>=8.4
   - numpy
 
     # Testing
