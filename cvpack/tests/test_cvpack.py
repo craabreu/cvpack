@@ -952,3 +952,34 @@ def test_shortest_distance():
         )
         assert cv_value == pytest.approx(computed_value)
     perform_common_tests(min_dist, context)
+
+
+def test_meta_collective_variable():
+    """
+    Test a meta-collective variable's value, parameter derivative and serialization.
+
+    """
+    model = testsystems.AlanineDipeptideVacuum()
+    phi = cvpack.Torsion(6, 8, 14, 16, name="phi")
+    psi = cvpack.Torsion(8, 14, 16, 18, name="psi")
+    meta = cvpack.MetaCollectiveVariable(
+        "0.5*kappa*(phi^2 + psi^2)",
+        [phi, psi],
+        unit.kilojoules_per_mole,
+        kappa=10 * unit.kilojoules_per_mole / unit.radian**2,
+    )
+    meta.addToSystem(model.system)
+    context = openmm.Context(
+        model.system,
+        openmm.VerletIntegrator(0),
+        openmm.Platform.getPlatformByName("Reference"),
+    )
+    context.setPositions(model.positions)
+    inner = meta.getInnerValues(context)
+    squares = sum((value / unit.radian) ** 2 for value in inner.values())
+    assert meta.getValue(context) / unit.kilojoules_per_mole == pytest.approx(
+        5 * squares
+    )
+    derivative = meta.getParameterDerivatives(context)["kappa"]
+    assert derivative / derivative.unit == pytest.approx(0.5 * squares)
+    perform_common_tests(meta, context)
