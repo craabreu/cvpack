@@ -5,13 +5,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>cvpack.residue_coordination &#8212; CVPack dev  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=572d9513" />
     <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../../_static/doctools.js?v=9a2dae69"></script>
-    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=ccdb6887"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -34,30 +35,30 @@
           <div class="body" role="main">
             
   <h1>Source code for cvpack.residue_coordination</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">.. class:: Distance</span>
 <span class="sd">   :platform: Linux, MacOS, Windows</span>
 <span class="sd">   :synopsis: The number of contacts between two groups of residues</span>
 
 <span class="sd">.. classauthor:: Charlles Abreu &lt;craabreu@gmail.com&gt;</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
-<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">t</span>
 
-<span class="kn">import</span> <span class="nn">openmm</span>
-<span class="kn">from</span> <span class="nn">openmm</span> <span class="kn">import</span> <span class="n">unit</span> <span class="k">as</span> <span class="n">mmunit</span>
-<span class="kn">from</span> <span class="nn">openmm.app.element</span> <span class="kn">import</span> <span class="n">hydrogen</span>
-<span class="kn">from</span> <span class="nn">openmm.app.topology</span> <span class="kn">import</span> <span class="n">Residue</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">openmm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openmm</span><span class="w"> </span><span class="kn">import</span> <span class="n">unit</span> <span class="k">as</span> <span class="n">mmunit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openmm.app.element</span><span class="w"> </span><span class="kn">import</span> <span class="n">hydrogen</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openmm.app.topology</span><span class="w"> </span><span class="kn">import</span> <span class="n">Residue</span>
 
-<span class="kn">from</span> <span class="nn">.collective_variable</span> <span class="kn">import</span> <span class="n">CollectiveVariable</span>
-<span class="kn">from</span> <span class="nn">.units</span> <span class="kn">import</span> <span class="n">Quantity</span><span class="p">,</span> <span class="n">ScalarQuantity</span><span class="p">,</span> <span class="n">value_in_md_units</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.collective_variable</span><span class="w"> </span><span class="kn">import</span> <span class="n">CollectiveVariable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">Quantity</span><span class="p">,</span> <span class="n">ScalarQuantity</span><span class="p">,</span> <span class="n">value_in_md_units</span>
 
 
 <div class="viewcode-block" id="ResidueCoordination">
 <a class="viewcode-back" href="../../api/ResidueCoordination.html#cvpack.ResidueCoordination">[docs]</a>
-<span class="k">class</span> <span class="nc">ResidueCoordination</span><span class="p">(</span><span class="n">CollectiveVariable</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomCentroidBondForce</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ResidueCoordination</span><span class="p">(</span><span class="n">CollectiveVariable</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomCentroidBondForce</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">    The number of contacts between two disjoint groups of residues:</span>
 
 <span class="sd">    .. math::</span>
@@ -88,7 +89,7 @@
 <span class="sd">    pbc</span>
 <span class="sd">        Whether the system has periodic boundary conditions.</span>
 <span class="sd">    stepFunction</span>
-<span class="sd">        The function &quot;step(1-x)&quot; (for analysis only) or a continuous approximation</span>
+<span class="sd">        The function "step(1-x)" (for analysis only) or a continuous approximation</span>
 <span class="sd">        thereof.</span>
 <span class="sd">    thresholdDistance</span>
 <span class="sd">        The threshold distance (:math:`r_0`) for considering two residues as being</span>
@@ -126,11 +127,11 @@
 <span class="sd">    &gt;&gt;&gt; residue_coordination = cvpack.ResidueCoordination(</span>
 <span class="sd">    ...     group1,</span>
 <span class="sd">    ...     group2,</span>
-<span class="sd">    ...     stepFunction=&quot;step(1-x)&quot;,</span>
+<span class="sd">    ...     stepFunction="step(1-x)",</span>
 <span class="sd">    ...     thresholdDistance=0.6*unit.nanometers,</span>
 <span class="sd">    ... )</span>
 <span class="sd">    &gt;&gt;&gt; residue_coordination.addToSystem(model.system)</span>
-<span class="sd">    &gt;&gt;&gt; platform = openmm.Platform.getPlatformByName(&#39;Reference&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; platform = openmm.Platform.getPlatformByName('Reference')</span>
 <span class="sd">    &gt;&gt;&gt; context = openmm.Context(</span>
 <span class="sd">    ...     model.system, openmm.CustomIntegrator(0), platform</span>
 <span class="sd">    ... )</span>
@@ -141,19 +142,19 @@
 <span class="sd">    &gt;&gt;&gt; context.reinitialize(preserveState=True)</span>
 <span class="sd">    &gt;&gt;&gt; residue_coordination.getValue(context)</span>
 <span class="sd">    0.99999... dimensionless</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">residueGroup1</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Residue</span><span class="p">],</span>
         <span class="n">residueGroup2</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Residue</span><span class="p">],</span>
         <span class="n">pbc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">stepFunction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;1/(1+x^6)&quot;</span><span class="p">,</span>
+        <span class="n">stepFunction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"1/(1+x^6)"</span><span class="p">,</span>
         <span class="n">thresholdDistance</span><span class="p">:</span> <span class="n">ScalarQuantity</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">nanometers</span><span class="p">),</span>
         <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">weighByMass</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">includeHydrogens</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;residue_coordination&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"residue_coordination"</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">residueGroup1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">residueGroup1</span><span class="p">)</span>
         <span class="n">residueGroup2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">residueGroup2</span><span class="p">)</span>
@@ -164,9 +165,9 @@
         <span class="k">if</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">is_quantity</span><span class="p">(</span><span class="n">threshold</span><span class="p">):</span>
             <span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">mmunit</span><span class="o">.</span><span class="n">nanometers</span><span class="p">)</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">stepFunction</span><span class="si">}</span><span class="s2">)/refval&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;; x=distance(g1,g2)/</span><span class="si">{</span><span class="n">threshold</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;; refval=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_ref_val</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="n">stepFunction</span><span class="si">}</span><span class="s2">)/refval"</span>
+            <span class="sa">f</span><span class="s2">"; x=distance(g1,g2)/</span><span class="si">{</span><span class="n">threshold</span><span class="si">}</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"; refval=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_ref_val</span><span class="si">}</span><span class="s2">"</span>
         <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">expression</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setUsesPeriodicBoundaryConditions</span><span class="p">(</span><span class="n">pbc</span><span class="p">)</span>
@@ -195,47 +196,47 @@
 
 <div class="viewcode-block" id="ResidueCoordination.getReferenceValue">
 <a class="viewcode-back" href="../../api/ResidueCoordination.html#cvpack.ResidueCoordination.getReferenceValue">[docs]</a>
-    <span class="k">def</span> <span class="nf">getReferenceValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getReferenceValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Get the reference value used for normalizing the residue coordination.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        mmunit.Quantity</span>
 <span class="sd">            The reference value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ref_val</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">getUnit</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ResidueCoordination.setReferenceValue">
 <a class="viewcode-back" href="../../api/ResidueCoordination.html#cvpack.ResidueCoordination.setReferenceValue">[docs]</a>
-    <span class="k">def</span> <span class="nf">setReferenceValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">ScalarQuantity</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setReferenceValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">ScalarQuantity</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Set the reference value used for normalizing the residue coordination.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">            value</span>
 <span class="sd">                The reference value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getEnergyFunction</span><span class="p">()</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">value_in_md_units</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setEnergyFunction</span><span class="p">(</span>
-            <span class="n">expression</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;refval=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_ref_val</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;refval=</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">expression</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s2">"refval=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_ref_val</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"refval=</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ref_val</span> <span class="o">=</span> <span class="n">value</span></div>
 </div>
 
 
 
-<span class="n">ResidueCoordination</span><span class="o">.</span><span class="n">registerTag</span><span class="p">(</span><span class="s2">&quot;!cvpack.ResidueCoordination&quot;</span><span class="p">)</span>
+<span class="n">ResidueCoordination</span><span class="o">.</span><span class="n">registerTag</span><span class="p">(</span><span class="s2">"!cvpack.ResidueCoordination"</span><span class="p">)</span>
 </pre></div>
 
           </div>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <h1 class="logo"><a href="../../index.html">CVPack dev</a></h1>
 
@@ -276,8 +277,8 @@
       &#169;2024 C. Abreu & Redesign Science.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.0.4</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
     </div>
 

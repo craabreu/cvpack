@@ -5,13 +5,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>cvpack.atomic_function &#8212; CVPack dev  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=572d9513" />
     <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../../_static/doctools.js?v=9a2dae69"></script>
-    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=ccdb6887"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -34,32 +35,32 @@
           <div class="body" role="main">
             
   <h1>Source code for cvpack.atomic_function</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">.. class:: AtomicFunction</span>
 <span class="sd">   :platform: Linux, MacOS, Windows</span>
 <span class="sd">   :synopsis: A generic function of the coordinates of a group of atoms</span>
 
 <span class="sd">.. classauthor:: Charlles Abreu &lt;craabreu@gmail.com&gt;</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">t</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">openmm</span>
-<span class="kn">from</span> <span class="nn">numpy.typing</span> <span class="kn">import</span> <span class="n">ArrayLike</span>
-<span class="kn">from</span> <span class="nn">openmm</span> <span class="kn">import</span> <span class="n">unit</span> <span class="k">as</span> <span class="n">mmunit</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">openmm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openmm</span><span class="w"> </span><span class="kn">import</span> <span class="n">unit</span> <span class="k">as</span> <span class="n">mmunit</span>
 
-<span class="kn">from</span> <span class="nn">.base_custom_function</span> <span class="kn">import</span> <span class="n">BaseCustomFunction</span>
-<span class="kn">from</span> <span class="nn">.units</span> <span class="kn">import</span> <span class="n">ScalarQuantity</span><span class="p">,</span> <span class="n">VectorQuantity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base_custom_function</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseCustomFunction</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScalarQuantity</span><span class="p">,</span> <span class="n">VectorQuantity</span>
 
 
 <div class="viewcode-block" id="AtomicFunction">
 <a class="viewcode-back" href="../../api/AtomicFunction.html#cvpack.AtomicFunction">[docs]</a>
-<span class="k">class</span> <span class="nc">AtomicFunction</span><span class="p">(</span><span class="n">BaseCustomFunction</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomCompoundBondForce</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AtomicFunction</span><span class="p">(</span><span class="n">BaseCustomFunction</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomCompoundBondForce</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">    A generic function of the coordinates of :math:`m` groups of :math:`n` atoms:</span>
 
 <span class="sd">    .. math::</span>
@@ -141,7 +142,7 @@
 <span class="sd">    &gt;&gt;&gt; angle1 = cvpack.Angle(0, 5, 10)</span>
 <span class="sd">    &gt;&gt;&gt; angle2 = cvpack.Angle(10, 15, 20)</span>
 <span class="sd">    &gt;&gt;&gt; colvar = cvpack.AtomicFunction(</span>
-<span class="sd">    ...     &quot;(kappa/2)*(angle(p1, p2, p3) - theta0)^2&quot;,</span>
+<span class="sd">    ...     "(kappa/2)*(angle(p1, p2, p3) - theta0)^2",</span>
 <span class="sd">    ...     unit.kilojoules_per_mole,</span>
 <span class="sd">    ...     [[0, 5, 10], [10, 15, 20]],</span>
 <span class="sd">    ...     kappa = 1000 * unit.kilojoules_per_mole/unit.radian**2,</span>
@@ -150,7 +151,7 @@
 <span class="sd">    &gt;&gt;&gt; for cv in [angle1, angle2, colvar]:</span>
 <span class="sd">    ...     cv.addToSystem(model.system)</span>
 <span class="sd">    &gt;&gt;&gt; integrator = openmm.VerletIntegrator(0)</span>
-<span class="sd">    &gt;&gt;&gt; platform = openmm.Platform.getPlatformByName(&#39;Reference&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; platform = openmm.Platform.getPlatformByName('Reference')</span>
 <span class="sd">    &gt;&gt;&gt; context = openmm.Context(model.system, integrator, platform)</span>
 <span class="sd">    &gt;&gt;&gt; context.setPositions(model.positions)</span>
 <span class="sd">    &gt;&gt;&gt; theta1 = angle1.getValue(context) / openmm.unit.radian</span>
@@ -160,27 +161,27 @@
 <span class="sd">    &gt;&gt;&gt; colvar.getValue(context)</span>
 <span class="sd">    429.479... kJ/mol</span>
 <span class="sd">    &gt;&gt;&gt; context.setParameter(</span>
-<span class="sd">    ...     &quot;kappa&quot;,</span>
+<span class="sd">    ...     "kappa",</span>
 <span class="sd">    ...     2000 * unit.kilojoules_per_mole/unit.radian**2</span>
 <span class="sd">    ... )</span>
 <span class="sd">    &gt;&gt;&gt; colvar.getValue(context)</span>
 <span class="sd">    858.958... kJ/mol</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">function</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">unit</span><span class="p">:</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">Unit</span><span class="p">,</span>
         <span class="n">groups</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
         <span class="n">periodicBounds</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">VectorQuantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">pbc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;atomic_function&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"atomic_function"</span><span class="p">,</span>
         <span class="o">**</span><span class="n">parameters</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">ScalarQuantity</span><span class="p">,</span> <span class="n">VectorQuantity</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
         <span class="n">num_groups</span><span class="p">,</span> <span class="n">atoms_per_group</span><span class="p">,</span> <span class="o">*</span><span class="n">other_dimensions</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">shape</span>
         <span class="k">if</span> <span class="n">other_dimensions</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Array `groups` cannot have more than 2 dimensions&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Array `groups` cannot have more than 2 dimensions"</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">atoms_per_group</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
         <span class="n">overalls</span><span class="p">,</span> <span class="n">perbonds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractParameters</span><span class="p">(</span><span class="n">num_groups</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_addParameters</span><span class="p">(</span><span class="n">overalls</span><span class="p">,</span> <span class="n">perbonds</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">pbc</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
@@ -200,7 +201,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_registerPeriodicBounds</span><span class="p">(</span><span class="o">*</span><span class="n">periodicBounds</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_fromCustomForce</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_fromCustomForce</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-branches</span>
         <span class="bp">cls</span><span class="p">,</span>
         <span class="n">force</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
             <span class="n">openmm</span><span class="o">.</span><span class="n">CustomAngleForce</span><span class="p">,</span>
@@ -212,22 +213,24 @@
         <span class="n">unit</span><span class="p">:</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">Unit</span><span class="p">,</span>
         <span class="n">periodicBounds</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">VectorQuantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">pbc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;AtomicFunction&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"AtomicFunction"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Create a :class:`AtomicFunction` from an object of :openmm:`CustomBondForce`,</span>
 <span class="sd">        :openmm:`CustomAngleForce`, :openmm:`CustomTorsionForce`, or</span>
 <span class="sd">        :openmm:`CustomCompoundBondForce` class.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomExternalForce</span><span class="p">):</span>
-            <span class="n">number</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">definition</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Particle&quot;</span><span class="p">,</span> <span class="s2">&quot;; x=x1; y=y1; z=z1&quot;</span>
+            <span class="n">number</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">definition</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"Particle"</span><span class="p">,</span> <span class="s2">"; x=x1; y=y1; z=z1"</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomBondForce</span><span class="p">):</span>
-            <span class="n">number</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">definition</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Bond&quot;</span><span class="p">,</span> <span class="s2">&quot;; r=distance(p1, p2)&quot;</span>
+            <span class="n">number</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">definition</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">"Bond"</span><span class="p">,</span> <span class="s2">"; r=distance(p1, p2)"</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomAngleForce</span><span class="p">):</span>
-            <span class="n">number</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">definition</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Angle&quot;</span><span class="p">,</span> <span class="s2">&quot;; theta=angle(p1, p2, p3)&quot;</span>
+            <span class="n">number</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">definition</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">"Angle"</span><span class="p">,</span> <span class="s2">"; theta=angle(p1, p2, p3)"</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomTorsionForce</span><span class="p">):</span>
-            <span class="n">number</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">definition</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;Torsion&quot;</span><span class="p">,</span> <span class="s2">&quot;; theta=dihedral(p1, p2, p3, p4)&quot;</span>
+            <span class="n">number</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">definition</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">"Torsion"</span><span class="p">,</span> <span class="s2">"; theta=dihedral(p1, p2, p3, p4)"</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomCompoundBondForce</span><span class="p">):</span>
-            <span class="n">number</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">definition</span> <span class="o">=</span> <span class="n">force</span><span class="o">.</span><span class="n">getNumParticlesPerBond</span><span class="p">(),</span> <span class="s2">&quot;Bond&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">number</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">definition</span> <span class="o">=</span> <span class="n">force</span><span class="o">.</span><span class="n">getNumParticlesPerBond</span><span class="p">(),</span> <span class="s2">"Bond"</span><span class="p">,</span> <span class="s2">""</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unsupported force type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">force</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">function</span> <span class="o">=</span> <span class="n">force</span><span class="o">.</span><span class="n">getEnergyFunction</span><span class="p">()</span> <span class="o">+</span> <span class="n">definition</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">force</span><span class="o">.</span><span class="n">getNumGlobalParameters</span><span class="p">()):</span>
@@ -235,20 +238,20 @@
             <span class="n">value</span> <span class="o">=</span> <span class="n">force</span><span class="o">.</span><span class="n">getGlobalParameterDefaultValue</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
             <span class="n">parameters</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="n">per_item_parameter_names</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;getNumPer</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">Parameters&quot;</span><span class="p">)()):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"getNumPer</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">Parameters"</span><span class="p">)()):</span>
             <span class="n">per_item_parameter_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="nb">getattr</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;getPer</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">ParameterName&quot;</span><span class="p">)(</span><span class="n">i</span><span class="p">)</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"getPer</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">ParameterName"</span><span class="p">)(</span><span class="n">i</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">per_item_parameter_names</span><span class="p">:</span>
             <span class="n">parameters</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;getNum</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)()):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"getNum</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">s"</span><span class="p">)()):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomCompoundBondForce</span><span class="p">):</span>
                 <span class="n">indices</span><span class="p">,</span> <span class="n">per_item_parameters</span> <span class="o">=</span> <span class="n">force</span><span class="o">.</span><span class="n">getBondParameters</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="o">*</span><span class="n">indices</span><span class="p">,</span> <span class="n">per_item_parameters</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
                     <span class="n">force</span><span class="p">,</span>
-                    <span class="sa">f</span><span class="s2">&quot;get</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">Parameters&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">"get</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">Parameters"</span><span class="p">,</span>
                 <span class="p">)(</span><span class="n">i</span><span class="p">)</span>
             <span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">per_item_parameter_names</span><span class="p">,</span> <span class="n">per_item_parameters</span><span class="p">):</span>
@@ -257,24 +260,24 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">periodicBounds</span><span class="p">,</span> <span class="n">pbc</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_fromHarmonicBondForce</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_fromHarmonicBondForce</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
         <span class="n">force</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">HarmonicBondForce</span><span class="p">,</span>
         <span class="n">unit</span><span class="p">:</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">Unit</span><span class="p">,</span>
         <span class="n">pbc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;AtomicFunction&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"AtomicFunction"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Create a :class:`AtomicFunction` from an :OpenMM:`HarmonicBondForce`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;r0&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+<span class="sd">        """</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"r0"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"k"</span><span class="p">:</span> <span class="p">[]}</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">force</span><span class="o">.</span><span class="n">getNumBonds</span><span class="p">()):</span>
             <span class="o">*</span><span class="n">indices</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="n">force</span><span class="o">.</span><span class="n">getBondParameters</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
             <span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
-            <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;r0&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
-            <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;k&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="n">parameters</span><span class="p">[</span><span class="s2">"r0"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+            <span class="n">parameters</span><span class="p">[</span><span class="s2">"k"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-            <span class="s2">&quot;(k/2)*(distance(p1, p2)-r0)^2&quot;</span><span class="p">,</span>
+            <span class="s2">"(k/2)*(distance(p1, p2)-r0)^2"</span><span class="p">,</span>
             <span class="n">unit</span><span class="p">,</span>
             <span class="n">atoms</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
@@ -283,24 +286,24 @@
         <span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_fromHarmonicAngleForce</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_fromHarmonicAngleForce</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
         <span class="n">force</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">HarmonicAngleForce</span><span class="p">,</span>
         <span class="n">unit</span><span class="p">:</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">Unit</span><span class="p">,</span>
         <span class="n">pbc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;AtomicFunction&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"AtomicFunction"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Create a :class:`AtomicFunction` from an :OpenMM:`HarmonicAngleForce`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;theta0&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+<span class="sd">        """</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"theta0"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"k"</span><span class="p">:</span> <span class="p">[]}</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">force</span><span class="o">.</span><span class="n">getNumAngles</span><span class="p">()):</span>
             <span class="o">*</span><span class="n">indices</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="n">force</span><span class="o">.</span><span class="n">getAngleParameters</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
             <span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
-            <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;theta0&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
-            <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;k&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="n">parameters</span><span class="p">[</span><span class="s2">"theta0"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+            <span class="n">parameters</span><span class="p">[</span><span class="s2">"k"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-            <span class="s2">&quot;(k/2)*(angle(p1, p2, p3)-theta0)^2&quot;</span><span class="p">,</span>
+            <span class="s2">"(k/2)*(angle(p1, p2, p3)-theta0)^2"</span><span class="p">,</span>
             <span class="n">unit</span><span class="p">,</span>
             <span class="n">atoms</span><span class="p">,</span>
             <span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span>
@@ -309,25 +312,25 @@
         <span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_fromPeriodicTorsionForce</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_fromPeriodicTorsionForce</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
         <span class="n">force</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">PeriodicTorsionForce</span><span class="p">,</span>
         <span class="n">unit</span><span class="p">:</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">Unit</span><span class="p">,</span>
         <span class="n">pbc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;AtomicFunction&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"AtomicFunction"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Create a :class:`AtomicFunction` from an :OpenMM:`PeriodicTorsionForce`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;periodicity&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;phase&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+<span class="sd">        """</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"periodicity"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"phase"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"k"</span><span class="p">:</span> <span class="p">[]}</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">force</span><span class="o">.</span><span class="n">getNumTorsions</span><span class="p">()):</span>
             <span class="o">*</span><span class="n">indices</span><span class="p">,</span> <span class="n">periodicity</span><span class="p">,</span> <span class="n">phase</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="n">force</span><span class="o">.</span><span class="n">getTorsionParameters</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
             <span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
-            <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;periodicity&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">periodicity</span><span class="p">)</span>
-            <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;phase&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">phase</span><span class="p">)</span>
-            <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;k&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="n">parameters</span><span class="p">[</span><span class="s2">"periodicity"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">periodicity</span><span class="p">)</span>
+            <span class="n">parameters</span><span class="p">[</span><span class="s2">"phase"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">phase</span><span class="p">)</span>
+            <span class="n">parameters</span><span class="p">[</span><span class="s2">"k"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-            <span class="s2">&quot;k*(1 + cos(periodicity*dihedral(p1, p2, p3, p4) - phase))&quot;</span><span class="p">,</span>
+            <span class="s2">"k*(1 + cos(periodicity*dihedral(p1, p2, p3, p4) - phase))"</span><span class="p">,</span>
             <span class="n">unit</span><span class="p">,</span>
             <span class="n">atoms</span><span class="p">,</span>
             <span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span>
@@ -338,14 +341,14 @@
 <div class="viewcode-block" id="AtomicFunction.fromOpenMMForce">
 <a class="viewcode-back" href="../../api/AtomicFunction.html#cvpack.AtomicFunction.fromOpenMMForce">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">fromOpenMMForce</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fromOpenMMForce</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
         <span class="n">force</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Force</span><span class="p">,</span>
         <span class="n">unit</span><span class="p">:</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">Unit</span><span class="p">,</span>
         <span class="n">periodicBounds</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">VectorQuantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">pbc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;AtomicFunction&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"AtomicFunction"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Create an :class:`AtomicFunction` from an :OpenMM:`Force`.</span>
 
 <span class="sd">        Parameters</span>
@@ -385,8 +388,8 @@
 <span class="sd">        &gt;&gt;&gt; model.system.addForce(helix_content)</span>
 <span class="sd">        6</span>
 <span class="sd">        &gt;&gt;&gt; num_atoms = model.system.getNumParticles()</span>
-<span class="sd">        &gt;&gt;&gt; mean_x = openmm.CustomExternalForce(&quot;x/num_atoms&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; mean_x.addGlobalParameter(&quot;num_atoms&quot;, num_atoms)</span>
+<span class="sd">        &gt;&gt;&gt; mean_x = openmm.CustomExternalForce("x/num_atoms")</span>
+<span class="sd">        &gt;&gt;&gt; mean_x.addGlobalParameter("num_atoms", num_atoms)</span>
 <span class="sd">        0</span>
 <span class="sd">        &gt;&gt;&gt; for i in range(num_atoms):</span>
 <span class="sd">        ...     _ = mean_x.addParticle(i, [])</span>
@@ -399,13 +402,13 @@
 <span class="sd">        ...     )</span>
 <span class="sd">        ...     for name, force in forces.items()</span>
 <span class="sd">        ...     if name in [</span>
-<span class="sd">        ...         &quot;HarmonicBondForce&quot;,</span>
-<span class="sd">        ...         &quot;HarmonicAngleForce&quot;,</span>
-<span class="sd">        ...         &quot;PeriodicTorsionForce&quot;,</span>
-<span class="sd">        ...         &quot;CustomExternalForce&quot;</span>
+<span class="sd">        ...         "HarmonicBondForce",</span>
+<span class="sd">        ...         "HarmonicAngleForce",</span>
+<span class="sd">        ...         "PeriodicTorsionForce",</span>
+<span class="sd">        ...         "CustomExternalForce"</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... }</span>
-<span class="sd">        &gt;&gt;&gt; copies[&quot;HelixTorsionContent&quot;] = cvpack.AtomicFunction.fromOpenMMForce(</span>
+<span class="sd">        &gt;&gt;&gt; copies["HelixTorsionContent"] = cvpack.AtomicFunction.fromOpenMMForce(</span>
 <span class="sd">        ...     helix_content, unit.dimensionless</span>
 <span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; indices = {}</span>
@@ -413,7 +416,7 @@
 <span class="sd">        ...     _ = model.system.addForce(force)</span>
 <span class="sd">        ...     force.setForceGroup(index)</span>
 <span class="sd">        ...     indices[name] = index</span>
-<span class="sd">        &gt;&gt;&gt; platform = openmm.Platform.getPlatformByName(&#39;Reference&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; platform = openmm.Platform.getPlatformByName('Reference')</span>
 <span class="sd">        &gt;&gt;&gt; integrator = openmm.VerletIntegrator(0)</span>
 <span class="sd">        &gt;&gt;&gt; context = openmm.Context(model.system, integrator, platform)</span>
 <span class="sd">        &gt;&gt;&gt; context.setPositions(model.positions)</span>
@@ -421,13 +424,13 @@
 <span class="sd">        ...    state = context.getState(getEnergy=True, groups={indices[name]})</span>
 <span class="sd">        ...    value = state.getPotentialEnergy() / unit.kilojoules_per_mole</span>
 <span class="sd">        ...    copy_value = copies[name].getValue(context)</span>
-<span class="sd">        ...    print(f&quot;{name}: original={value:.6f}, copy={copy_value}&quot;)</span>
+<span class="sd">        ...    print(f"{name}: original={value:.6f}, copy={copy_value}")</span>
 <span class="sd">        HarmonicBondForce: original=2094.312..., copy=2094.312... kJ/mol</span>
 <span class="sd">        HarmonicAngleForce: original=3239.795..., copy=3239.795... kJ/mol</span>
 <span class="sd">        PeriodicTorsionForce: original=4226.05..., copy=4226.05... kJ/mol</span>
 <span class="sd">        CustomExternalForce: original=5.02155..., copy=5.02155... kJ/mol</span>
 <span class="sd">        HelixTorsionContent: original=17.4528..., copy=17.4528... dimensionless</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span>
             <span class="n">force</span><span class="p">,</span>
             <span class="p">(</span>
@@ -445,19 +448,19 @@
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_fromHarmonicAngleForce</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">pbc</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">PeriodicTorsionForce</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_fromPeriodicTorsionForce</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">pbc</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Force </span><span class="si">{</span><span class="n">force</span><span class="si">}</span><span class="s2"> is not convertible to an AtomicFunction&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Force </span><span class="si">{</span><span class="n">force</span><span class="si">}</span><span class="s2"> is not convertible to an AtomicFunction"</span><span class="p">)</span></div>
 </div>
 
 
 
-<span class="n">AtomicFunction</span><span class="o">.</span><span class="n">registerTag</span><span class="p">(</span><span class="s2">&quot;!cvpack.AtomicFunction&quot;</span><span class="p">)</span>
+<span class="n">AtomicFunction</span><span class="o">.</span><span class="n">registerTag</span><span class="p">(</span><span class="s2">"!cvpack.AtomicFunction"</span><span class="p">)</span>
 </pre></div>
 
           </div>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <h1 class="logo"><a href="../../index.html">CVPack dev</a></h1>
 
@@ -498,8 +501,8 @@
       &#169;2024 C. Abreu & Redesign Science.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.0.4</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
     </div>
 

@@ -1,5 +1,5 @@
 // Licensed under the Apache License: http://www.apache.org/licenses/LICENSE-2.0
-// For details: https://github.com/nedbat/coveragepy/blob/master/NOTICE.txt
+// For details: https://github.com/coveragepy/coveragepy/blob/main/NOTICE.txt
 
 // Coverage.py HTML report browser code.
 /*jslint browser: true, sloppy: true, vars: true, plusplus: true, maxerr: 50, indent: 4 */
@@ -125,21 +125,38 @@ coverage.assign_shortkeys = function () {
 
 // Create the events for the filter box.
 coverage.wire_up_filter = function () {
+    // Populate the filter and hide100 inputs if there are saved values for them.
+    const saved_filter_value = localStorage.getItem(coverage.FILTER_STORAGE);
+    if (saved_filter_value) {
+        document.getElementById("filter").value = saved_filter_value;
+    }
+    const saved_hide100_value = localStorage.getItem(coverage.HIDE100_STORAGE);
+    if (saved_hide100_value) {
+        document.getElementById("hide100").checked = JSON.parse(saved_hide100_value);
+    }
+
     // Cache elements.
     const table = document.querySelector("table.index");
     const table_body_rows = table.querySelectorAll("tbody tr");
     const no_rows = document.getElementById("no_rows");
 
+    const footer = table.tFoot.rows[0];
+    const ratio_columns = Array.from(footer.cells).map(cell => Boolean(cell.dataset.ratio));
+
     // Observe filter keyevents.
     const filter_handler = (event => {
         // Keep running total of each metric, first index contains number of shown rows
-        const totals = new Array(table.rows[0].cells.length).fill(0);
-        // Accumulate the percentage as fraction
-        totals[totals.length - 1] = { "numer": 0, "denom": 0 };  // nosemgrep: eslint.detect-object-injection
+        const totals = ratio_columns.map(
+            is_ratio => is_ratio ? {"numer": 0, "denom": 0} : 0
+        );
 
         var text = document.getElementById("filter").value;
+        // Store filter value
+        localStorage.setItem(coverage.FILTER_STORAGE, text);
         const casefold = (text === text.toLowerCase());
         const hide100 = document.getElementById("hide100").checked;
+        // Store hide value.
+        localStorage.setItem(coverage.HIDE100_STORAGE, JSON.stringify(hide100));
 
         // Hide / show elements.
         table_body_rows.forEach(row => {
@@ -177,11 +194,11 @@ coverage.wire_up_filter = function () {
             for (let column = 0; column < totals.length; column++) {
                 // Accumulate dynamic totals
                 cell = row.cells[column]  // nosemgrep: eslint.detect-object-injection
-                if (cell.classList.contains("name")) {
+                if (cell.matches(".name, .spacer")) {
                     continue;
                 }
-                if (column === totals.length - 1) {
-                    // Last column contains percentage
+                if (ratio_columns[column] && cell.dataset.ratio) {
+                    // Column stores a ratio
                     const [numer, denom] = cell.dataset.ratio.split(" ");
                     totals[column]["numer"] += parseInt(numer, 10);  // nosemgrep: eslint.detect-object-injection
                     totals[column]["denom"] += parseInt(denom, 10);  // nosemgrep: eslint.detect-object-injection
@@ -204,17 +221,16 @@ coverage.wire_up_filter = function () {
         no_rows.style.display = null;
         table.style.display = null;
 
-        const footer = table.tFoot.rows[0];
         // Calculate new dynamic sum values based on visible rows.
         for (let column = 0; column < totals.length; column++) {
             // Get footer cell element.
             const cell = footer.cells[column];  // nosemgrep: eslint.detect-object-injection
-            if (cell.classList.contains("name")) {
+            if (cell.matches(".name, .spacer")) {
                 continue;
             }
 
             // Set value into dynamic footer cell element.
-            if (column === totals.length - 1) {
+            if (ratio_columns[column]) {
                 // Percentage column uses the numerator and denominator,
                 // and adapts to the number of decimal places.
                 const match = /\.([0-9]+)/.exec(cell.textContent);
@@ -240,6 +256,8 @@ coverage.wire_up_filter = function () {
     document.getElementById("filter").dispatchEvent(new Event("input"));
     document.getElementById("hide100").dispatchEvent(new Event("input"));
 };
+coverage.FILTER_STORAGE = "COVERAGE_FILTER_VALUE";
+coverage.HIDE100_STORAGE = "COVERAGE_HIDE100_VALUE";
 
 // Set up the click-to-sort columns.
 coverage.wire_up_sorting = function () {
@@ -485,20 +503,23 @@ coverage.to_prev_chunk = function () {
         chunk_indicator = c.chunk_indicator(probe_line);
     }
 
+    // There is no previous highlighted chunk.
+    if (!chunk_indicator) {
+        return;
+    }
+
     // There's a prev chunk, `probe` points to its last line.
     var end = probe+1;
 
     // Find the beginning of this chunk.
-    var prev_indicator = chunk_indicator;
-    while (prev_indicator === chunk_indicator) {
-        probe--;
-        if (probe <= 0) {
-            return;
+    while (probe > 1) {
+        probe_line = c.line_elt(probe-1);
+        if (c.chunk_indicator(probe_line) !== chunk_indicator) {
+            break;
         }
-        probe_line = c.line_elt(probe);
-        prev_indicator = c.chunk_indicator(probe_line);
+        probe--;
     }
-    c.set_sel(probe+1, end);
+    c.set_sel(probe, end);
     c.show_selection();
 };
 

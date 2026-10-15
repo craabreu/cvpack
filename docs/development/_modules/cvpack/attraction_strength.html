@@ -5,13 +5,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>cvpack.attraction_strength &#8212; CVPack dev  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=572d9513" />
     <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../../_static/doctools.js?v=9a2dae69"></script>
-    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=ccdb6887"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -34,32 +35,32 @@
           <div class="body" role="main">
             
   <h1>Source code for cvpack.attraction_strength</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">.. class:: AttractionStrength</span>
 <span class="sd">   :platform: Linux, MacOS, Windows</span>
 <span class="sd">   :synopsis: The strength of the attraction between two atom groups</span>
 
 <span class="sd">.. classauthor:: Charlles Abreu &lt;craabreu@gmail.com&gt;</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
-<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">t</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">openmm</span>
-<span class="kn">from</span> <span class="nn">openmm</span> <span class="kn">import</span> <span class="n">unit</span> <span class="k">as</span> <span class="n">mmunit</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">openmm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openmm</span><span class="w"> </span><span class="kn">import</span> <span class="n">unit</span> <span class="k">as</span> <span class="n">mmunit</span>
 
-<span class="kn">from</span> <span class="nn">.collective_variable</span> <span class="kn">import</span> <span class="n">CollectiveVariable</span>
-<span class="kn">from</span> <span class="nn">.units</span> <span class="kn">import</span> <span class="n">Quantity</span><span class="p">,</span> <span class="n">ScalarQuantity</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">evaluate_in_context</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.collective_variable</span><span class="w"> </span><span class="kn">import</span> <span class="n">CollectiveVariable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">Quantity</span><span class="p">,</span> <span class="n">ScalarQuantity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">evaluate_in_context</span>
 
 <span class="n">ONE_4PI_EPS0</span> <span class="o">=</span> <span class="mf">138.93545764438198</span>
 
 
 <div class="viewcode-block" id="AttractionStrength">
 <a class="viewcode-back" href="../../api/AttractionStrength.html#cvpack.AttractionStrength">[docs]</a>
-<span class="k">class</span> <span class="nc">AttractionStrength</span><span class="p">(</span><span class="n">CollectiveVariable</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AttractionStrength</span><span class="p">(</span><span class="n">CollectiveVariable</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">    The strength of the attraction between two atom groups:</span>
 
 <span class="sd">    .. math::</span>
@@ -168,26 +169,26 @@
 <span class="sd">    &gt;&gt;&gt; from openmm import unit</span>
 <span class="sd">    &gt;&gt;&gt; from openmmtools import testsystems</span>
 <span class="sd">    &gt;&gt;&gt; model = testsystems.HostGuestExplicit()</span>
-<span class="sd">    &gt;&gt;&gt; guest = [a.index for a in model.topology.atoms() if a.residue.name == &quot;B2&quot;]</span>
-<span class="sd">    &gt;&gt;&gt; host = [a.index for a in model.topology.atoms() if a.residue.name == &quot;CUC&quot;]</span>
+<span class="sd">    &gt;&gt;&gt; guest = [a.index for a in model.topology.atoms() if a.residue.name == "B2"]</span>
+<span class="sd">    &gt;&gt;&gt; host = [a.index for a in model.topology.atoms() if a.residue.name == "CUC"]</span>
 <span class="sd">    &gt;&gt;&gt; forces = {f.getName(): f for f in model.system.getForces()}</span>
-<span class="sd">    &gt;&gt;&gt; cv1 = cvpack.AttractionStrength(guest, host, forces[&quot;NonbondedForce&quot;])</span>
+<span class="sd">    &gt;&gt;&gt; cv1 = cvpack.AttractionStrength(guest, host, forces["NonbondedForce"])</span>
 <span class="sd">    &gt;&gt;&gt; cv1.addToSystem(model.system)</span>
-<span class="sd">    &gt;&gt;&gt; platform = openmm.Platform.getPlatformByName(&quot;Reference&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; platform = openmm.Platform.getPlatformByName("Reference")</span>
 <span class="sd">    &gt;&gt;&gt; integrator = openmm.VerletIntegrator(1.0 * mmunit.femtoseconds)</span>
 <span class="sd">    &gt;&gt;&gt; context = openmm.Context(model.system, integrator, platform)</span>
 <span class="sd">    &gt;&gt;&gt; context.setPositions(model.positions)</span>
 <span class="sd">    &gt;&gt;&gt; cv1.getValue(context)</span>
 <span class="sd">    4912.5... dimensionless</span>
 
-<span class="sd">    &gt;&gt;&gt; water = [a.index for a in model.topology.atoms() if a.residue.name == &quot;HOH&quot;]</span>
-<span class="sd">    &gt;&gt;&gt; cv2 = cvpack.AttractionStrength(guest, water, forces[&quot;NonbondedForce&quot;])</span>
+<span class="sd">    &gt;&gt;&gt; water = [a.index for a in model.topology.atoms() if a.residue.name == "HOH"]</span>
+<span class="sd">    &gt;&gt;&gt; cv2 = cvpack.AttractionStrength(guest, water, forces["NonbondedForce"])</span>
 <span class="sd">    &gt;&gt;&gt; cv2.addToSystem(model.system)</span>
 <span class="sd">    &gt;&gt;&gt; context.reinitialize(preserveState=True)</span>
 <span class="sd">    &gt;&gt;&gt; cv2.getValue(context)</span>
 <span class="sd">    2063.3... dimensionless</span>
 
-<span class="sd">    &gt;&gt;&gt; cv3 = cvpack.AttractionStrength(guest, host, forces[&quot;NonbondedForce&quot;], water)</span>
+<span class="sd">    &gt;&gt;&gt; cv3 = cvpack.AttractionStrength(guest, host, forces["NonbondedForce"], water)</span>
 <span class="sd">    &gt;&gt;&gt; cv3.addToSystem(model.system)</span>
 <span class="sd">    &gt;&gt;&gt; context.reinitialize(preserveState=True)</span>
 <span class="sd">    &gt;&gt;&gt; cv3.getValue(context)</span>
@@ -196,7 +197,7 @@
 <span class="sd">    2849.17... dimensionless</span>
 
 <span class="sd">    &gt;&gt;&gt; cv4 = cvpack.AttractionStrength(</span>
-<span class="sd">    ...     guest, host, forces[&quot;NonbondedForce&quot;], water, contrastScaling=0.5</span>
+<span class="sd">    ...     guest, host, forces["NonbondedForce"], water, contrastScaling=0.5</span>
 <span class="sd">    ... )</span>
 <span class="sd">    &gt;&gt;&gt; cv4.addToSystem(model.system)</span>
 <span class="sd">    &gt;&gt;&gt; context.reinitialize(preserveState=True)</span>
@@ -204,9 +205,9 @@
 <span class="sd">    3880.8... dimensionless</span>
 <span class="sd">    &gt;&gt;&gt; 1 * cv1.getValue(context) - 0.5 * cv2.getValue(context)</span>
 <span class="sd">    3880.8...</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-locals</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-locals</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">group1</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
         <span class="n">group2</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
@@ -216,7 +217,7 @@
             <span class="mf">1.0</span> <span class="o">*</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">kilojoule_per_mole</span>
         <span class="p">),</span>
         <span class="n">contrastScaling</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;attraction_strength&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"attraction_strength"</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">group1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">group1</span><span class="p">)</span>
         <span class="n">group2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">group2</span><span class="p">)</span>
@@ -225,15 +226,15 @@
             <span class="n">contrastGroup</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">contrastGroup</span><span class="p">)</span>
         <span class="n">cutoff</span> <span class="o">=</span> <span class="n">nonbondedForce</span><span class="o">.</span><span class="n">getCutoffDistance</span><span class="p">()</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">mmunit</span><span class="o">.</span><span class="n">nanometers</span><span class="p">)</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;-(lj + coul)</span><span class="si">{</span><span class="s1">&#39;*sign1*sign2&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">contrasting</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">/ref&quot;</span>
-            <span class="s2">&quot;; lj = 4*epsilon*(1/y^2 - 1/y)&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;; coul = </span><span class="si">{</span><span class="n">ONE_4PI_EPS0</span><span class="si">}</span><span class="s2">*q1q2*(1/x + (x^2 - 3)/2)&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;; x = r/</span><span class="si">{</span><span class="n">cutoff</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;; y = abs((r/sigma)^6 - 2) + 2&quot;</span>
-            <span class="s2">&quot;; q1q2 = min(0, charge1*charge2)&quot;</span>
-            <span class="s2">&quot;; epsilon = sqrt(epsilon1*epsilon2)&quot;</span>
-            <span class="s2">&quot;; sigma = (sigma1 + sigma2)/2&quot;</span>
-            <span class="s2">&quot;; ref = 1&quot;</span>
+            <span class="sa">f</span><span class="s2">"-(lj + coul)</span><span class="si">{</span><span class="s1">'*sign1*sign2'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">contrasting</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">''</span><span class="si">}</span><span class="s2">/ref"</span>
+            <span class="s2">"; lj = 4*epsilon*(1/y^2 - 1/y)"</span>
+            <span class="sa">f</span><span class="s2">"; coul = </span><span class="si">{</span><span class="n">ONE_4PI_EPS0</span><span class="si">}</span><span class="s2">*q1q2*(1/x + (x^2 - 3)/2)"</span>
+            <span class="sa">f</span><span class="s2">"; x = r/</span><span class="si">{</span><span class="n">cutoff</span><span class="si">}</span><span class="s2">"</span>
+            <span class="s2">"; y = abs((r/sigma)^6 - 2) + 2"</span>
+            <span class="s2">"; q1q2 = min(0, charge1*charge2)"</span>
+            <span class="s2">"; epsilon = sqrt(epsilon1*epsilon2)"</span>
+            <span class="s2">"; sigma = (sigma1 + sigma2)/2"</span>
+            <span class="s2">"; ref = 1"</span>
         <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setNonbondedMethod</span><span class="p">(</span>
@@ -242,7 +243,7 @@
             <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">CutoffNonPeriodic</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setCutoffDistance</span><span class="p">(</span><span class="n">cutoff</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;charge&quot;</span><span class="p">,</span> <span class="s2">&quot;sigma&quot;</span><span class="p">,</span> <span class="s2">&quot;epsilon&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;sign&quot;</span><span class="p">,)</span> <span class="o">*</span> <span class="n">contrasting</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"charge"</span><span class="p">,</span> <span class="s2">"sigma"</span><span class="p">,</span> <span class="s2">"epsilon"</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="s2">"sign"</span><span class="p">,)</span> <span class="o">*</span> <span class="n">contrasting</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">addPerParticleParameter</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span>
         <span class="n">contrast_atoms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nonbondedForce</span><span class="o">.</span><span class="n">getNumParticles</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">contrasting</span><span class="p">:</span>
@@ -266,7 +267,7 @@
             <span class="n">reference</span> <span class="o">=</span> <span class="n">evaluate_in_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reference</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">is_quantity</span><span class="p">(</span><span class="n">reference</span><span class="p">):</span>
             <span class="n">reference</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">mmunit</span><span class="o">.</span><span class="n">kilojoule_per_mole</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setEnergyFunction</span><span class="p">(</span><span class="n">expression</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;ref = 1&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;ref = </span><span class="si">{</span><span class="n">reference</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setEnergyFunction</span><span class="p">(</span><span class="n">expression</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"ref = 1"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"ref = </span><span class="si">{</span><span class="n">reference</span><span class="si">}</span><span class="s2">"</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">contrasting</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">addInteractionGroup</span><span class="p">(</span><span class="n">group1</span><span class="p">,</span> <span class="n">contrastGroup</span><span class="p">)</span>
 
@@ -283,14 +284,14 @@
 
 
 
-<span class="n">AttractionStrength</span><span class="o">.</span><span class="n">registerTag</span><span class="p">(</span><span class="s2">&quot;!cvpack.AttractionStrength&quot;</span><span class="p">)</span>
+<span class="n">AttractionStrength</span><span class="o">.</span><span class="n">registerTag</span><span class="p">(</span><span class="s2">"!cvpack.AttractionStrength"</span><span class="p">)</span>
 </pre></div>
 
           </div>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <h1 class="logo"><a href="../../index.html">CVPack dev</a></h1>
 
@@ -331,8 +332,8 @@
       &#169;2024 C. Abreu & Redesign Science.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.0.4</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
     </div>
 

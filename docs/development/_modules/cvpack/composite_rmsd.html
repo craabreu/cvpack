@@ -5,13 +5,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>cvpack.composite_rmsd &#8212; CVPack dev  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=572d9513" />
     <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../../_static/doctools.js?v=9a2dae69"></script>
-    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=ccdb6887"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -34,40 +35,40 @@
           <div class="body" role="main">
             
   <h1>Source code for cvpack.composite_rmsd</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">.. class:: CompositeRMSD</span>
 <span class="sd">   :platform: Linux, MacOS, Windows</span>
 <span class="sd">   :synopsis: Deviation of multiple corotating bodies from their reference structures</span>
 
 <span class="sd">.. classauthor:: Charlles Abreu &lt;craabreu@gmail.com&gt;</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
-<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">t</span>
 
-<span class="kn">from</span> <span class="nn">openmm</span> <span class="kn">import</span> <span class="n">unit</span> <span class="k">as</span> <span class="n">mmunit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openmm</span><span class="w"> </span><span class="kn">import</span> <span class="n">unit</span> <span class="k">as</span> <span class="n">mmunit</span>
 
-<span class="kn">from</span> <span class="nn">.base_rmsd</span> <span class="kn">import</span> <span class="n">BaseRMSD</span>
-<span class="kn">from</span> <span class="nn">.units</span> <span class="kn">import</span> <span class="n">MatrixQuantity</span><span class="p">,</span> <span class="n">VectorQuantity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base_rmsd</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseRMSD</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">MatrixQuantity</span><span class="p">,</span> <span class="n">VectorQuantity</span>
 
 
-<span class="k">class</span> <span class="nc">_Stub</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_Stub</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-            <span class="s2">&quot;CompositeRMSD requires the mdtools::openmm-cpp-forces conda package&quot;</span>
+            <span class="s2">"CompositeRMSD requires the mdtools::openmm-cpp-forces conda package"</span>
         <span class="p">)</span>
 
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">openmmcppforces</span> <span class="kn">import</span> <span class="n">CompositeRMSDForce</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">openmmcppforces</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompositeRMSDForce</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">CompositeRMSDForce</span> <span class="o">=</span> <span class="n">_Stub</span>
 
 
 <div class="viewcode-block" id="CompositeRMSD">
 <a class="viewcode-back" href="../../api/CompositeRMSD.html#cvpack.CompositeRMSD">[docs]</a>
-<span class="k">class</span> <span class="nc">CompositeRMSD</span><span class="p">(</span><span class="n">BaseRMSD</span><span class="p">,</span> <span class="n">CompositeRMSDForce</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CompositeRMSD</span><span class="p">(</span><span class="n">BaseRMSD</span><span class="p">,</span> <span class="n">CompositeRMSDForce</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">    The composite root-mean-square deviation (RMSD) between the current and reference</span>
 <span class="sd">    coordinates of :math:`m` groups of atoms:</span>
 
@@ -143,12 +144,12 @@
 <span class="sd">    ...         [host_atoms, guest_atoms],</span>
 <span class="sd">    ...     )</span>
 <span class="sd">    ... except ImportError:</span>
-<span class="sd">    ...     pytest.skip(&quot;openmm-cpp-forces is not installed&quot;)</span>
+<span class="sd">    ...     pytest.skip("openmm-cpp-forces is not installed")</span>
 <span class="sd">    &gt;&gt;&gt; composite_rmsd.addToSystem(model.system)</span>
 <span class="sd">    &gt;&gt;&gt; context = mm.Context(</span>
 <span class="sd">    ...     model.system,</span>
 <span class="sd">    ...     mm.VerletIntegrator(1.0 * unit.femtoseconds),</span>
-<span class="sd">    ...     mm.Platform.getPlatformByName(&#39;Reference&#39;),</span>
+<span class="sd">    ...     mm.Platform.getPlatformByName('Reference'),</span>
 <span class="sd">    ... )</span>
 <span class="sd">    &gt;&gt;&gt; context.setPositions(model.positions)</span>
 <span class="sd">    &gt;&gt;&gt; composite_rmsd.getValue(context)</span>
@@ -157,14 +158,14 @@
 <span class="sd">    &gt;&gt;&gt; context.setPositions(model.positions)</span>
 <span class="sd">    &gt;&gt;&gt; composite_rmsd.getValue(context)</span>
 <span class="sd">    0.0 nm</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">referencePositions</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">MatrixQuantity</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">VectorQuantity</span><span class="p">]],</span>
         <span class="n">groups</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
         <span class="n">numAtoms</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;composite_rmsd&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"composite_rmsd"</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">num_atoms</span> <span class="o">=</span> <span class="n">numAtoms</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">referencePositions</span><span class="p">)</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="p">[[</span><span class="nb">int</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">group</span><span class="p">]</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">]</span>
@@ -183,14 +184,14 @@
 
 
 
-<span class="n">CompositeRMSD</span><span class="o">.</span><span class="n">registerTag</span><span class="p">(</span><span class="s2">&quot;!cvpack.CompositeRMSD&quot;</span><span class="p">)</span>
+<span class="n">CompositeRMSD</span><span class="o">.</span><span class="n">registerTag</span><span class="p">(</span><span class="s2">"!cvpack.CompositeRMSD"</span><span class="p">)</span>
 </pre></div>
 
           </div>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <h1 class="logo"><a href="../../index.html">CVPack dev</a></h1>
 
@@ -231,8 +232,8 @@
       &#169;2024 C. Abreu & Redesign Science.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.0.4</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
     </div>
 
