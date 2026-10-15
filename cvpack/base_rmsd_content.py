@@ -31,18 +31,23 @@ class BaseRMSDContent(CollectiveVariable, openmm.CustomCVForce):
     def __init__(
         self,
         residue_blocks: list[int],
-        ideal_positions: list[openmm.Vec3],
+        references: list[list[openmm.Vec3]],
         residues: list[mmapp.topology.Residue],
         numAtoms: int,
         thresholdRMSD: ScalarQuantity,
         stepFunction: str = "(1+x^4)/(1+x^4+x^8)",
         normalize: bool = False,
     ):
+        # As in PLUMED, the RMSD of a block is the smallest among all references.
+        # Each reference takes one collective variable per block.
+        num_references = len(references)
+        chunk_size = CHUNK_SIZE // num_references
+        max_num_blocks = MAX_NUM_BLOCKS // num_references
         num_residue_blocks = self._num_residue_blocks = len(residue_blocks)
-        if not 1 <= num_residue_blocks <= MAX_NUM_BLOCKS:
+        if not 1 <= num_residue_blocks <= max_num_blocks:
             raise ValueError(
                 f"{num_residue_blocks} residue blocks were defined, which is not "
-                f"between 1 and {MAX_NUM_BLOCKS}"
+                f"between 1 and {max_num_blocks}"
             )
         residue_atoms = list(map(self._getAtomList, residues))
         block_atoms = [
@@ -53,35 +58,45 @@ class BaseRMSDContent(CollectiveVariable, openmm.CustomCVForce):
         def get_expression(start):
             summands = []
             definitions = []
-            for i in range(start, min(start + CHUNK_SIZE, num_residue_blocks)):
+            for i in range(start, min(start + chunk_size, num_residue_blocks)):
                 summands.append(re.sub(r"\bx\b", f"x{i}", stepFunction))
-                definitions.append(f"x{i}=rmsd{i}/{value_in_md_units(thresholdRMSD)}")
+                rmsd = rmsd_names[i][0]
+                for name in rmsd_names[i][1:]:
+                    rmsd = f"min({rmsd},{name})"
+                definitions.append(f"x{i}={rmsd}/{value_in_md_units(thresholdRMSD)}")
             summation = "+".join(summands)
             if normalize:
                 summation = f"({summation})/{num_residue_blocks}"
             return ";".join([summation] + definitions)
 
-        if num_residue_blocks <= CHUNK_SIZE:
+        rmsd_names = [
+            [f"rmsd{i}"]
+            if num_references == 1
+            else [f"rmsd{i}_{k}" for k in range(num_references)]
+            for i in range(num_residue_blocks)
+        ]
+        if num_residue_blocks <= chunk_size:
             expression = get_expression(0)
             force = self
         else:
             expression = "+".join(
                 f"chunk{i}"
-                for i in range((num_residue_blocks + CHUNK_SIZE - 1) // CHUNK_SIZE)
+                for i in range((num_residue_blocks + chunk_size - 1) // chunk_size)
             )
         super().__init__(expression)
         for index in range(num_residue_blocks):
-            if num_residue_blocks > CHUNK_SIZE and index % CHUNK_SIZE == 0:
+            if num_residue_blocks > chunk_size and index % chunk_size == 0:
                 force = openmm.CustomCVForce(get_expression(index))
-                self.addCollectiveVariable(f"chunk{index // CHUNK_SIZE}", force)
-            force.addCollectiveVariable(
-                f"rmsd{index}",
-                RMSD(
-                    dict(zip(block_atoms[index], ideal_positions)),
-                    block_atoms[index],
-                    numAtoms,
-                ),
-            )
+                self.addCollectiveVariable(f"chunk{index // chunk_size}", force)
+            for name, reference in zip(rmsd_names[index], references):
+                force.addCollectiveVariable(
+                    name,
+                    RMSD(
+                        dict(zip(block_atoms[index], reference)),
+                        block_atoms[index],
+                        numAtoms,
+                    ),
+                )
 
     @classmethod
     def _loadPositions(cls, filename: str) -> list[openmm.Vec3]:

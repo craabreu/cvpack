@@ -143,7 +143,7 @@ class HelixRMSDContent(BaseRMSDContent):
 
         super().__init__(
             residue_blocks,
-            ALPHA_POSITIONS,
+            [ALPHA_POSITIONS],
             residues,
             numAtoms,
             thresholdRMSD,
