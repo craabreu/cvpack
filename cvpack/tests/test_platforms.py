@@ -12,6 +12,7 @@ from openmm import unit
 from openmmtools import testsystems
 
 import cvpack
+from cvpack.tests.cv_cases import CASES
 
 PLATFORMS = [
     (name, precision)
@@ -77,3 +78,27 @@ def test_shortest_distance_forces_match_reference(host_guest, name, precision):
         assert value == pytest.approx(expected, rel=1e-5)
         error = np.linalg.norm(forces - reference) / np.linalg.norm(reference)
         assert error < 1e-4, f"shift = {shift}"
+
+
+# Relative tolerances for values and for the norm of the force error. They are about
+# ten times the largest deviations measured on CUDA and OpenCL.
+TOLERANCES = {None: (1e-6, 1e-5), "double": (1e-6, 1e-5), "mixed": (2e-5, 2e-4)}
+TOLERANCES["single"] = TOLERANCES["mixed"]
+
+
+@pytest.mark.parametrize("name, precision", PLATFORMS)
+@pytest.mark.parametrize("case", CASES)
+def test_cv_matches_reference(case, name, precision):
+    try:
+        cv, system, positions = CASES[case]()
+    except ImportError:
+        pytest.skip("openmm-cpp-forces is not installed")
+    cv.addToSystem(system)
+    value, forces = _value_and_forces(cv, _context(system, positions, name, precision))
+    expected, reference = _value_and_forces(
+        cv, _context(system, positions, "Reference")
+    )
+    value_tolerance, force_tolerance = TOLERANCES[precision]
+    assert value == pytest.approx(expected, rel=value_tolerance)
+    error = np.linalg.norm(forces - reference) / np.linalg.norm(reference)
+    assert error < force_tolerance
