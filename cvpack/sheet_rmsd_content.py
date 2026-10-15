@@ -18,6 +18,9 @@ from .units import Quantity, ScalarQuantity
 from .utils import check_contiguous_residues
 
 PARABETA_POSITIONS = BaseRMSDContent._loadPositions("ideal_parallel_beta_sheet.csv")
+PARABETA_SWAPPED_POSITIONS = BaseRMSDContent._loadPositions(
+    "ideal_parallel_beta_sheet_swapped.csv"
+)
 ANTIBETA_POSITIONS = BaseRMSDContent._loadPositions("ideal_antiparallel_beta_sheet.csv")
 
 
@@ -106,7 +109,9 @@ class SheetRMSDContent(BaseRMSDContent):
     step function shown above is identical to the one in the original paper, but written
     in a numerically safe form. The ideal beta-sheet configurations are the same as
     those used for the collective variables `ANTIBETARMSD`_ and `PARABETARMSD`_ in
-    `PLUMED v2.8.1 <https://github.com/plumed/plumed2>`_.
+    `PLUMED v2.8.1 <https://github.com/plumed/plumed2>`_. As in PLUMED, there are two
+    ideal parallel configurations, which differ mainly in which strand comes first,
+    and the RMSD of a group in a parallel sheet is the smaller of its RMSDs to them.
 
     .. _ANTIBETARMSD:
         https://www.plumed.org/doc-v2.8/user-doc/html/_a_n_t_i_b_e_t_a_r_m_s_d.html
@@ -117,7 +122,8 @@ class SheetRMSDContent(BaseRMSDContent):
     .. note::
 
         The present implementation is limited to :math:`1 \leq N_{\rm groups} \leq
-        1024`.
+        1024` for antiparallel sheets and :math:`1 \leq N_{\rm groups} \leq 512` for
+        parallel sheets.
 
     Parameters
     ----------
@@ -214,7 +220,11 @@ class SheetRMSDContent(BaseRMSDContent):
 
         super().__init__(
             residue_groups,
-            PARABETA_POSITIONS if parallel else ANTIBETA_POSITIONS,
+            (
+                [PARABETA_POSITIONS, PARABETA_SWAPPED_POSITIONS]
+                if parallel
+                else [ANTIBETA_POSITIONS]
+            ),
             residues,
             numAtoms,
             thresholdRMSD,

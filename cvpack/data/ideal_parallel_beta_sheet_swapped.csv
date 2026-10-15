@@ -1,0 +1,36 @@
+# Ideal parallel beta sheet structure according to:
+# https://github.com/plumed/plumed2/releases/tag/v2.8.1
+# Reproduced here in accordance with their LGPL-3.0 license
+# This is the first of the two PARABETARMSD references (the other one is in
+# ideal_parallel_beta_sheet.csv). It is nearly the other one with the strands swapped.
+# Order: N, CA, CB, C, O (residues i to i+2 and j to j+2)
+1.244, -4.620, -2.127
+-0.016, -4.500, -1.395
+0.105, -5.089, 0.024
+-0.287, -3.000, -1.301
+0.550, -2.245, -0.822
+-1.445, -2.551, -1.779
+-1.752, -1.130, -1.677
+-2.113, -0.550, -3.059
+-2.906, -0.961, -0.689
+-3.867, -1.738, -0.695
+-2.774, 0.034, 0.190
+-3.788, 0.331, 1.201
+-3.188, 0.300, 2.624
+-4.294, 1.743, 0.937
+-3.503, 2.671, 0.821
+4.746, -2.363, 0.188
+3.427, -1.839, 0.545
+3.135, -1.958, 2.074
+3.346, -0.365, 0.181
+4.237, 0.412, 0.521
+2.261, 0.013, -0.487
+2.024, 1.401, -0.875
+1.489, 1.514, -2.313
+0.914, 1.902, 0.044
+-0.173, 1.330, 0.052
+1.202, 2.940, 0.828
+0.190, 3.507, 1.718
+0.772, 3.801, 3.104
+-0.229, 4.791, 1.038
+0.523, 5.771, 0.996
