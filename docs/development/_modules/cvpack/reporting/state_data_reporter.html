@@ -167,12 +167,15 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">io</span><span class="o">.</span><span class="n">TextIOBase</span><span class="p">,</span>
         <span class="n">reportInterval</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">writers</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">CustomWriter</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+        <span class="n">writers</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="n">CustomWriter</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">reportInterval</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">writers</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">writers</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">CustomWriter</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">writers</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"All items in writers must satisfy the Writer protocol"</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">"All items in writers must satisfy the CustomWriter protocol"</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_writers</span> <span class="o">=</span> <span class="n">writers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_back_steps</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_speed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elapsedTime</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remainingTime</span><span class="p">])</span>
 

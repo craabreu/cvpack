@@ -53,6 +53,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.collective_variable</span><span class="w"> </span><span class="kn">import</span> <span class="n">CollectiveVariable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">Quantity</span><span class="p">,</span> <span class="n">ScalarQuantity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_contiguous_residues</span>
 
 
 <div class="viewcode-block" id="HelixHBondContent">
@@ -82,7 +83,9 @@
 <span class="sd">    .. note::</span>
 
 <span class="sd">        The residues must be a contiguous sequence from a single chain, ordered from the</span>
-<span class="sd">        N- to the C-terminus.</span>
+<span class="sd">        N- to the C-terminus. Proline residues, which have no amide hydrogen, are</span>
+<span class="sd">        skipped as donors, and the normalization uses the number of remaining</span>
+<span class="sd">        donor-acceptor pairs.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -126,6 +129,11 @@
         <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"helix_hbond_content"</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">residues</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span>
+        <span class="n">check_contiguous_residues</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">normalize</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>  <span class="c1"># noqa: PLR2004</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Normalization requires at least 5 residues"</span><span class="p">)</span>
+
         <span class="k">def</span><span class="w"> </span><span class="nf">find_atom</span><span class="p">(</span><span class="n">residue</span><span class="p">:</span> <span class="n">mmapp</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">Residue</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Pattern</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">regex</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
@@ -136,17 +144,24 @@
                 <span class="sa">f</span><span class="s2">" in residue </span><span class="si">{</span><span class="n">residue</span><span class="o">.</span><span class="n">name</span><span class="si">}{</span><span class="n">residue</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
 
-        <span class="n">numerator</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span> <span class="o">-</span> <span class="mi">4</span><span class="p">)</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="mi">1</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">residues</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">4</span><span class="p">],</span> <span class="n">residues</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">residues</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">residues</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s2">"PRO"</span>  <span class="c1"># proline has no amide hydrogen</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="n">normalize</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">pairs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"No hydrogen-bond donors found in the residue sequence"</span><span class="p">)</span>
+        <span class="n">numerator</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="mi">1</span>
         <span class="n">threshold</span> <span class="o">=</span> <span class="n">thresholdDistance</span>
         <span class="k">if</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">is_quantity</span><span class="p">(</span><span class="n">threshold</span><span class="p">):</span>
             <span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span><span class="o">.</span><span class="n">value_in_unit_system</span><span class="p">(</span><span class="n">mmunit</span><span class="o">.</span><span class="n">md_unit_system</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">numerator</span><span class="si">}</span><span class="s2">/(1+x^</span><span class="si">{</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">halfExponent</span><span class="si">}</span><span class="s2">); x=r/</span><span class="si">{</span><span class="n">threshold</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">hydrogen_pattern</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\b(H|1H|HN1|HT1|H1|HN)\b"</span><span class="p">)</span>
         <span class="n">oxygen_pattern</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\b(O|OCT1|OC1|OT1|O1)\b"</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">residues</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">acceptor</span><span class="p">,</span> <span class="n">donor</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">addBond</span><span class="p">(</span>
-                <span class="n">find_atom</span><span class="p">(</span><span class="n">residues</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">4</span><span class="p">],</span> <span class="n">oxygen_pattern</span><span class="p">),</span>
-                <span class="n">find_atom</span><span class="p">(</span><span class="n">residues</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">hydrogen_pattern</span><span class="p">),</span>
+                <span class="n">find_atom</span><span class="p">(</span><span class="n">acceptor</span><span class="p">,</span> <span class="n">oxygen_pattern</span><span class="p">),</span>
+                <span class="n">find_atom</span><span class="p">(</span><span class="n">donor</span><span class="p">,</span> <span class="n">hydrogen_pattern</span><span class="p">),</span>
                 <span class="p">[],</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setUsesPeriodicBoundaryConditions</span><span class="p">(</span><span class="n">pbc</span><span class="p">)</span>

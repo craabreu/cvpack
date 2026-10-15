@@ -64,6 +64,9 @@
 <span class="sd">        If `True`, report the values of the collective variable.</span>
 <span class="sd">    emass</span>
 <span class="sd">        If `True`, report the effective masses of the collective variable.</span>
+<span class="sd">    allowReinitialization</span>
+<span class="sd">        Whether to allow context reinitialization when the collective variable shares</span>
+<span class="sd">        its force group with other forces (see :meth:`CollectiveVariable.getValue`).</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -94,6 +97,8 @@
 <span class="sd">    ...     2 * unit.femtosecond,</span>
 <span class="sd">    ... )</span>
 <span class="sd">    &gt;&gt;&gt; integrator.setRandomNumberSeed(1234)</span>
+<span class="sd">    &gt;&gt;&gt; # Integrate only the physical forces, so that phi and psi do not bias dynamics</span>
+<span class="sd">    &gt;&gt;&gt; integrator.setIntegrationForceGroups({0})</span>
 <span class="sd">    &gt;&gt;&gt; simulation = app.Simulation(model.topology, model.system, integrator)</span>
 <span class="sd">    &gt;&gt;&gt; simulation.context.setPositions(model.positions)</span>
 <span class="sd">    &gt;&gt;&gt; simulation.context.setVelocitiesToTemperature(300 * unit.kelvin, 5678)</span>
@@ -117,6 +122,7 @@
         <span class="n">variable</span><span class="p">:</span> <span class="n">CollectiveVariable</span><span class="p">,</span>
         <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">emass</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">allowReinitialization</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">CollectiveVariable</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"variable must be a CollectiveVariable object"</span><span class="p">)</span>
@@ -125,6 +131,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_cv</span> <span class="o">=</span> <span class="n">variable</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_emass</span> <span class="o">=</span> <span class="n">emass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_allow_reinitialization</span> <span class="o">=</span> <span class="n">allowReinitialization</span>
 
 <div class="viewcode-block" id="CVWriter.getHeaders">
 <a class="viewcode-back" href="../../../api/CVWriter.html#cvpack.reporting.CVWriter.getHeaders">[docs]</a>
@@ -145,9 +152,11 @@
         <span class="n">context</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">context</span>
         <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">:</span>
-            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cv</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cv</span><span class="o">.</span><span class="n">getUnit</span><span class="p">())</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cv</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_allow_reinitialization</span><span class="p">)</span>
+            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cv</span><span class="o">.</span><span class="n">getUnit</span><span class="p">())</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_emass</span><span class="p">:</span>
-            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cv</span><span class="o">.</span><span class="n">getEffectiveMass</span><span class="p">(</span><span class="n">context</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cv</span><span class="o">.</span><span class="n">getMassUnit</span><span class="p">())</span>
+            <span class="n">mass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cv</span><span class="o">.</span><span class="n">getEffectiveMass</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_allow_reinitialization</span><span class="p">)</span>
+            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mass</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cv</span><span class="o">.</span><span class="n">getMassUnit</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">values</span></div>
 </div>
 

@@ -183,7 +183,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Array `groups` cannot have more than 2 dimensions"</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">atoms_per_group</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
         <span class="n">overalls</span><span class="p">,</span> <span class="n">perbonds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractParameters</span><span class="p">(</span><span class="n">num_groups</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_addParameters</span><span class="p">(</span><span class="n">overalls</span><span class="p">,</span> <span class="n">perbonds</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">pbc</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_addParameters</span><span class="p">(</span><span class="n">overalls</span><span class="p">,</span> <span class="n">perbonds</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">pbc</span><span class="p">)</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="p">[[</span><span class="nb">int</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">group</span><span class="p">]</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_registerCV</span><span class="p">(</span>
             <span class="n">name</span><span class="p">,</span>
@@ -343,7 +343,7 @@
         <span class="n">force</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Force</span><span class="p">,</span>
         <span class="n">unit</span><span class="p">:</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">Unit</span><span class="p">,</span>
         <span class="n">periodicBounds</span><span class="p">:</span> <span class="n">VectorQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">pbc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">pbc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtomicFunction</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Create an :class:`AtomicFunction` from an :OpenMM:`Force`.</span>
@@ -364,12 +364,14 @@
 <span class="sd">            a custom :OpenMM:`Force`.</span>
 <span class="sd">        pbc</span>
 <span class="sd">            Whether to use periodic boundary conditions when computing atomic</span>
-<span class="sd">            distances.</span>
+<span class="sd">            distances. If ``None``, use the setting of `force`.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        TypeError</span>
 <span class="sd">            If the force is not convertible to an :class:`AtomicFunction`</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the force uses tabulated functions</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -428,6 +430,12 @@
 <span class="sd">        CustomExternalForce: original=5.02155..., copy=5.02155... kJ/mol</span>
 <span class="sd">        HelixTorsionContent: original=17.4528..., copy=17.4528... dimensionless</span>
 <span class="sd">        """</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Force</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Force </span><span class="si">{</span><span class="n">force</span><span class="si">}</span><span class="s2"> is not convertible to an AtomicFunction"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pbc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pbc</span> <span class="o">=</span> <span class="n">force</span><span class="o">.</span><span class="n">usesPeriodicBoundaryConditions</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="s2">"getNumTabulatedFunctions"</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="mi">0</span><span class="p">)()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Forces with tabulated functions are not supported"</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span>
             <span class="n">force</span><span class="p">,</span>
             <span class="p">(</span>

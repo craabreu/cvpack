@@ -41,18 +41,23 @@
 <h1>MetaCVWriter<a class="headerlink" href="#metacvwriter" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="cvpack.reporting.MetaCVWriter">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">cvpack.reporting.</span></span><span class="sig-name descname"><span class="pre">MetaCVWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metaCV</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emasses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">derivatives</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cvpack/reporting/meta_cv_writer.html#MetaCVWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cvpack.reporting.MetaCVWriter" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">cvpack.reporting.</span></span><span class="sig-name descname"><span class="pre">MetaCVWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metaCV</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emasses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">derivatives</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowReinitialization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cvpack/reporting/meta_cv_writer.html#MetaCVWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cvpack.reporting.MetaCVWriter" title="Link to this definition">¶</a></dt>
 <dd><p>A custom writer for reporting meta-collective variable data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>metaCV</strong> (<a class="reference internal" href="MetaCollectiveVariable.html#cvpack.MetaCollectiveVariable" title="cvpack.meta_collective_variable.MetaCollectiveVariable"><em>MetaCollectiveVariable</em></a>) – The meta-collective variable whose associated values will be reported.</p></li>
-<li><p><strong>innerValues</strong> – The names of the inner variables whose values will be reported.</p></li>
-<li><p><strong>innerMasses</strong> – The names of the inner variables whose effective masses will be reported.</p></li>
+<li><p><strong>values</strong> (<em>Sequence</em><em>[</em><em>str</em><em>]</em>) – The names of the inner variables whose values will be reported.</p></li>
+<li><p><strong>emasses</strong> (<em>Sequence</em><em>[</em><em>str</em><em>]</em>) – The names of the inner variables whose effective masses will be reported.</p></li>
 <li><p><strong>parameters</strong> (<em>Sequence</em><em>[</em><em>str</em><em>]</em>) – The names of the parameters whose values will be reported.</p></li>
 <li><p><strong>derivatives</strong> (<em>Sequence</em><em>[</em><em>str</em><em>]</em>) – The names of the parameters with respect to which the derivatives of the
 meta-collective variable will be reported.</p></li>
+<li><p><strong>allowReinitialization</strong> (<em>bool</em>) – Whether to allow context reinitialization when the meta-collective variable
+shares its force group with other forces (needed for derivatives only).</p></li>
 </ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If any name does not match an inner variable or a parameter</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -169,6 +174,7 @@ meta-collective variable will be reported.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="index.html">Collective Variables</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../reporting.html">Reporting</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="CustomWriter.html">CustomWriter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CVWriter.html">CVWriter</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">MetaCVWriter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="StateDataReporter.html">StateDataReporter</a></li>

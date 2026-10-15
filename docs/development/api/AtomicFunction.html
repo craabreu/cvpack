@@ -156,7 +156,7 @@ first available force group in the system</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cvpack.AtomicFunction.fromOpenMMForce">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">fromOpenMMForce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodicBounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cvpack/atomic_function.html#AtomicFunction.fromOpenMMForce"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cvpack.AtomicFunction.fromOpenMMForce" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">fromOpenMMForce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodicBounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cvpack/atomic_function.html#AtomicFunction.fromOpenMMForce"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cvpack.AtomicFunction.fromOpenMMForce" title="Link to this definition">¶</a></dt>
 <dd><p>Create an <a class="reference internal" href="#cvpack.AtomicFunction" title="cvpack.AtomicFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomicFunction</span></code></a> from an <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Force.html">openmm.Force</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -170,12 +170,15 @@ does not have a unit, use <cite>unit.dimensionless</cite>.</p></li>
 <li><p><strong>periodicBounds</strong> (<em>Quantity</em><em> | </em><em>ndarray</em><em> | </em><em>Vec3</em><em> | </em><em>None</em>) – The lower and upper bounds of the collective variable if it is periodic,
 or <code class="docutils literal notranslate"><span class="pre">None</span></code> if it is not. This parameter is considered only if <cite>force</cite> is
 a custom <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Force.html">openmm.Force</a>.</p></li>
-<li><p><strong>pbc</strong> (<em>bool</em>) – Whether to use periodic boundary conditions when computing atomic
-distances.</p></li>
+<li><p><strong>pbc</strong> (<em>bool</em><em> | </em><em>None</em>) – Whether to use periodic boundary conditions when computing atomic
+distances. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, use the setting of <cite>force</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>TypeError</strong> – If the force is not convertible to an <a class="reference internal" href="#cvpack.AtomicFunction" title="cvpack.AtomicFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomicFunction</span></code></a></p>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – If the force is not convertible to an <a class="reference internal" href="#cvpack.AtomicFunction" title="cvpack.AtomicFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomicFunction</span></code></a></p></li>
+<li><p><strong>ValueError</strong> – If the force uses tabulated functions</p></li>
+</ul>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#cvpack.AtomicFunction" title="cvpack.atomic_function.AtomicFunction"><em>AtomicFunction</em></a></p>

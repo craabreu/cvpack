@@ -160,6 +160,7 @@
         <span class="o">**</span><span class="n">parameters</span><span class="p">:</span> <span class="n">ScalarQuantity</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+        <span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cvs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">copy</span><span class="p">,</span> <span class="n">variables</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">in_md_units</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
         <span class="k">for</span> <span class="n">cv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cvs</span><span class="p">:</span>
@@ -238,6 +239,7 @@
 <span class="sd">            A dictionary with the names of the collective variables as keys and their</span>
 <span class="sd">            effective masses as values.</span>
 <span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">getCollectiveVariableValues</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>  <span class="c1"># update the inner context positions</span>
         <span class="n">inner_context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getInnerContext</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
         <span class="n">masses</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">compute_effective_mass</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="n">inner_context</span><span class="p">)</span>

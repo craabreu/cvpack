@@ -45,13 +45,12 @@
 <span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">t</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Real</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">openmm</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">openmm</span><span class="w"> </span><span class="kn">import</span> <span class="n">unit</span> <span class="k">as</span> <span class="n">mmunit</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.collective_variable</span><span class="w"> </span><span class="kn">import</span> <span class="n">CollectiveVariable</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">Quantity</span><span class="p">,</span> <span class="n">ScalarQuantity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">Quantity</span><span class="p">,</span> <span class="n">ScalarQuantity</span><span class="p">,</span> <span class="n">value_in_md_units</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">evaluate_in_context</span>
 
 
@@ -167,7 +166,7 @@
         <span class="n">group1</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
         <span class="n">group2</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
         <span class="n">nonbondedForce</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">NonbondedForce</span><span class="p">,</span>
-        <span class="n">reference</span><span class="p">:</span> <span class="n">Real</span> <span class="o">|</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Context</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">reference</span><span class="p">:</span> <span class="n">ScalarQuantity</span> <span class="o">|</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Context</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
         <span class="n">stepFunction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"1/(1+x^6)"</span><span class="p">,</span>
         <span class="n">thresholdDistance</span><span class="p">:</span> <span class="n">ScalarQuantity</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mf">0.3</span> <span class="o">*</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">nanometers</span><span class="p">),</span>
         <span class="n">cutoffFactor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
@@ -197,6 +196,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">addInteractionGroup</span><span class="p">(</span><span class="n">group1</span><span class="p">,</span> <span class="n">group2</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Context</span><span class="p">):</span>
             <span class="n">reference</span> <span class="o">=</span> <span class="n">evaluate_in_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reference</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">reference</span> <span class="o">=</span> <span class="n">value_in_md_units</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setEnergyFunction</span><span class="p">(</span><span class="n">expression</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"/1;"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"/</span><span class="si">{</span><span class="n">reference</span><span class="si">}</span><span class="s2">;"</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_registerCV</span><span class="p">(</span>
             <span class="n">name</span><span class="p">,</span>

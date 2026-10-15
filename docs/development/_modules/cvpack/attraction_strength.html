@@ -163,6 +163,13 @@
 <span class="sd">    name</span>
 <span class="sd">        The name of the collective variable.</span>
 
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the contrast group overlaps with group1 or group2</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If contrastScaling is negative</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; import cvpack</span>
@@ -224,6 +231,12 @@
         <span class="n">contrasting</span> <span class="o">=</span> <span class="n">contrastGroup</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">contrasting</span><span class="p">:</span>
             <span class="n">contrastGroup</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">contrastGroup</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">contrastGroup</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">group1</span><span class="p">)</span> <span class="o">|</span> <span class="nb">set</span><span class="p">(</span><span class="n">group2</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">"The contrast group must be disjoint from group1 and group2"</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">contrastScaling</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"contrastScaling must be non-negative"</span><span class="p">)</span>
         <span class="n">cutoff</span> <span class="o">=</span> <span class="n">nonbondedForce</span><span class="o">.</span><span class="n">getCutoffDistance</span><span class="p">()</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">mmunit</span><span class="o">.</span><span class="n">nanometers</span><span class="p">)</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">"-(lj + coul)</span><span class="si">{</span><span class="s1">'*sign1*sign2'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">contrasting</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">''</span><span class="si">}</span><span class="s2">/ref"</span>

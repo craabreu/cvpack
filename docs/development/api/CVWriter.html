@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="MetaCVWriter" href="MetaCVWriter.html" />
-    <link rel="prev" title="Reporting" href="../reporting.html" />
+    <link rel="prev" title="CustomWriter" href="CustomWriter.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -41,7 +41,7 @@
 <h1>CVWriter<a class="headerlink" href="#cvwriter" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="cvpack.reporting.CVWriter">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">cvpack.reporting.</span></span><span class="sig-name descname"><span class="pre">CVWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cvpack/reporting/cv_writer.html#CVWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cvpack.reporting.CVWriter" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">cvpack.reporting.</span></span><span class="sig-name descname"><span class="pre">CVWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowReinitialization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cvpack/reporting/cv_writer.html#CVWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cvpack.reporting.CVWriter" title="Link to this definition">¶</a></dt>
 <dd><p>A custom writer for reporting collective variable data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -49,6 +49,8 @@
 <li><p><strong>variable</strong> (<em>CollectiveVariable</em>) – The collective variable whose values and/or effective masses will be reported.</p></li>
 <li><p><strong>value</strong> (<em>bool</em>) – If <cite>True</cite>, report the values of the collective variable.</p></li>
 <li><p><strong>emass</strong> (<em>bool</em>) – If <cite>True</cite>, report the effective masses of the collective variable.</p></li>
+<li><p><strong>allowReinitialization</strong> (<em>bool</em>) – Whether to allow context reinitialization when the collective variable shares
+its force group with other forces (see <code class="xref py py-meth docutils literal notranslate"><span class="pre">CollectiveVariable.getValue()</span></code>).</p></li>
 </ul>
 </dd>
 </dl>
@@ -80,6 +82,8 @@
 <span class="gp">... </span>    <span class="mi">2</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">femtosecond</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">integrator</span><span class="o">.</span><span class="n">setRandomNumberSeed</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Integrate only the physical forces, so that phi and psi do not bias dynamics</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">integrator</span><span class="o">.</span><span class="n">setIntegrationForceGroups</span><span class="p">({</span><span class="mi">0</span><span class="p">})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">simulation</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">Simulation</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">topology</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">,</span> <span class="n">integrator</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">simulation</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">simulation</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">setVelocitiesToTemperature</span><span class="p">(</span><span class="mi">300</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">kelvin</span><span class="p">,</span> <span class="mi">5678</span><span class="p">)</span>
@@ -152,6 +156,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="index.html">Collective Variables</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../reporting.html">Reporting</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="CustomWriter.html">CustomWriter</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">CVWriter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MetaCVWriter.html">MetaCVWriter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="StateDataReporter.html">StateDataReporter</a></li>

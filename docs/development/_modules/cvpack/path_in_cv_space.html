@@ -56,6 +56,18 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_to_matrix</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_milestone_values</span><span class="p">(</span><span class="n">milestones</span><span class="p">:</span> <span class="n">MatrixQuantity</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Strip units from milestones given as a Quantity or as rows of Quantities."""</span>
+    <span class="k">if</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">is_quantity</span><span class="p">(</span><span class="n">milestones</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value_in_md_units</span><span class="p">(</span><span class="n">milestones</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="p">[</span><span class="n">value_in_md_units</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)</span>
+        <span class="k">else</span> <span class="n">row</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">milestones</span>
+    <span class="p">]</span>
+
+
 <div class="viewcode-block" id="PathInCVSpace">
 <a class="viewcode-back" href="../../api/PathInCVSpace.html#cvpack.PathInCVSpace">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PathInCVSpace</span><span class="p">(</span><span class="n">BasePathCV</span><span class="p">):</span>
@@ -165,14 +177,16 @@
         <span class="n">metric</span><span class="p">:</span> <span class="n">Metric</span><span class="p">,</span>
         <span class="n">variables</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="n">CollectiveVariable</span><span class="p">],</span>
         <span class="n">milestones</span><span class="p">:</span> <span class="n">MatrixQuantity</span><span class="p">,</span>
-        <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">sigma</span><span class="p">:</span> <span class="n">ScalarQuantity</span><span class="p">,</span>
         <span class="n">scales</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="n">ScalarQuantity</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generateName</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">"cv"</span><span class="p">)</span>
         <span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
-        <span class="n">cv_scales</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span> <span class="k">if</span> <span class="n">scales</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">scales</span><span class="p">)</span>
-        <span class="n">milestones</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">numvars</span> <span class="o">=</span> <span class="n">convert_to_matrix</span><span class="p">(</span><span class="n">milestones</span><span class="p">)</span>
+        <span class="n">scales</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">scales</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="n">value_in_md_units</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scales</span><span class="p">]</span>
+        <span class="n">cv_scales</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span> <span class="k">if</span> <span class="n">scales</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">scales</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">value_in_md_units</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="n">milestones</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">numvars</span> <span class="o">=</span> <span class="n">convert_to_matrix</span><span class="p">(</span><span class="n">_milestone_values</span><span class="p">(</span><span class="n">milestones</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">numvars</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Wrong number of columns in the milestones matrix."</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># noqa: PLR2004</span>

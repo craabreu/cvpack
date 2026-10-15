@@ -80,7 +80,7 @@ into exclusions in this collective variable.</p>
 <li><p><strong>nonbondedForce</strong> (<em>NonbondedForce</em>) – The <code class="xref py py-class docutils literal notranslate"><span class="pre">openmm.NonbondedForce</span></code> object from which the total number of
 atoms, the exclusions, and whether to use periodic boundary conditions are
 taken.</p></li>
-<li><p><strong>reference</strong> (<em>Real</em><em> | </em><em>Context</em>) – A dimensionless reference value to which the collective variable should be
+<li><p><strong>reference</strong> (<em>Quantity</em><em> | </em><em>Real</em><em> | </em><em>Context</em>) – A dimensionless reference value to which the collective variable should be
 normalized. One can also provide an <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a> object from which to
 obtain the reference number of contacts.</p></li>
 <li><p><strong>stepFunction</strong> (<em>str</em>) – The function “step(1-x)” (for analysis only) or a continuous approximation

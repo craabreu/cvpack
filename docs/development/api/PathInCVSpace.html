@@ -83,7 +83,7 @@ computing <span class="math notranslate nohighlight">\(s({\bf r})\)</span> or <c
 <li><p><strong>milestones</strong> (<em>Quantity</em><em> | </em><em>ndarray</em><em> | </em><em>Sequence</em><em>[</em><em>Vec3</em><em>] </em><em>| </em><em>Sequence</em><em>[</em><em>ndarray</em><em>]</em>) – The milestones in the collective variable space. The number of rows must be
 equal to the number of milestones and the number of columns must be equal to
 the number of collective variables.</p></li>
-<li><p><strong>sigma</strong> (<em>float</em>) – The width of the Gaussian kernels.</p></li>
+<li><p><strong>sigma</strong> (<em>Quantity</em><em> | </em><em>Real</em>) – The width of the Gaussian kernels.</p></li>
 <li><p><strong>scales</strong> (<em>Iterable</em><em>[</em><em>Quantity</em><em> | </em><em>Real</em><em>] </em><em>| </em><em>None</em>) – The characteristic scales for the collective variables. If not provided, the
 scales are assumed to be 1 (in standard MD units) for each collective variable.</p></li>
 <li><p><strong>name</strong> (<em>str</em><em> | </em><em>None</em>) – The name of the collective variable. If not provided, it is set to

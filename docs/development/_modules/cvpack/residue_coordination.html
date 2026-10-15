@@ -159,6 +159,8 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">residueGroup1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">residueGroup1</span><span class="p">)</span>
         <span class="n">residueGroup2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">residueGroup2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">{</span><span class="n">r</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">residueGroup1</span><span class="p">}</span> <span class="o">&amp;</span> <span class="p">{</span><span class="n">r</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">residueGroup2</span><span class="p">}:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"The two groups of residues must be disjoint"</span><span class="p">)</span>
         <span class="n">nr1</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">residueGroup1</span><span class="p">)</span>
         <span class="n">nr2</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">residueGroup2</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ref_val</span> <span class="o">=</span> <span class="n">nr1</span> <span class="o">*</span> <span class="n">nr2</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="mf">1.0</span>
@@ -195,6 +197,16 @@
             <span class="n">includeHydrogens</span><span class="o">=</span><span class="n">includeHydrogens</span><span class="p">,</span>
         <span class="p">)</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">(),</span> <span class="s2">"referenceValue"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ref_val</span><span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keywords</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">keywords</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">keywords</span><span class="p">)</span>
+        <span class="n">reference_value</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"referenceValue"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__setstate__</span><span class="p">(</span><span class="n">keywords</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">reference_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setReferenceValue</span><span class="p">(</span><span class="n">reference_value</span><span class="p">)</span>
+
 <div class="viewcode-block" id="ResidueCoordination.getReferenceValue">
 <a class="viewcode-back" href="../../api/ResidueCoordination.html#cvpack.ResidueCoordination.getReferenceValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">getReferenceValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
@@ -221,7 +233,7 @@
 <span class="sd">                The reference value.</span>
 <span class="sd">        """</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getEnergyFunction</span><span class="p">()</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">value_in_md_units</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value_in_md_units</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setEnergyFunction</span><span class="p">(</span>
             <span class="n">expression</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s2">"refval=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_ref_val</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"refval=</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="p">)</span>
