@@ -248,3 +248,14 @@ def test_atomic_and_centroid_functions_default_to_no_pbc():
     context = make_context(system, [[0, 0, 0], [1.9, 0, 0]])
     for cv in (atomic, centroid):
         assert cv.getValue(context).value_in_unit(cv.getUnit()) == pytest.approx(1.9)
+
+
+@pytest.mark.parametrize("beta", [3, 100])
+def test_shortest_distance_is_continuous_at_cutoff(beta):
+    values = [
+        _shortest_distance_value(
+            [[0, 0, 0], [1 + delta, 0, 0], [0, 0.5, 0]], [0], [1, 2], beta=beta
+        )
+        for delta in (-1e-9, 1e-9)
+    ]
+    assert values[0] == pytest.approx(values[1], abs=1e-8)
