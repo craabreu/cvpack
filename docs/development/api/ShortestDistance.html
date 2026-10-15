@@ -50,12 +50,12 @@
 <div class="math notranslate nohighlight">
 \[S_{rw}({\bf r}) = r_c e^{-\beta} +
     \sum_{i \in {\bf g}_1} \sum_{j \in {\bf g}_2 \atop r_{ij} &lt; r_c}
-        r_{ij} e^{-\beta \frac{r_{ij}}{r_c}}\]</div>
+        r_{ij} \left(e^{-\beta \frac{r_{ij}}{r_c}} - e^{-\beta}\right)\]</div>
 <p>and</p>
 <div class="math notranslate nohighlight">
 \[S_w({\bf r}) = e^{-\beta} +
     \sum_{i \in {\bf g}_1} \sum_{j \in {\bf g}_2 \atop r_{ij} &lt; r_c}
-        e^{-\beta \frac{r_{ij}}{r_c}}\]</div>
+        \left(e^{-\beta \frac{r_{ij}}{r_c}} - e^{-\beta}\right)\]</div>
 <p>where <span class="math notranslate nohighlight">\(r_{ij} = \|{\bf r}_j - {\bf r}_i\|\)</span> is the distance between atoms
 <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span>, <span class="math notranslate nohighlight">\({\bf g}_1\)</span> and <span class="math notranslate nohighlight">\({\bf g}_2\)</span> are the sets of
 indices of the atoms in the first and second groups, respectively, <span class="math notranslate nohighlight">\(r_c\)</span> is
@@ -66,11 +66,14 @@ shortest distance. However, an excessively large value may lead to numerical
 instability.</p>
 <p>The terms outside the summations guarantee that shortest distance is well-defined
 even when there are no atom pairs within the cutoff distance. In this case, the
-collective variable evaluates to the cutoff distance.</p>
+collective variable evaluates to the cutoff distance. Shifting each weight by
+<span class="math notranslate nohighlight">\(e^{-\beta}\)</span> makes the contribution of a pair vanish at the cutoff distance,
+so the collective variable is continuous when a pair crosses it.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Atoms are allowed to be in both groups. In this case, terms for which
-<span class="math notranslate nohighlight">\(i = j\)</span> are ignored.</p>
+<span class="math notranslate nohighlight">\(i = j\)</span> are ignored, and each pair of distinct atoms contributes a
+single term, even if both atoms are in both groups.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

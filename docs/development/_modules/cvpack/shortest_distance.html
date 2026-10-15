@@ -69,7 +69,7 @@
 
 <span class="sd">        S_{rw}({\bf r}) = r_c e^{-\beta} +</span>
 <span class="sd">            \sum_{i \in {\bf g}_1} \sum_{j \in {\bf g}_2 \atop r_{ij} &lt; r_c}</span>
-<span class="sd">                r_{ij} e^{-\beta \frac{r_{ij}}{r_c}}</span>
+<span class="sd">                r_{ij} \left(e^{-\beta \frac{r_{ij}}{r_c}} - e^{-\beta}\right)</span>
 
 <span class="sd">    and</span>
 
@@ -77,7 +77,7 @@
 
 <span class="sd">        S_w({\bf r}) = e^{-\beta} +</span>
 <span class="sd">            \sum_{i \in {\bf g}_1} \sum_{j \in {\bf g}_2 \atop r_{ij} &lt; r_c}</span>
-<span class="sd">                e^{-\beta \frac{r_{ij}}{r_c}}</span>
+<span class="sd">                \left(e^{-\beta \frac{r_{ij}}{r_c}} - e^{-\beta}\right)</span>
 
 <span class="sd">    where :math:`r_{ij} = \|{\bf r}_j - {\bf r}_i\|` is the distance between atoms</span>
 <span class="sd">    :math:`i` and :math:`j`, :math:`{\bf g}_1` and :math:`{\bf g}_2` are the sets of</span>
@@ -91,12 +91,15 @@
 
 <span class="sd">    The terms outside the summations guarantee that shortest distance is well-defined</span>
 <span class="sd">    even when there are no atom pairs within the cutoff distance. In this case, the</span>
-<span class="sd">    collective variable evaluates to the cutoff distance.</span>
+<span class="sd">    collective variable evaluates to the cutoff distance. Shifting each weight by</span>
+<span class="sd">    :math:`e^{-\beta}` makes the contribution of a pair vanish at the cutoff distance,</span>
+<span class="sd">    so the collective variable is continuous when a pair crosses it.</span>
 
 <span class="sd">    .. note::</span>
 
 <span class="sd">        Atoms are allowed to be in both groups. In this case, terms for which</span>
-<span class="sd">        :math:`i = j` are ignored.</span>
+<span class="sd">        :math:`i = j` are ignored, and each pair of distinct atoms contributes a</span>
+<span class="sd">        single term, even if both atoms are in both groups.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -159,7 +162,7 @@
         <span class="n">rc</span> <span class="o">=</span> <span class="n">cutoffDistance</span>
         <span class="k">if</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">is_quantity</span><span class="p">(</span><span class="n">rc</span><span class="p">):</span>
             <span class="n">rc</span> <span class="o">=</span> <span class="n">rc</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">mmunit</span><span class="o">.</span><span class="n">nanometers</span><span class="p">)</span>
-        <span class="n">weight</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"exp(-</span><span class="si">{</span><span class="n">beta</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">rc</span><span class="si">}</span><span class="s2">*r)"</span>
+        <span class="n">weight</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"(exp(-</span><span class="si">{</span><span class="n">beta</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">rc</span><span class="si">}</span><span class="s2">*r)-</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">beta</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span>
         <span class="n">forces</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">"wrsum"</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">weight</span><span class="si">}</span><span class="s2">*r"</span><span class="p">),</span>
             <span class="s2">"wsum"</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">(</span><span class="n">weight</span><span class="p">),</span>
