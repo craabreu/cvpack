@@ -34,6 +34,7 @@ jobs:
           - os: ubuntu-latest
             python-version: "3.14"
             openmm-version: "8.6"
+            cpp-forces: true
 
           - os: ubuntu-latest
             python-version: "3.13"
@@ -42,6 +43,7 @@ jobs:
           - os: ubuntu-latest
             python-version: "3.12"
             openmm-version: "8.5"
+            cpp-forces: true
 
           - os: ubuntu-latest
             python-version: "3.11"
@@ -50,12 +52,11 @@ jobs:
           - os: ubuntu-latest
             python-version: "3.10"
             openmm-version: "8.4"
+            cpp-forces: true
 
           - os: ubuntu-latest
             python-version: "3.12"
             openmm-version: "8.1"
-            # openmm-cpp-forces (needed by CompositeRMSD) exists only for OpenMM 8.1
-            cpp-forces: true
             # The openmmtools version compatible with OpenMM 8.1 imports pkg_resources,
             # which setuptools removed in version 82
             extra-specs: setuptools=81
@@ -86,7 +87,8 @@ jobs:
         shell: bash -l {0}
         run: |
           if [ "${{ matrix.cpp-forces }}" == "true" ]; then
-            micromamba install -y -c mdtools openmm-cpp-forces
+            # Needed by CompositeRMSD. Versions before 0.2.0 give wrong forces.
+            micromamba install -y -c mdtools "openmm-cpp-forces>=0.2"
           fi
           python -m pip install . --no-deps
           micromamba list

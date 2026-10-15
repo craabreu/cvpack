@@ -3,6 +3,8 @@ Tests for argument validation and unit conversion in cvpack collective variables
 """
 
 import itertools as it
+import sys
+import types
 
 import numpy as np
 import openmm
@@ -97,6 +99,30 @@ def test_rmsd_dict_reference_requires_num_atoms(cls):
                 cvpack.CompositeRMSD(reference, [[0, 3], [5]])
     except ImportError:
         pytest.skip("openmm-cpp-forces is not installed")
+
+
+@pytest.mark.parametrize(
+    "version, accepted",
+    [("0.1.1", False), (None, False), ("0.2.0", True), ("0.2.0.post2", True)],
+)
+def test_composite_rmsd_requires_fixed_openmm_cpp_forces(
+    monkeypatch, version, accepted
+):
+    # Versions before 0.2.0 compute wrong forces for groups of different sizes
+    class FakeForce:
+        pass
+
+    fake = types.ModuleType("openmmcppforces")
+    fake.CompositeRMSDForce = FakeForce
+    if version is not None:
+        fake.__version__ = version
+    monkeypatch.setitem(sys.modules, "openmmcppforces", fake)
+    force_class = cvpack.composite_rmsd._get_force_class()
+    if accepted:
+        assert force_class is FakeForce
+    else:
+        with pytest.raises(ImportError, match="0.2.0 or later"):
+            force_class(None)
 
 
 def test_residue_coordination_rejects_overlapping_groups():

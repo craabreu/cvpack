@@ -75,8 +75,9 @@ conda install -c conda-forge -c mdtools cvpack
 pip install cvpack
 ```
 
-`CompositeRMSD` also requires the [openmm-cpp-forces] package, which is available from the
-mdtools channel for OpenMM 8.1.
+`CompositeRMSD` also requires version 0.2.0 or later of the [openmm-cpp-forces] package, which
+is available from the mdtools channel for OpenMM 8.4 to 8.6 (Linux and macOS) and from PyPI.
+Earlier versions compute wrong forces for groups of different sizes.
 
 Quick Start
 -----------
