@@ -5,17 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>HelixAngleContent &#8212; CVPack v0.12.2  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <title>HelixAngleContent &#8212; CVPack v0.13.0  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=572d9513" />
     <script src="../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../_static/doctools.js?v=9a2dae69"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=ccdb6887"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="HelixHBondContent" href="HelixHBondContent.html" />
@@ -41,7 +42,7 @@
 <h1>HelixAngleContent<a class="headerlink" href="#helixanglecontent" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="cvpack.HelixAngleContent">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cvpack.</span></span><span class="sig-name descname"><span class="pre">HelixAngleContent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residues</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thetaReference=88</span> <span class="pre">deg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance=15</span> <span class="pre">deg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halfExponent=3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name='helix_angle_content'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cvpack/helix_angle_content.html#HelixAngleContent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cvpack.HelixAngleContent" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">cvpack.</span></span><span class="sig-name descname"><span class="pre">HelixAngleContent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residues</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thetaReference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">88</span> <span class="pre">deg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span> <span class="pre">deg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halfExponent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'helix_angle_content'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cvpack/helix_angle_content.html#HelixAngleContent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cvpack.HelixAngleContent" title="Link to this definition">¶</a></dt>
 <dd><p>The alpha-helix angle content of a sequence of <cite>n</cite> residues:</p>
 <div class="math notranslate nohighlight">
 \[\alpha_{\theta}({\bf r}) = \sum_{i=2}^{n-1} B_m\left(
@@ -54,45 +55,44 @@ tolerance around this reference. <span class="math notranslate nohighlight">\(B_
 <div class="math notranslate nohighlight">
 \[B_m(x) = \frac{1}{1 + x^{2m}}\]</div>
 <p>where <span class="math notranslate nohighlight">\(m\)</span> is an integer parameter that controls its steepness. Note that
-<span class="math notranslate nohighlight">\(x\)</span> needs to be elevated to an even power for <span class="math notranslate nohighlight">\(B_m(x)\)</span> to be an even
+<span class="math notranslate nohighlight">\(x\)</span> needs to be raised to an even power for <span class="math notranslate nohighlight">\(B_m(x)\)</span> to be an even
 function.</p>
 <p>Optionally, this collective variable can be normalized to the range <span class="math notranslate nohighlight">\([0, 1]\)</span>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The residues must be a contiguous sequence from a single chain, ordered from the
-N- to the C-terminus. Due to an OpenMM limitation, the maximum supported number
-of residues is 37.</p>
+N- to the C-terminus.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>residues</strong> (<em>Sequence</em><em>[</em><em>Residue</em><em>]</em>) – The residues in the sequence.</p></li>
-<li><p><strong>pbc</strong> (<em>bool</em>) – Whether to use periodic boundary conditions.</p></li>
-<li><p><strong>thetaReference</strong> (<em>Quantity</em><em> | </em><em>Real</em>) – The reference value of the
+<li><p><strong>residues</strong> (<em>t.Sequence</em><em>[</em><em>mmapp.topology.Residue</em><em>]</em>) – The residues in the sequence.</p></li>
+<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – Whether to use periodic boundary conditions.</p></li>
+<li><p><strong>thetaReference</strong> (<a class="reference internal" href="../type_aliases.html#cvpack.units.ScalarQuantity" title="cvpack.units.ScalarQuantity"><em>ScalarQuantity</em></a>) – The reference value of the
 <span class="math notranslate nohighlight">\({\rm C}_\alpha{\rm -C}_\alpha{\rm -C}_\alpha\)</span> angle in an alpha
 helix.</p></li>
-<li><p><strong>tolerance</strong> (<em>Quantity</em><em> | </em><em>Real</em>) – The threshold tolerance around the reference values.</p></li>
-<li><p><strong>halfExponent</strong> (<em>int</em>) – The parameter <span class="math notranslate nohighlight">\(m\)</span> of the boxcar function.</p></li>
-<li><p><strong>normalize</strong> (<em>bool</em>) – Whether to normalize the collective variable to the range <span class="math notranslate nohighlight">\([0, 1]\)</span>.</p></li>
-<li><p><strong>name</strong> (<em>str</em>) – The name of the collective variable.</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference internal" href="../type_aliases.html#cvpack.units.ScalarQuantity" title="cvpack.units.ScalarQuantity"><em>ScalarQuantity</em></a>) – The threshold tolerance around the reference values.</p></li>
+<li><p><strong>halfExponent</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – The parameter <span class="math notranslate nohighlight">\(m\)</span> of the boxcar function.</p></li>
+<li><p><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – Whether to normalize the collective variable to the range <span class="math notranslate nohighlight">\([0, 1]\)</span>.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The name of the collective variable.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If some residue does not contain a <span class="math notranslate nohighlight">\({\rm C}_\alpha\)</span> atom</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If some residue does not contain a <span class="math notranslate nohighlight">\({\rm C}_\alpha\)</span> atom</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">cvpack</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">openmm</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">openmm</span> <span class="kn">import</span> <span class="n">app</span><span class="p">,</span> <span class="n">unit</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">openmmtools</span> <span class="kn">import</span> <span class="n">testsystems</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">cvpack</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">openmm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">openmm</span><span class="w"> </span><span class="kn">import</span> <span class="n">app</span><span class="p">,</span> <span class="n">unit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">openmmtools</span><span class="w"> </span><span class="kn">import</span> <span class="n">testsystems</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">testsystems</span><span class="o">.</span><span class="n">LysozymeImplicit</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">residues</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">residues</span><span class="p">())[</span><span class="mi">59</span><span class="p">:</span><span class="mi">80</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">])</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">])</span>
 <span class="go">LYS ASP GLU ... ILE LEU ARG</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">helix_content</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">HelixAngleContent</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">helix_content</span><span class="o">.</span><span class="n">addToSystem</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">platform</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Platform</span><span class="o">.</span><span class="n">getPlatformByName</span><span class="p">(</span><span class="s1">&#39;Reference&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">platform</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Platform</span><span class="o">.</span><span class="n">getPlatformByName</span><span class="p">(</span><span class="s1">'Reference'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">integrator</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">VerletIntegrator</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">context</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Context</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">,</span> <span class="n">integrator</span><span class="p">,</span> <span class="n">platform</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
@@ -104,12 +104,12 @@ helix.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="cvpack.HelixAngleContent.addToSystem">
 <span class="sig-name descname"><span class="pre">addToSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">setUnusedForceGroup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.HelixAngleContent.addToSystem" title="Link to this definition">¶</a></dt>
-<dd><p>Add this collective variable to an <a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.System.html">openmm.System</a>.</p>
+<dd><p>Add this collective variable to an <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.System.html">openmm.System</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>system</strong> (<em>System</em>) – The system to which this collective variable should be added</p></li>
-<li><p><strong>setUnusedForceGroup</strong> (<em>bool</em>) – If True, the force group of this collective variable will be set to the
+<li><p><strong>system</strong> (<a class="reference external" href="https://docs.openmm.org/latest/api-python/generated/openmm.openmm.System.html#openmm.openmm.System" title="(in OpenMM Python API v8.6.0)"><em>System</em></a>) – The system to which this collective variable should be added</p></li>
+<li><p><strong>setUnusedForceGroup</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the force group of this collective variable will be set to the
 first available force group in the system</p></li>
 </ul>
 </dd>
@@ -120,15 +120,15 @@ first available force group in the system</p></li>
 <dt class="sig sig-object py" id="cvpack.HelixAngleContent.getEffectiveMass">
 <span class="sig-name descname"><span class="pre">getEffectiveMass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowReinitialization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.HelixAngleContent.getEffectiveMass" title="Link to this definition">¶</a></dt>
 <dd><p>Compute the effective mass of this collective variable at a given
-<a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a>.</p>
+<a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a>.</p>
 <p>The effective mass of a collective variable <span class="math notranslate nohighlight">\(q({\bf r})\)</span> is defined as
-<span id="id1">[<a class="reference internal" href="../references.html#id3" title="Christophe Chipot and Andrew Pohorille, editors. Free Energy Calculations. Springer Berlin Heidelberg, 2007. URL: https://doi.org/10.1007/978-3-540-38448-9, doi:10.1007/978-3-540-38448-9.">1</a>]</span>:</p>
+<span class="bibtex-citation" id="id1">[<a class="reference internal" href="../references.html#id3" title="Christophe Chipot and Andrew Pohorille, editors. Free Energy Calculations. Springer Berlin Heidelberg, 2007. URL: https://doi.org/10.1007/978-3-540-38448-9, doi:10.1007/978-3-540-38448-9.">1</a>]</span>:</p>
 <div class="math notranslate nohighlight">
 \[m_\mathrm{eff}({\bf r}) = \left(
     \sum_{i=1}^N \frac{1}{m_i} \left\| \frac{dq}{d{\bf r}_i} \right\|^2
 \right)^{-1}\]</div>
-<p>If this collective variable share the force group with other forces, then
-evaluating its effective mass requires reinitializing the <a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a>
+<p>If this collective variable shares the force group with other forces, then
+evaluating its effective mass requires reinitializing the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a>
 twice at each call. This is inefficient and should be avoided. To allow this
 behavior, the <code class="docutils literal notranslate"><span class="pre">allowReinitialization</span></code> parameter must be set to True.</p>
 <div class="admonition note">
@@ -140,31 +140,31 @@ is set to an available force group in the system by default.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>context</strong> (<em>Context</em>) – The context at which this collective variable’s effective mass should be
+<li><p><strong>context</strong> (<a class="reference external" href="https://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html#openmm.openmm.Context" title="(in OpenMM Python API v8.6.0)"><em>Context</em></a>) – The context at which this collective variable’s effective mass should be
 evaluated.</p></li>
-<li><p><strong>allowReinitialization</strong> (<em>bool</em>) – If True, the context will be reinitialized if necessary.</p></li>
+<li><p><strong>allowReinitialization</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the context will be reinitialized if necessary.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The effective mass of this collective variable at the given context.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Quantity</p>
+<dd class="field-odd"><p><a class="reference internal" href="../units.html#cvpack.units.Quantity" title="cvpack.units.Quantity">Quantity</a></p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
 <p>In this example, we compute the effective masses of the backbone dihedral
 angles and the radius of gyration of an alanine dipeptide molecule in water:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">cvpack</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">openmm</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">openmmtools</span> <span class="kn">import</span> <span class="n">testsystems</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">cvpack</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">openmm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">openmmtools</span><span class="w"> </span><span class="kn">import</span> <span class="n">testsystems</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">testsystems</span><span class="o">.</span><span class="n">AlanineDipeptideExplicit</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">top</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">mdtraj_topology</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">backbone_atoms</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;name N C CA and resid 1 2&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">backbone_atoms</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"not water and name N CA C"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">Torsion</span><span class="p">(</span><span class="o">*</span><span class="n">backbone_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">psi</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">Torsion</span><span class="p">(</span><span class="o">*</span><span class="n">backbone_atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">radius_of_gyration</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">RadiusOfGyration</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">top</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;not water&quot;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">top</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"not water"</span><span class="p">)</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">cv</span> <span class="ow">in</span> <span class="p">[</span><span class="n">phi</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">radius_of_gyration</span><span class="p">]:</span>
 <span class="gp">... </span>    <span class="n">cv</span><span class="o">.</span><span class="n">addToSystem</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">)</span>
@@ -173,9 +173,9 @@ angles and the radius of gyration of an alanine dipeptide molecule in water:</p>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span><span class="o">.</span><span class="n">getEffectiveMass</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<span class="go">0.05119... nm**2 Da/(rad**2)</span>
+<span class="go">0.04795... nm**2 Da/(rad**2)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">psi</span><span class="o">.</span><span class="n">getEffectiveMass</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<span class="go">0.05186... nm**2 Da/(rad**2)</span>
+<span class="go">0.05119... nm**2 Da/(rad**2)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">radius_of_gyration</span><span class="o">.</span><span class="n">getEffectiveMass</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 <span class="go">30.946... Da</span>
 </pre></div>
@@ -188,7 +188,7 @@ angles and the radius of gyration of an alanine dipeptide molecule in water:</p>
 <dd><p>Get the unit of measurement of the effective mass of this collective variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>Unit</em></p>
+<dd class="field-odd"><p><a class="reference internal" href="../units.html#cvpack.units.Unit" title="cvpack.units.units.Unit"><em>Unit</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -199,7 +199,7 @@ angles and the radius of gyration of an alanine dipeptide molecule in water:</p>
 <dd><p>Get the name of this collective variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -214,7 +214,7 @@ angles and the radius of gyration of an alanine dipeptide molecule in water:</p>
 periodic</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Union[Quantity, None]</p>
+<dd class="field-even"><p>Union[<a class="reference internal" href="../units.html#cvpack.units.Quantity" title="cvpack.units.Quantity">Quantity</a>, None]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -225,7 +225,7 @@ periodic</p>
 <dd><p>Get the unit of measurement of this collective variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>Unit</em></p>
+<dd class="field-odd"><p><a class="reference internal" href="../units.html#cvpack.units.Unit" title="cvpack.units.units.Unit"><em>Unit</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -233,9 +233,9 @@ periodic</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="cvpack.HelixAngleContent.getValue">
 <span class="sig-name descname"><span class="pre">getValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowReinitialization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.HelixAngleContent.getValue" title="Link to this definition">¶</a></dt>
-<dd><p>Evaluate this collective variable at a given <a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a>.</p>
-<p>If this collective variable share the force group with other forces, then its
-evaluation requires reinitializing the <a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a> twice at each call.
+<dd><p>Evaluate this collective variable at a given <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a>.</p>
+<p>If this collective variable shares the force group with other forces, then its
+evaluation requires reinitializing the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a> twice at each call.
 This is inefficient and should be avoided. To allow this behavior, the
 <code class="docutils literal notranslate"><span class="pre">allowReinitialization</span></code> parameter must be set to True.</p>
 <div class="admonition note">
@@ -247,30 +247,30 @@ is set to an available force group in the system by default.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>context</strong> (<em>Context</em>) – The context at which this collective variable should be evaluated.</p></li>
-<li><p><strong>allowReinitialization</strong> (<em>bool</em>) – If True, the context will be reinitialized if necessary.</p></li>
+<li><p><strong>context</strong> (<a class="reference external" href="https://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html#openmm.openmm.Context" title="(in OpenMM Python API v8.6.0)"><em>Context</em></a>) – The context at which this collective variable should be evaluated.</p></li>
+<li><p><strong>allowReinitialization</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the context will be reinitialized if necessary.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The value of this collective variable at the given context.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Quantity</p>
+<dd class="field-odd"><p><a class="reference internal" href="../units.html#cvpack.units.Quantity" title="cvpack.units.Quantity">Quantity</a></p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
 <p>In this example, we compute the values of the backbone dihedral angles and
 the radius of gyration of an alanine dipeptide molecule in water:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">cvpack</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">openmm</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">openmmtools</span> <span class="kn">import</span> <span class="n">testsystems</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">cvpack</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">openmm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">openmmtools</span><span class="w"> </span><span class="kn">import</span> <span class="n">testsystems</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">testsystems</span><span class="o">.</span><span class="n">AlanineDipeptideExplicit</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">top</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">mdtraj_topology</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">backbone_atoms</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;name N C CA and resid 1 2&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">backbone_atoms</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"not water and name N CA C"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">Torsion</span><span class="p">(</span><span class="o">*</span><span class="n">backbone_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">psi</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">Torsion</span><span class="p">(</span><span class="o">*</span><span class="n">backbone_atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">radius_of_gyration</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">RadiusOfGyration</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">top</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;not water&quot;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">top</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"not water"</span><span class="p">)</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">cv</span> <span class="ow">in</span> <span class="p">[</span><span class="n">phi</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">radius_of_gyration</span><span class="p">]:</span>
 <span class="gp">... </span>    <span class="n">cv</span><span class="o">.</span><span class="n">addToSystem</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">)</span>
@@ -279,7 +279,7 @@ the radius of gyration of an alanine dipeptide molecule in water:</p>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<span class="go">3.1415... rad</span>
+<span class="go">-3.1415... rad</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">psi</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 <span class="go">3.1415... rad</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">radius_of_gyration</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
@@ -297,9 +297,9 @@ the radius of gyration of an alanine dipeptide molecule in water:</p>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../index.html">CVPack v0.12.2</a></h1>
+<h1 class="logo"><a href="../index.html">CVPack v0.13.0</a></h1>
 
 
 
@@ -340,8 +340,10 @@ the radius of gyration of an alanine dipeptide molecule in water:</p>
 <li class="toctree-l2"><a class="reference internal" href="TorsionSimilarity.html">TorsionSimilarity</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../type_aliases.html">Type Aliases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reporting.html">Reporting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../serialization.html">Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">Units</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">Bibliography</a></li>
 </ul>
 
@@ -363,8 +365,8 @@ the radius of gyration of an alanine dipeptide molecule in water:</p>
       &#169;2024 C. Abreu & Redesign Science.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
       <a href="../_sources/api/HelixAngleContent.rst.txt"

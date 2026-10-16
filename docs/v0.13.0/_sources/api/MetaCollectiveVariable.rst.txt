@@ -1,0 +1,22 @@
+MetaCollectiveVariable
+======================
+
+.. currentmodule:: cvpack
+.. autoclass:: MetaCollectiveVariable
+    :member-order: alphabetical
+
+    .. rubric:: Methods
+
+    .. automethod:: addToSystem
+    .. automethod:: getEffectiveMass
+    .. automethod:: getInnerEffectiveMasses
+    .. automethod:: getInnerValues
+    .. automethod:: getInnerVariables
+    .. automethod:: getMassUnit
+    .. automethod:: getName
+    .. automethod:: getParameterDefaultValues
+    .. automethod:: getParameterDerivatives
+    .. automethod:: getParameterValues
+    .. automethod:: getPeriodicBounds
+    .. automethod:: getUnit
+    .. automethod:: getValue

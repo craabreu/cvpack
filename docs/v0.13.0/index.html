@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Collective Variable Package &#8212; CVPack v0.13.0  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=572d9513" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=ccdb6887"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Getting Started" href="getting_started.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="collective-variable-package">
+<h1>Collective Variable Package<a class="headerlink" href="#collective-variable-package" title="Link to this heading">¶</a></h1>
+<a class="reference external image-reference" href="https://github.com/craabreu/cvpack/blob/main/LICENSE"><img alt="https://img.shields.io/badge/License-MIT-yellowgreen.svg" src="https://img.shields.io/badge/License-MIT-yellowgreen.svg" />
+</a>
+<a class="reference external image-reference" href="https://github.com/craabreu/cvpack"><img alt="https://badgen.net/badge/icon/github?icon=github&amp;label" src="https://badgen.net/badge/icon/github?icon=github&amp;label" />
+</a>
+<a class="github-button" href="https://github.com/craabreu/cvpack" data-show-count="true" aria-label="Star craabreu/cvpack on GitHub">Star</a><section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">Collective Variables</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/Angle.html">Angle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/AtomicFunction.html">AtomicFunction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/AttractionStrength.html">AttractionStrength</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/CentroidFunction.html">CentroidFunction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/CompositeRMSD.html">CompositeRMSD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/Distance.html">Distance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/HelixAngleContent.html">HelixAngleContent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/HelixHBondContent.html">HelixHBondContent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/HelixRMSDContent.html">HelixRMSDContent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/HelixTorsionContent.html">HelixTorsionContent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/MetaCollectiveVariable.html">MetaCollectiveVariable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/NumberOfContacts.html">NumberOfContacts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/OpenMMForceWrapper.html">OpenMMForceWrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/PathInCVSpace.html">PathInCVSpace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/PathInRMSDSpace.html">PathInRMSDSpace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/RadiusOfGyration.html">RadiusOfGyration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/RadiusOfGyrationSq.html">RadiusOfGyrationSq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/ResidueCoordination.html">ResidueCoordination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/RMSD.html">RMSD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/SheetRMSDContent.html">SheetRMSDContent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/ShortestDistance.html">ShortestDistance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/Torsion.html">Torsion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/TorsionSimilarity.html">TorsionSimilarity</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="type_aliases.html">Type Aliases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="type_aliases.html#cvpack.units.ScalarQuantity"><code class="docutils literal notranslate"><span class="pre">ScalarQuantity</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="type_aliases.html#cvpack.units.VectorQuantity"><code class="docutils literal notranslate"><span class="pre">VectorQuantity</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="type_aliases.html#cvpack.units.MatrixQuantity"><code class="docutils literal notranslate"><span class="pre">MatrixQuantity</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reporting.html">Reporting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/CustomWriter.html">CustomWriter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/CVWriter.html">CVWriter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/MetaCVWriter.html">MetaCVWriter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/StateDataReporter.html">StateDataReporter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="serialization.html">Serialization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="serialization.html#cvpack.serialization.serialize"><code class="docutils literal notranslate"><span class="pre">serialize()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="serialization.html#cvpack.serialization.deserialize"><code class="docutils literal notranslate"><span class="pre">deserialize()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="units.html#cvpack.units.Quantity"><code class="docutils literal notranslate"><span class="pre">Quantity</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="units.html#cvpack.units.Unit"><code class="docutils literal notranslate"><span class="pre">Unit</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="units.html#cvpack.units.in_md_units"><code class="docutils literal notranslate"><span class="pre">in_md_units()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="units.html#cvpack.units.value_in_md_units"><code class="docutils literal notranslate"><span class="pre">value_in_md_units()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">Bibliography</a></li>
+</ul>
+</div>
+</section>
+<section id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+<script async defer src="https://buttons.github.io/buttons.js"></script></section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">CVPack v0.13.0</a></h1>
+
+
+
+
+
+
+
+
+
+
+
+<h3><a href="#">Table of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">Collective Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="type_aliases.html">Type Aliases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reporting.html">Reporting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="serialization.html">Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">Bibliography</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024 C. Abreu & Redesign Science.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

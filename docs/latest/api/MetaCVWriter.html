@@ -5,14 +5,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>MetaCVWriter &#8212; CVPack v0.12.2  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <title>MetaCVWriter &#8212; CVPack v0.13.0  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=572d9513" />
     <script src="../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../_static/doctools.js?v=9a2dae69"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=ccdb6887"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -40,37 +41,42 @@
 <h1>MetaCVWriter<a class="headerlink" href="#metacvwriter" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="cvpack.reporting.MetaCVWriter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cvpack.reporting.</span></span><span class="sig-name descname"><span class="pre">MetaCVWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metaCV</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emasses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">derivatives</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cvpack/reporting/meta_cv_writer.html#MetaCVWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cvpack.reporting.MetaCVWriter" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">cvpack.reporting.</span></span><span class="sig-name descname"><span class="pre">MetaCVWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metaCV</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emasses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">derivatives</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowReinitialization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cvpack/reporting/meta_cv_writer.html#MetaCVWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cvpack.reporting.MetaCVWriter" title="Link to this definition">¶</a></dt>
 <dd><p>A custom writer for reporting meta-collective variable data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>metaCV</strong> (<a class="reference internal" href="MetaCollectiveVariable.html#cvpack.MetaCollectiveVariable" title="cvpack.meta_collective_variable.MetaCollectiveVariable"><em>MetaCollectiveVariable</em></a>) – The meta-collective variable whose associated values will be reported.</p></li>
-<li><p><strong>innerValues</strong> – The names of the inner variables whose values will be reported.</p></li>
-<li><p><strong>innerMasses</strong> – The names of the inner variables whose effective masses will be reported.</p></li>
-<li><p><strong>parameters</strong> (<em>Sequence</em><em>[</em><em>str</em><em>]</em>) – The names of the parameters whose values will be reported.</p></li>
-<li><p><strong>derivatives</strong> (<em>Sequence</em><em>[</em><em>str</em><em>]</em>) – The names of the parameters with respect to which the derivatives of the
+<li><p><strong>values</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.15)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>]</em>) – The names of the inner variables whose values will be reported.</p></li>
+<li><p><strong>emasses</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.15)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>]</em>) – The names of the inner variables whose effective masses will be reported.</p></li>
+<li><p><strong>parameters</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.15)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>]</em>) – The names of the parameters whose values will be reported.</p></li>
+<li><p><strong>derivatives</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.15)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>]</em>) – The names of the parameters with respect to which the derivatives of the
 meta-collective variable will be reported.</p></li>
+<li><p><strong>allowReinitialization</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – Whether to allow context reinitialization when the meta-collective variable
+shares its force group with other forces (needed for derivatives only).</p></li>
 </ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If any name does not match an inner variable or a parameter</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">cvpack</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">openmm</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cvpack.reporting</span> <span class="kn">import</span> <span class="n">StateDataReporter</span><span class="p">,</span> <span class="n">MetaCVWriter</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">openmm</span> <span class="kn">import</span> <span class="n">app</span><span class="p">,</span> <span class="n">unit</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">stdout</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">openmmtools</span> <span class="kn">import</span> <span class="n">testsystems</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">cvpack</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">openmm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">pi</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">cvpack.reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateDataReporter</span><span class="p">,</span> <span class="n">MetaCVWriter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">openmm</span><span class="w"> </span><span class="kn">import</span> <span class="n">app</span><span class="p">,</span> <span class="n">unit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sys</span><span class="w"> </span><span class="kn">import</span> <span class="n">stdout</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">openmmtools</span><span class="w"> </span><span class="kn">import</span> <span class="n">testsystems</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">testsystems</span><span class="o">.</span><span class="n">AlanineDipeptideVacuum</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">Torsion</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;phi&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">psi</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">Torsion</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;psi&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">Torsion</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"phi"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">psi</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">Torsion</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"psi"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">umbrella</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">MetaCollectiveVariable</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="sa">f</span><span class="s2">&quot;0.5*kappa*(min(dphi,</span><span class="si">{</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="si">}</span><span class="s2">-dphi)^2+min(dpsi,</span><span class="si">{</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="si">}</span><span class="s2">-dpsi)^2)&quot;</span>
-<span class="gp">... </span>    <span class="s2">&quot;; dphi=abs(phi-phi0); dpsi=abs(psi-psi0)&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="sa">f</span><span class="s2">"0.5*kappa*(min(dphi,</span><span class="si">{</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="si">}</span><span class="s2">-dphi)^2+min(dpsi,</span><span class="si">{</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="si">}</span><span class="s2">-dpsi)^2)"</span>
+<span class="gp">... </span>    <span class="s2">"; dphi=abs(phi-phi0); dpsi=abs(psi-psi0)"</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="n">phi</span><span class="p">,</span> <span class="n">psi</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="n">unit</span><span class="o">.</span><span class="n">kilojoules_per_mole</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;umbrella&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">name</span><span class="o">=</span><span class="s2">"umbrella"</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">kappa</span><span class="o">=</span><span class="mi">100</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">kilojoules_per_mole</span><span class="o">/</span><span class="n">unit</span><span class="o">.</span><span class="n">radian</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">phi0</span><span class="o">=</span><span class="mi">5</span><span class="o">*</span><span class="n">pi</span><span class="o">/</span><span class="mi">6</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">radian</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">psi0</span><span class="o">=-</span><span class="mi">5</span><span class="o">*</span><span class="n">pi</span><span class="o">/</span><span class="mi">6</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">radian</span><span class="p">,</span>
@@ -81,10 +87,10 @@ meta-collective variable will be reported.</p></li>
 <span class="gp">... </span>    <span class="n">writers</span><span class="o">=</span><span class="p">[</span>
 <span class="gp">... </span>        <span class="n">MetaCVWriter</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="n">umbrella</span><span class="p">,</span>
-<span class="gp">... </span>            <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;phi&quot;</span><span class="p">,</span> <span class="s2">&quot;psi&quot;</span><span class="p">],</span>
-<span class="gp">... </span>            <span class="n">emasses</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;phi&quot;</span><span class="p">,</span> <span class="s2">&quot;psi&quot;</span><span class="p">],</span>
-<span class="gp">... </span>            <span class="n">parameters</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;phi0&quot;</span><span class="p">,</span> <span class="s2">&quot;psi0&quot;</span><span class="p">],</span>
-<span class="gp">... </span>            <span class="n">derivatives</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;phi0&quot;</span><span class="p">,</span> <span class="s2">&quot;psi0&quot;</span><span class="p">],</span>
+<span class="gp">... </span>            <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s2">"phi"</span><span class="p">,</span> <span class="s2">"psi"</span><span class="p">],</span>
+<span class="gp">... </span>            <span class="n">emasses</span><span class="o">=</span><span class="p">[</span><span class="s2">"phi"</span><span class="p">,</span> <span class="s2">"psi"</span><span class="p">],</span>
+<span class="gp">... </span>            <span class="n">parameters</span><span class="o">=</span><span class="p">[</span><span class="s2">"phi0"</span><span class="p">,</span> <span class="s2">"psi0"</span><span class="p">],</span>
+<span class="gp">... </span>            <span class="n">derivatives</span><span class="o">=</span><span class="p">[</span><span class="s2">"phi0"</span><span class="p">,</span> <span class="s2">"psi0"</span><span class="p">],</span>
 <span class="gp">... </span>        <span class="p">),</span>
 <span class="gp">... </span>    <span class="p">],</span>
 <span class="gp">... </span>    <span class="n">step</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -100,28 +106,28 @@ meta-collective variable will be reported.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">simulation</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">simulation</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">setVelocitiesToTemperature</span><span class="p">(</span><span class="mi">300</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">kelvin</span><span class="p">,</span> <span class="mi">5678</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">simulation</span><span class="o">.</span><span class="n">reporters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reporter</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">simulation</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>  
-<span class="go">#&quot;Step&quot;,&quot;phi (rad)&quot;,...,&quot;d[umbrella]/d[psi0] (kJ/(mol rad))&quot;</span>
-<span class="go">100,2.36849...,40.3718...</span>
-<span class="go">200,2.88515...,27.9109...</span>
-<span class="go">300,2.43112...,-12.743...</span>
-<span class="go">400,2.96786...,3.97688...</span>
-<span class="go">500,2.58383...,41.8782...</span>
-<span class="go">600,2.72482...,25.2626...</span>
-<span class="go">700,2.55836...,25.3424...</span>
-<span class="go">800,2.71046...,11.3498...</span>
-<span class="go">900,2.43913...,37.3804...</span>
-<span class="go">1000,2.7584...,31.1599...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">simulation</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="go">#"Step","phi (rad)",...,"d[umbrella]/d[psi0] (kJ/(mol rad))"</span>
+<span class="go">100,2.6766...,-20.519...</span>
+<span class="go">200,2.3694...,0.7804...</span>
+<span class="go">300,3.1342...,49.272...</span>
+<span class="go">400,2.8179...,-10.012...</span>
+<span class="go">500,2.7565...,-8.9529...</span>
+<span class="go">600,2.6956...,23.049...</span>
+<span class="go">700,2.9331...,25.068...</span>
+<span class="go">800,2.6988...,-0.4481...</span>
+<span class="go">900,2.7477...,9.5528...</span>
+<span class="go">1000,2.7744...,21.986...</span>
 </pre></div>
 </div>
 <p class="rubric">Methods</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="cvpack.reporting.MetaCVWriter.getHeaders">
 <span class="sig-name descname"><span class="pre">getHeaders</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cvpack/reporting/meta_cv_writer.html#MetaCVWriter.getHeaders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cvpack.reporting.MetaCVWriter.getHeaders" title="Link to this definition">¶</a></dt>
-<dd><p>Gets a list of strigs containing the headers to be added to the report.</p>
+<dd><p>Gets a list of strings containing the headers to be added to the report.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>List</em>[str]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)">list</a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -132,10 +138,10 @@ meta-collective variable will be reported.</p></li>
 <dd><p>Gets a list of floats containing the values to be added to the report.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>simulation</strong> (<em>Simulation</em>) – The simulation object.</p>
+<dd class="field-odd"><p><strong>simulation</strong> (<a class="reference external" href="https://docs.openmm.org/latest/api-python/generated/openmm.app.simulation.Simulation.html#openmm.app.simulation.Simulation" title="(in OpenMM Python API v8.6.0)"><em>Simulation</em></a>) – The simulation object.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>List</em>[float]</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)">list</a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)">float</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -149,9 +155,9 @@ meta-collective variable will be reported.</p></li>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../index.html">CVPack v0.12.2</a></h1>
+<h1 class="logo"><a href="../index.html">CVPack v0.13.0</a></h1>
 
 
 
@@ -167,13 +173,16 @@ meta-collective variable will be reported.</p></li>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="index.html">Collective Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../type_aliases.html">Type Aliases</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../reporting.html">Reporting</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="CustomWriter.html">CustomWriter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CVWriter.html">CVWriter</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">MetaCVWriter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="StateDataReporter.html">StateDataReporter</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../serialization.html">Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">Units</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">Bibliography</a></li>
 </ul>
 
@@ -195,8 +204,8 @@ meta-collective variable will be reported.</p></li>
       &#169;2024 C. Abreu & Redesign Science.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
       <a href="../_sources/api/MetaCVWriter.rst.txt"

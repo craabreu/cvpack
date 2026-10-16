@@ -1,0 +1,17 @@
+RMSD
+====
+
+.. currentmodule:: cvpack
+.. autoclass:: RMSD
+    :member-order: alphabetical
+
+    .. rubric:: Methods
+
+    .. automethod:: addToSystem
+    .. automethod:: getEffectiveMass
+    .. automethod:: getMassUnit
+    .. automethod:: getName
+    .. automethod:: getNullBondForce
+    .. automethod:: getPeriodicBounds
+    .. automethod:: getUnit
+    .. automethod:: getValue

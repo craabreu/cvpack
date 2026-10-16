@@ -1,0 +1,11 @@
+CustomWriter
+============
+
+.. currentmodule:: cvpack.reporting
+.. autoclass:: CustomWriter
+    :member-order: alphabetical
+
+    .. rubric:: Methods
+
+    .. automethod:: getHeaders
+    .. automethod:: getValues

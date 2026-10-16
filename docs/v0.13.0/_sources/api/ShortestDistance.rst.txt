@@ -1,0 +1,16 @@
+ShortestDistance
+================
+
+.. currentmodule:: cvpack
+.. autoclass:: ShortestDistance
+    :member-order: alphabetical
+
+    .. rubric:: Methods
+
+    .. automethod:: addToSystem
+    .. automethod:: getEffectiveMass
+    .. automethod:: getMassUnit
+    .. automethod:: getName
+    .. automethod:: getPeriodicBounds
+    .. automethod:: getUnit
+    .. automethod:: getValue

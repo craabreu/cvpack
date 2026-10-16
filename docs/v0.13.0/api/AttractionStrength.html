@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>AttractionStrength &#8212; CVPack v0.13.0  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=572d9513" />
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=ccdb6887"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="CentroidFunction" href="CentroidFunction.html" />
+    <link rel="prev" title="AtomicFunction" href="AtomicFunction.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="attractionstrength">
+<h1>AttractionStrength<a class="headerlink" href="#attractionstrength" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="cvpack.AttractionStrength">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">cvpack.</span></span><span class="sig-name descname"><span class="pre">AttractionStrength</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nonbondedForce</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contrastGroup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span> <span class="pre">kJ/mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contrastScaling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'attraction_strength'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cvpack/attraction_strength.html#AttractionStrength"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cvpack.AttractionStrength" title="Link to this definition">¶</a></dt>
+<dd><p>The strength of the attraction between two atom groups:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}S_{\rm attr}({\bf r}) = S_{1,2}({\bf r}) = &amp;-\frac{1}{E_{\rm ref}} \Bigg[
+    \sum_{i \in {\bf g}_1}
+        \sum_{\substack{j \in {\bf g}_2 \\ j \neq i}}
+            \epsilon_{ij} u_{\rm disp}\left(
+                \frac{\|{\bf r}_i - {\bf r}_j\|}{\sigma_{ij}}
+            \right) \\
+    &amp;+\sum_{i \in {\bf g}_1}
+    \sum_{\substack{j \in {\bf g}_2 \\ q_jq_i &lt; 0}}
+        \frac{q_i q_j}{4 \pi \varepsilon_0 r_{\rm c}} u_{\rm elec}\left(
+            \frac{\|{\bf r}_i - {\bf r}_j\|}{r_{\rm c}}
+        \right) \Bigg]\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\({\bf g}_1\)</span> and <span class="math notranslate nohighlight">\({\bf g}_2\)</span> are the two atom groups,
+<span class="math notranslate nohighlight">\(r_{\rm c}\)</span> is the cutoff distance, <span class="math notranslate nohighlight">\(\varepsilon_0\)</span> is the
+permittivity of empty space, <span class="math notranslate nohighlight">\(q_i\)</span> is the charge of atom <span class="math notranslate nohighlight">\(i\)</span>, and
+<span class="math notranslate nohighlight">\(E_{\rm ref}\)</span> is a reference value (in energy units per mole).
+The Lennard-Jones parameters are given by the Lorentz-Berthelot mixing rule, i.e.
+<span class="math notranslate nohighlight">\(\epsilon_{ij} = \sqrt{\epsilon_i \epsilon_j}\)</span>, and
+<span class="math notranslate nohighlight">\(\sigma_{ij} = (\sigma_i + \sigma_j)/2\)</span>.</p>
+<p>Optionally, one can provide a third atom group <span class="math notranslate nohighlight">\({\bf g}_3\)</span> to contrast
+the attraction strength between <span class="math notranslate nohighlight">\({\bf g}_1\)</span> and <span class="math notranslate nohighlight">\({\bf g}_2\)</span> with
+that between <span class="math notranslate nohighlight">\({\bf g}_1\)</span> and <span class="math notranslate nohighlight">\({\bf g}_3\)</span>. One can also provide
+a scaling factor <span class="math notranslate nohighlight">\(\alpha\)</span> to balance the contributions of the two
+interactions. In this case, the collective variable becomes</p>
+<div class="math notranslate nohighlight">
+\[S_{\rm attr}({\bf r}) = S_{1,2}({\bf r}) - \alpha S_{1,3}({\bf r})\]</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Groups <span class="math notranslate nohighlight">\({\bf g}_1\)</span> and <span class="math notranslate nohighlight">\({\bf g}_2\)</span> can overlap or even be the
+same, in which case the collective variable will measure the strength of
+the self-attraction of <span class="math notranslate nohighlight">\({\bf g}_1\)</span>. Each pair of distinct atoms
+contributes a single term, even if both atoms are in both groups. On the
+other hand, the contrast group <span class="math notranslate nohighlight">\({\bf g}_3\)</span> cannot overlap with either
+<span class="math notranslate nohighlight">\({\bf g}_1\)</span> or <span class="math notranslate nohighlight">\({\bf g}_2\)</span>.</p>
+</div>
+<p>The function <span class="math notranslate nohighlight">\(u_{\rm disp}(x)\)</span> is a Lennard-Jones-like reduced potential with
+a highly softened repulsion part, defined as</p>
+<div class="math notranslate nohighlight">
+\[u_{\rm disp}(x) = 4\left(\frac{1}{y^2} - \frac{1}{y}\right),
+\quad \text{where} \quad
+y = |x^6 - 2| + 2\]</div>
+<p>The function <span class="math notranslate nohighlight">\(u_{\rm elec}(x)\)</span> provides a Coulomb-like decay with
+reaction-field screening, defined as</p>
+<div class="math notranslate nohighlight">
+\[u_{\rm elec}(x) = \frac{1}{x} + \frac{x^2 - 3}{2}\]</div>
+<p>The screening considers a perfect conductor as the surrounding medium
+<span class="bibtex-citation" id="id1">[<a class="reference internal" href="../references.html#id4" title="Gabriela B. Correa, Jéssica C. S. L. Maciel, Frederico W. Tavares, and Charlles R. A. Abreu. A New Formulation for the Concerted Alchemical Calculation of van der Waals and Coulomb Components of Solvation Free Energies. Journal of Chemical Theory and Computation, 18(10):5876–5889, October 2022. doi:10.1021/acs.jctc.2c00563.">2</a>]</span>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only attractive electrostatic interactions are considered (<span class="math notranslate nohighlight">\(q_i q_j &lt; 0\)</span>),
+which gives <span class="math notranslate nohighlight">\(S_{\rm attr}({\bf r})\)</span> a lower bound of zero. The upper
+bound depends on the system details, the chosen groups of atoms, and the
+adopted reference value.</p>
+</div>
+<p>The Lennard-Jones parameters, atomic charges, cutoff distance, boundary conditions,
+as well as whether to use a switching function and its corresponding switching
+distance, are taken from the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.NonbondedForce.html">openmm.NonbondedForce</a> object. As in
+<a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.NonbondedForce.html">openmm.NonbondedForce</a>, the switching function applies only to the
+Lennard-Jones term. Pairs with <span class="math notranslate nohighlight">\(\sigma_{ij} = 0\)</span> have no Lennard-Jones term.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Any non-exclusion exceptions involving an atom in <span class="math notranslate nohighlight">\({\bf g}_1\)</span> and an atom
+in either <span class="math notranslate nohighlight">\({\bf g}_2\)</span> or <span class="math notranslate nohighlight">\({\bf g}_3\)</span> are turned into exclusions in
+this collective variable.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>group1</strong> (<em>t.Iterable</em><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>]</em>) – The first atom group.</p></li>
+<li><p><strong>group2</strong> (<em>t.Iterable</em><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>]</em>) – The second atom group.</p></li>
+<li><p><strong>nonbondedForce</strong> (<em>openmm.NonbondedForce</em>) – The <code class="xref py py-class docutils literal notranslate"><span class="pre">openmm.NonbondedForce</span></code> object from which to collect the necessary
+parameters.</p></li>
+<li><p><strong>contrastGroup</strong> (<em>t.Iterable</em><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>] </em><em>| </em><em>None</em>) – An optional third atom group to contrast the attraction strength between
+<span class="math notranslate nohighlight">\({\bf g}_1\)</span> and <span class="math notranslate nohighlight">\({\bf g}_2\)</span> with that between <span class="math notranslate nohighlight">\({\bf g}_1\)</span>
+and <span class="math notranslate nohighlight">\({\bf g}_3\)</span>.</p></li>
+<li><p><strong>reference</strong> (<a class="reference internal" href="../type_aliases.html#cvpack.units.ScalarQuantity" title="cvpack.units.ScalarQuantity"><em>ScalarQuantity</em></a><em> | </em><em>openmm.Context</em>) – A reference value (in energy units per mole) to which the collective variable
+should be normalized. One can also provide a <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a> object from
+which to extract a reference attraction strength. The extracted value will be
+<span class="math notranslate nohighlight">\(S_{1,2}({\bf r})\)</span> for <span class="math notranslate nohighlight">\(E_{\rm ref} = 1\)</span>, regardless of whether
+<cite>contrastGroup</cite> is provided or not.</p></li>
+<li><p><strong>contrastScaling</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – A scaling factor <span class="math notranslate nohighlight">\(\alpha\)</span> to balance the contributions of the two
+interactions. The default is 1.0.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The name of the collective variable.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the contrast group overlaps with group1 or group2</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If contrastScaling is negative</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the nonbonded force does not use a cutoff distance</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">cvpack</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">openmm</span><span class="w"> </span><span class="kn">import</span> <span class="n">unit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">openmmtools</span><span class="w"> </span><span class="kn">import</span> <span class="n">testsystems</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">testsystems</span><span class="o">.</span><span class="n">HostGuestExplicit</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">guest</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">atoms</span><span class="p">()</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">residue</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"B2"</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">host</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">atoms</span><span class="p">()</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">residue</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"CUC"</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">forces</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">getName</span><span class="p">():</span> <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">getForces</span><span class="p">()}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cv1</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">AttractionStrength</span><span class="p">(</span><span class="n">guest</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">forces</span><span class="p">[</span><span class="s2">"NonbondedForce"</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cv1</span><span class="o">.</span><span class="n">addToSystem</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">platform</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Platform</span><span class="o">.</span><span class="n">getPlatformByName</span><span class="p">(</span><span class="s2">"Reference"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">integrator</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">VerletIntegrator</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">femtoseconds</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">context</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Context</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">,</span> <span class="n">integrator</span><span class="p">,</span> <span class="n">platform</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cv1</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="go">4912.8... dimensionless</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">water</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">atoms</span><span class="p">()</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">residue</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"HOH"</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cv2</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">AttractionStrength</span><span class="p">(</span><span class="n">guest</span><span class="p">,</span> <span class="n">water</span><span class="p">,</span> <span class="n">forces</span><span class="p">[</span><span class="s2">"NonbondedForce"</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cv2</span><span class="o">.</span><span class="n">addToSystem</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">reinitialize</span><span class="p">(</span><span class="n">preserveState</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cv2</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="go">2090.2... dimensionless</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cv3</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">AttractionStrength</span><span class="p">(</span><span class="n">guest</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">forces</span><span class="p">[</span><span class="s2">"NonbondedForce"</span><span class="p">],</span> <span class="n">water</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cv3</span><span class="o">.</span><span class="n">addToSystem</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">reinitialize</span><span class="p">(</span><span class="n">preserveState</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cv3</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="go">2822.63... dimensionless</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">cv1</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span> <span class="o">-</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>
+<span class="go">2822.63... dimensionless</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cv4</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">AttractionStrength</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">guest</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">forces</span><span class="p">[</span><span class="s2">"NonbondedForce"</span><span class="p">],</span> <span class="n">water</span><span class="p">,</span> <span class="n">contrastScaling</span><span class="o">=</span><span class="mf">0.5</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cv4</span><span class="o">.</span><span class="n">addToSystem</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">reinitialize</span><span class="p">(</span><span class="n">preserveState</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cv4</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="go">3867.7... dimensionless</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mi">1</span> <span class="o">*</span> <span class="n">cv1</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="go">3867.7...</span>
+</pre></div>
+</div>
+<p class="rubric">Methods</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cvpack.AttractionStrength.addToSystem">
+<span class="sig-name descname"><span class="pre">addToSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">setUnusedForceGroup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.AttractionStrength.addToSystem" title="Link to this definition">¶</a></dt>
+<dd><p>Add this collective variable to an <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.System.html">openmm.System</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>system</strong> (<a class="reference external" href="https://docs.openmm.org/latest/api-python/generated/openmm.openmm.System.html#openmm.openmm.System" title="(in OpenMM Python API v8.6.0)"><em>System</em></a>) – The system to which this collective variable should be added</p></li>
+<li><p><strong>setUnusedForceGroup</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the force group of this collective variable will be set to the
+first available force group in the system</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvpack.AttractionStrength.getEffectiveMass">
+<span class="sig-name descname"><span class="pre">getEffectiveMass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowReinitialization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.AttractionStrength.getEffectiveMass" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the effective mass of this collective variable at a given
+<a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a>.</p>
+<p>The effective mass of a collective variable <span class="math notranslate nohighlight">\(q({\bf r})\)</span> is defined as
+<span class="bibtex-citation" id="id2">[<a class="reference internal" href="../references.html#id3" title="Christophe Chipot and Andrew Pohorille, editors. Free Energy Calculations. Springer Berlin Heidelberg, 2007. URL: https://doi.org/10.1007/978-3-540-38448-9, doi:10.1007/978-3-540-38448-9.">1</a>]</span>:</p>
+<div class="math notranslate nohighlight">
+\[m_\mathrm{eff}({\bf r}) = \left(
+    \sum_{i=1}^N \frac{1}{m_i} \left\| \frac{dq}{d{\bf r}_i} \right\|^2
+\right)^{-1}\]</div>
+<p>If this collective variable shares the force group with other forces, then
+evaluating its effective mass requires reinitializing the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a>
+twice at each call. This is inefficient and should be avoided. To allow this
+behavior, the <code class="docutils literal notranslate"><span class="pre">allowReinitialization</span></code> parameter must be set to True.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By adding this collective variable to the system using the
+<a class="reference internal" href="#cvpack.AttractionStrength.addToSystem" title="cvpack.AttractionStrength.addToSystem"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addToSystem()</span></code></a> method, the force group of this collective variable
+is set to an available force group in the system by default.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>context</strong> (<a class="reference external" href="https://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html#openmm.openmm.Context" title="(in OpenMM Python API v8.6.0)"><em>Context</em></a>) – The context at which this collective variable’s effective mass should be
+evaluated.</p></li>
+<li><p><strong>allowReinitialization</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the context will be reinitialized if necessary.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The effective mass of this collective variable at the given context.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../units.html#cvpack.units.Quantity" title="cvpack.units.Quantity">Quantity</a></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>In this example, we compute the effective masses of the backbone dihedral
+angles and the radius of gyration of an alanine dipeptide molecule in water:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">cvpack</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">openmm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">openmmtools</span><span class="w"> </span><span class="kn">import</span> <span class="n">testsystems</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">testsystems</span><span class="o">.</span><span class="n">AlanineDipeptideExplicit</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">top</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">mdtraj_topology</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">backbone_atoms</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"not water and name N CA C"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">Torsion</span><span class="p">(</span><span class="o">*</span><span class="n">backbone_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">psi</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">Torsion</span><span class="p">(</span><span class="o">*</span><span class="n">backbone_atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">radius_of_gyration</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">RadiusOfGyration</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">top</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"not water"</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">cv</span> <span class="ow">in</span> <span class="p">[</span><span class="n">phi</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">radius_of_gyration</span><span class="p">]:</span>
+<span class="gp">... </span>    <span class="n">cv</span><span class="o">.</span><span class="n">addToSystem</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">context</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Context</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">VerletIntegrator</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span><span class="o">.</span><span class="n">getEffectiveMass</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="go">0.04795... nm**2 Da/(rad**2)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">psi</span><span class="o">.</span><span class="n">getEffectiveMass</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="go">0.05119... nm**2 Da/(rad**2)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">radius_of_gyration</span><span class="o">.</span><span class="n">getEffectiveMass</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="go">30.946... Da</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvpack.AttractionStrength.getMassUnit">
+<span class="sig-name descname"><span class="pre">getMassUnit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.AttractionStrength.getMassUnit" title="Link to this definition">¶</a></dt>
+<dd><p>Get the unit of measurement of the effective mass of this collective variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../units.html#cvpack.units.Unit" title="cvpack.units.units.Unit"><em>Unit</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvpack.AttractionStrength.getName">
+<span class="sig-name descname"><span class="pre">getName</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.AttractionStrength.getName" title="Link to this definition">¶</a></dt>
+<dd><p>Get the name of this collective variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvpack.AttractionStrength.getPeriodicBounds">
+<span class="sig-name descname"><span class="pre">getPeriodicBounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.AttractionStrength.getPeriodicBounds" title="Link to this definition">¶</a></dt>
+<dd><p>Get the periodic bounds of this collective variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The periodic bounds of this collective variable or None if it is not
+periodic</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Union[<a class="reference internal" href="../units.html#cvpack.units.Quantity" title="cvpack.units.Quantity">Quantity</a>, None]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvpack.AttractionStrength.getUnit">
+<span class="sig-name descname"><span class="pre">getUnit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.AttractionStrength.getUnit" title="Link to this definition">¶</a></dt>
+<dd><p>Get the unit of measurement of this collective variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../units.html#cvpack.units.Unit" title="cvpack.units.units.Unit"><em>Unit</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvpack.AttractionStrength.getValue">
+<span class="sig-name descname"><span class="pre">getValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowReinitialization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cvpack.AttractionStrength.getValue" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluate this collective variable at a given <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a>.</p>
+<p>If this collective variable shares the force group with other forces, then its
+evaluation requires reinitializing the <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html">openmm.Context</a> twice at each call.
+This is inefficient and should be avoided. To allow this behavior, the
+<code class="docutils literal notranslate"><span class="pre">allowReinitialization</span></code> parameter must be set to True.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By adding this collective variable to the system using the
+<a class="reference internal" href="#cvpack.AttractionStrength.addToSystem" title="cvpack.AttractionStrength.addToSystem"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addToSystem()</span></code></a> method, the force group of this collective variable
+is set to an available force group in the system by default.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>context</strong> (<a class="reference external" href="https://docs.openmm.org/latest/api-python/generated/openmm.openmm.Context.html#openmm.openmm.Context" title="(in OpenMM Python API v8.6.0)"><em>Context</em></a>) – The context at which this collective variable should be evaluated.</p></li>
+<li><p><strong>allowReinitialization</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – If True, the context will be reinitialized if necessary.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The value of this collective variable at the given context.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../units.html#cvpack.units.Quantity" title="cvpack.units.Quantity">Quantity</a></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>In this example, we compute the values of the backbone dihedral angles and
+the radius of gyration of an alanine dipeptide molecule in water:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">cvpack</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">openmm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">openmmtools</span><span class="w"> </span><span class="kn">import</span> <span class="n">testsystems</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">testsystems</span><span class="o">.</span><span class="n">AlanineDipeptideExplicit</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">top</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">mdtraj_topology</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">backbone_atoms</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"not water and name N CA C"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">Torsion</span><span class="p">(</span><span class="o">*</span><span class="n">backbone_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">psi</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">Torsion</span><span class="p">(</span><span class="o">*</span><span class="n">backbone_atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">radius_of_gyration</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">RadiusOfGyration</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">top</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"not water"</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">cv</span> <span class="ow">in</span> <span class="p">[</span><span class="n">phi</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">radius_of_gyration</span><span class="p">]:</span>
+<span class="gp">... </span>    <span class="n">cv</span><span class="o">.</span><span class="n">addToSystem</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">context</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Context</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">VerletIntegrator</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="go">-3.1415... rad</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">psi</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="go">3.1415... rad</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">radius_of_gyration</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="go">0.29514... nm</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">CVPack v0.13.0</a></h1>
+
+
+
+
+
+
+
+
+
+
+
+<h3><a href="../index.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Collective Variables</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Angle.html">Angle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AtomicFunction.html">AtomicFunction</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">AttractionStrength</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CentroidFunction.html">CentroidFunction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompositeRMSD.html">CompositeRMSD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Distance.html">Distance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HelixAngleContent.html">HelixAngleContent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HelixHBondContent.html">HelixHBondContent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HelixRMSDContent.html">HelixRMSDContent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HelixTorsionContent.html">HelixTorsionContent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MetaCollectiveVariable.html">MetaCollectiveVariable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NumberOfContacts.html">NumberOfContacts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="OpenMMForceWrapper.html">OpenMMForceWrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PathInCVSpace.html">PathInCVSpace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PathInRMSDSpace.html">PathInRMSDSpace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RadiusOfGyration.html">RadiusOfGyration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RadiusOfGyrationSq.html">RadiusOfGyrationSq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ResidueCoordination.html">ResidueCoordination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RMSD.html">RMSD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SheetRMSDContent.html">SheetRMSDContent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ShortestDistance.html">ShortestDistance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Torsion.html">Torsion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TorsionSimilarity.html">TorsionSimilarity</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../type_aliases.html">Type Aliases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reporting.html">Reporting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../serialization.html">Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">Units</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">Bibliography</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024 C. Abreu & Redesign Science.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/api/AttractionStrength.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,17 @@
+AtomicFunction
+==============
+
+.. currentmodule:: cvpack
+.. autoclass:: AtomicFunction
+    :member-order: alphabetical
+
+    .. rubric:: Methods
+
+    .. automethod:: addToSystem
+    .. automethod:: fromOpenMMForce
+    .. automethod:: getEffectiveMass
+    .. automethod:: getMassUnit
+    .. automethod:: getName
+    .. automethod:: getPeriodicBounds
+    .. automethod:: getUnit
+    .. automethod:: getValue

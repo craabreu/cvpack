@@ -1,0 +1,11 @@
+MetaCVWriter
+============
+
+.. currentmodule:: cvpack.reporting
+.. autoclass:: MetaCVWriter
+    :member-order: alphabetical
+
+    .. rubric:: Methods
+
+    .. automethod:: getHeaders
+    .. automethod:: getValues

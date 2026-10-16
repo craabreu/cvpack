@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cvpack.helix_torsion_content &#8212; CVPack v0.13.0  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=572d9513" />
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=ccdb6887"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for cvpack.helix_torsion_content</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">.. class:: HelixTorsionContent</span>
+<span class="sd">   :platform: Linux, MacOS, Windows</span>
+<span class="sd">   :synopsis: Alpha-helix torsion content of a sequence of residues</span>
+
+<span class="sd">.. classauthor:: Charlles Abreu &lt;craabreu@gmail.com&gt;</span>
+
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">t</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">openmm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openmm</span><span class="w"> </span><span class="kn">import</span> <span class="n">app</span> <span class="k">as</span> <span class="n">mmapp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openmm</span><span class="w"> </span><span class="kn">import</span> <span class="n">unit</span> <span class="k">as</span> <span class="n">mmunit</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.collective_variable</span><span class="w"> </span><span class="kn">import</span> <span class="n">CollectiveVariable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">Quantity</span><span class="p">,</span> <span class="n">ScalarQuantity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_contiguous_residues</span>
+
+
+<div class="viewcode-block" id="HelixTorsionContent">
+<a class="viewcode-back" href="../../api/HelixTorsionContent.html#cvpack.HelixTorsionContent">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HelixTorsionContent</span><span class="p">(</span><span class="n">CollectiveVariable</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomTorsionForce</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""</span>
+<span class="sd">    The alpha-helix Ramachandran content of a sequence of `n` residues:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \alpha_{\phi,\psi}({\bf r}) = \frac{1}{2} \sum_{i=2}^{n-1} \left[</span>
+<span class="sd">            B_m\left(</span>
+<span class="sd">                \frac{\phi_i({\bf r}) - \phi_{\rm ref}}{\theta_{\rm tol}}</span>
+<span class="sd">            \right) +</span>
+<span class="sd">            B_m\left(</span>
+<span class="sd">                \frac{\psi_i({\bf r}) - \psi_{\rm ref}}{\theta_{\rm tol}}</span>
+<span class="sd">            \right)</span>
+<span class="sd">        \right]</span>
+
+<span class="sd">    where :math:`\phi_i({\bf r})` and :math:`\psi_i({\bf r})` are the Ramachandran</span>
+<span class="sd">    dihedral angles of residue :math:`i`, :math:`\phi_{\rm ref}` and</span>
+<span class="sd">    :math:`\psi_{\rm ref}` are their reference values in an alpha helix</span>
+<span class="sd">    :cite:`Hovmoller_2002`, and :math:`\theta_{\rm tol}` is the threshold tolerance</span>
+<span class="sd">    around these references. :math:`B_m(x)` is a smooth boxcar function given by</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        B_m(x) = \frac{1}{1 + x^{2m}}</span>
+
+<span class="sd">    where :math:`m` is an integer parameter that controls its steepness. Note that</span>
+<span class="sd">    :math:`x` needs to be raised to an even power for :math:`B_m(x)` to be an even</span>
+<span class="sd">    function.</span>
+
+<span class="sd">    Optionally, this collective variable can be normalized to the range :math:`[0, 1]`.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        The :math:`\phi` and :math:`\psi` angles of the first and last residues are</span>
+<span class="sd">        not considered. They are used to compute the dihedral angles of the second and</span>
+<span class="sd">        penultimate residues, respectively.</span>
+
+<span class="sd">        The residues must be a contiguous sequence from a single chain, ordered from the</span>
+<span class="sd">        N- to the C-terminus.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    residues</span>
+<span class="sd">        The residues in the sequence.</span>
+<span class="sd">    pbc</span>
+<span class="sd">        Whether to use periodic boundary conditions.</span>
+<span class="sd">    phiReference</span>
+<span class="sd">        The reference value of the phi dihedral angle in an alpha helix.</span>
+<span class="sd">    psiReference</span>
+<span class="sd">        The reference value of the psi dihedral angle in an alpha helix.</span>
+<span class="sd">    tolerance</span>
+<span class="sd">        The threshold tolerance around the reference values.</span>
+<span class="sd">    halfExponent</span>
+<span class="sd">        The parameter :math:`m` of the boxcar function.</span>
+<span class="sd">    normalize</span>
+<span class="sd">        Whether to normalize the collective variable to the range :math:`[0, 1]`.</span>
+<span class="sd">    name</span>
+<span class="sd">        The name of the collective variable.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If some residue does not contain a :math:`\phi` or :math:`\psi` angle.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; import cvpack</span>
+<span class="sd">    &gt;&gt;&gt; import openmm</span>
+<span class="sd">    &gt;&gt;&gt; from openmm import app, unit</span>
+<span class="sd">    &gt;&gt;&gt; from openmmtools import testsystems</span>
+<span class="sd">    &gt;&gt;&gt; model = testsystems.LysozymeImplicit()</span>
+<span class="sd">    &gt;&gt;&gt; residues = list(model.topology.residues())[59:80]</span>
+<span class="sd">    &gt;&gt;&gt; print(*[r.name for r in residues])</span>
+<span class="sd">    LYS ASP GLU ... ILE LEU ARG</span>
+<span class="sd">    &gt;&gt;&gt; helix_content = cvpack.HelixTorsionContent(residues)</span>
+<span class="sd">    &gt;&gt;&gt; helix_content.addToSystem(model.system)</span>
+<span class="sd">    &gt;&gt;&gt; platform = openmm.Platform.getPlatformByName('Reference')</span>
+<span class="sd">    &gt;&gt;&gt; integrator = openmm.VerletIntegrator(0)</span>
+<span class="sd">    &gt;&gt;&gt; context = openmm.Context(model.system, integrator, platform)</span>
+<span class="sd">    &gt;&gt;&gt; context.setPositions(model.positions)</span>
+<span class="sd">    &gt;&gt;&gt; helix_content.getValue(context)</span>
+<span class="sd">    17.452... dimensionless</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">residues</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">mmapp</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">Residue</span><span class="p">],</span>
+        <span class="n">pbc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">phiReference</span><span class="p">:</span> <span class="n">ScalarQuantity</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="o">-</span><span class="mf">63.8</span> <span class="o">*</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">degrees</span><span class="p">),</span>
+        <span class="n">psiReference</span><span class="p">:</span> <span class="n">ScalarQuantity</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="o">-</span><span class="mf">41.1</span> <span class="o">*</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">degrees</span><span class="p">),</span>
+        <span class="n">tolerance</span><span class="p">:</span> <span class="n">ScalarQuantity</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mi">25</span> <span class="o">*</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">degrees</span><span class="p">),</span>
+        <span class="n">halfExponent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"helix_torsion_content"</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">residues</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span>
+        <span class="n">check_contiguous_residues</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">normalize</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># noqa: PLR2004</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Normalization requires at least 3 residues"</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">find_atom</span><span class="p">(</span><span class="n">residue</span><span class="p">:</span> <span class="n">mmapp</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">Residue</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">atom</span><span class="o">.</span><span class="n">index</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Could not find atom </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> in residue </span><span class="si">{</span><span class="n">residue</span><span class="o">.</span><span class="n">name</span><span class="si">}{</span><span class="n">residue</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
+
+        <span class="n">numerator</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">))</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">tol</span> <span class="o">=</span> <span class="n">tolerance</span>
+        <span class="k">if</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">is_quantity</span><span class="p">(</span><span class="n">tol</span><span class="p">):</span>
+            <span class="n">tol</span> <span class="o">=</span> <span class="n">tol</span><span class="o">.</span><span class="n">value_in_unit_system</span><span class="p">(</span><span class="n">mmunit</span><span class="o">.</span><span class="n">md_unit_system</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">numerator</span><span class="si">}</span><span class="s2">/(1+x^</span><span class="si">{</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">halfExponent</span><span class="si">}</span><span class="s2">)"</span>
+            <span class="sa">f</span><span class="s2">"; x=(delta-</span><span class="si">{</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="si">}</span><span class="s2">*floor(delta/</span><span class="si">{</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="si">}</span><span class="s2">+0.5))/</span><span class="si">{</span><span class="n">tol</span><span class="si">}</span><span class="s2">"</span>
+            <span class="s2">"; delta=theta-theta_ref"</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addPerTorsionParameter</span><span class="p">(</span><span class="s2">"theta_ref"</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addTorsion</span><span class="p">(</span>
+                <span class="n">find_atom</span><span class="p">(</span><span class="n">residues</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">"C"</span><span class="p">),</span>
+                <span class="n">find_atom</span><span class="p">(</span><span class="n">residues</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s2">"N"</span><span class="p">),</span>
+                <span class="n">find_atom</span><span class="p">(</span><span class="n">residues</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s2">"CA"</span><span class="p">),</span>
+                <span class="n">find_atom</span><span class="p">(</span><span class="n">residues</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s2">"C"</span><span class="p">),</span>
+                <span class="p">[</span><span class="n">phiReference</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addTorsion</span><span class="p">(</span>
+                <span class="n">find_atom</span><span class="p">(</span><span class="n">residues</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s2">"N"</span><span class="p">),</span>
+                <span class="n">find_atom</span><span class="p">(</span><span class="n">residues</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s2">"CA"</span><span class="p">),</span>
+                <span class="n">find_atom</span><span class="p">(</span><span class="n">residues</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s2">"C"</span><span class="p">),</span>
+                <span class="n">find_atom</span><span class="p">(</span><span class="n">residues</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">"N"</span><span class="p">),</span>
+                <span class="p">[</span><span class="n">psiReference</span><span class="p">],</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setUsesPeriodicBoundaryConditions</span><span class="p">(</span><span class="n">pbc</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_registerCV</span><span class="p">(</span>
+            <span class="n">name</span><span class="p">,</span>
+            <span class="n">mmunit</span><span class="o">.</span><span class="n">dimensionless</span><span class="p">,</span>
+            <span class="n">residues</span><span class="o">=</span><span class="n">residues</span><span class="p">,</span>
+            <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span>
+            <span class="n">phiReference</span><span class="o">=</span><span class="n">phiReference</span><span class="p">,</span>
+            <span class="n">psiReference</span><span class="o">=</span><span class="n">psiReference</span><span class="p">,</span>
+            <span class="n">tolerance</span><span class="o">=</span><span class="n">tolerance</span><span class="p">,</span>
+            <span class="n">halfExponent</span><span class="o">=</span><span class="n">halfExponent</span><span class="p">,</span>
+            <span class="n">normalize</span><span class="o">=</span><span class="n">normalize</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<span class="n">HelixTorsionContent</span><span class="o">.</span><span class="n">registerTag</span><span class="p">(</span><span class="s2">"!cvpack.HelixTorsionContent"</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">CVPack v0.13.0</a></h1>
+
+
+
+
+
+
+
+
+
+
+
+<h3><a href="../../index.html">Table of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">Collective Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../type_aliases.html">Type Aliases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reporting.html">Reporting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../serialization.html">Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../units.html">Units</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">Bibliography</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024 C. Abreu & Redesign Science.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

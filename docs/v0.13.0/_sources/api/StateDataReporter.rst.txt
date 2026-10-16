@@ -1,0 +1,7 @@
+StateDataReporter
+=================
+
+.. currentmodule:: cvpack.reporting
+.. autoclass:: StateDataReporter
+    :member-order: alphabetical
+
