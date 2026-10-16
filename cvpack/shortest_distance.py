@@ -86,7 +86,8 @@ class ShortestDistance(CollectiveVariable, openmm.CustomCVForce):
         of the groups. This is necessary for the correct initialization of the
         collective variable.
     beta
-        The parameter that controls the degree of approximation.
+        The parameter that controls the degree of approximation. It must be
+        positive.
     cutoffDistance
         The cutoff distance for evaluating atom pairs.
     pbc
@@ -137,6 +138,8 @@ class ShortestDistance(CollectiveVariable, openmm.CustomCVForce):
         pbc: bool = False,
         name: str = "shortest_distance",
     ) -> None:
+        if beta <= 0:
+            raise ValueError("beta must be positive")
         rc = cutoffDistance
         if mmunit.is_quantity(rc):
             rc = rc.value_in_unit(mmunit.nanometers)
