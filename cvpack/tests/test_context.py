@@ -69,6 +69,19 @@ def test_inner_effective_masses_follow_current_positions(dipeptide):
         assert inner / inner.unit == pytest.approx(expected / expected.unit)
 
 
+def test_inner_effective_masses_of_selected_cvs(dipeptide):
+    phi = cvpack.Torsion(4, 6, 8, 14, name="phi")
+    psi = cvpack.Torsion(6, 8, 14, 16, name="psi")
+    meta = cvpack.MetaCollectiveVariable("phi+psi", [phi, psi], unit.radian)
+    meta.addToSystem(dipeptide.system)
+    context = make_context(dipeptide.system, dipeptide.positions)
+    selected = meta.getInnerEffectiveMasses(context, ["psi"])
+    assert list(selected) == ["psi"]
+    assert selected["psi"] == meta.getInnerEffectiveMasses(context)["psi"]
+    with pytest.raises(ValueError, match="omega"):
+        meta.getInnerEffectiveMasses(context, ["psi", "omega"])
+
+
 def test_inner_effective_masses_with_virtual_sites_follow_the_context():
     system = particle_system(5)
     for atom, mass in enumerate([12.0, 1.0, 16.0, 1.0, 0.0]):
@@ -258,3 +271,29 @@ def test_inner_effective_masses_with_virtual_sites():
     inner = meta.getInnerEffectiveMasses(context)["d"]
     expected = direct.getEffectiveMass(context)
     assert inner / inner.unit == pytest.approx(expected / expected.unit)
+
+
+def test_virtual_site_context_keeps_platform_properties(monkeypatch):
+    system = particle_system(3)
+    system.setParticleMass(2, 0.0)
+    system.setVirtualSite(2, openmm.TwoParticleAverageSite(0, 1, 0.5, 0.5))
+    meta = cvpack.MetaCollectiveVariable(
+        "d", [cvpack.Distance(0, 2, name="d")], unit.nanometer
+    )
+    meta.addToSystem(system)
+    platform = openmm.Platform.getPlatformByName("CPU")
+    properties = {"DeterministicForces": "true", "Threads": "1"}
+    context = openmm.Context(system, openmm.VerletIntegrator(0), platform, properties)
+    context.setPositions([[0, 0, 0], [0.4, 0, 0], [0, 0, 0]])
+    created = []
+    context_class = openmm.Context
+
+    def spy(*args):
+        created.append(context_class(*args))
+        return created[-1]
+
+    monkeypatch.setattr(openmm, "Context", spy)
+    meta.getInnerEffectiveMasses(context)
+    assert created
+    for name, value in properties.items():
+        assert platform.getPropertyValue(created[0], name) == value

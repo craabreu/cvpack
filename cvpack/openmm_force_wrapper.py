@@ -90,15 +90,7 @@ class OpenMMForceWrapper(CollectiveVariable, openmm.Force):
             self._registerPeriodicBounds(*periodicBounds)
 
     def __getattr__(self, name: str) -> t.Any:
-        attr = getattr(self._wrapped_force, name)
-        if callable(attr):
-
-            def _wrapped_method(*args, **kwargs):
-                return attr(*args, **kwargs)
-
-            return _wrapped_method
-
-        return attr
+        return getattr(self._wrapped_force, name)
 
 
 OpenMMForceWrapper.registerTag("!cvpack.OpenMMForceWrapper")

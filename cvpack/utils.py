@@ -29,6 +29,31 @@ from .serialization import (
 from .units import Quantity, Unit, value_in_md_units
 
 
+def get_platform_and_properties(
+    context: openmm.Context,
+) -> tuple[openmm.Platform, dict[str, str]]:
+    """Get the platform of a context and the values of its platform properties.
+
+    Parameters
+    ----------
+    context
+        The context whose platform and properties will be returned.
+
+    Returns
+    -------
+    tuple[openmm.Platform, dict[str, str]]
+        The platform and a dictionary with the values of its properties, which can
+        be passed to the constructor of another context to reproduce the platform
+        settings (e.g. device index and precision) of the given context.
+    """
+    platform = context.getPlatform()
+    properties = {
+        name: platform.getPropertyValue(context, name)
+        for name in platform.getPropertyNames()
+    }
+    return platform, properties
+
+
 def evaluate_in_context(
     forces: openmm.Force | t.Iterable[openmm.Force], context: openmm.Context
 ) -> float | tuple[float, ...]:
@@ -61,13 +86,8 @@ def evaluate_in_context(
         force_copy = XmlSerializer.deserialize(XmlSerializer.serialize(force))
         force_copy.setForceGroup(i)
         system.addForce(force_copy)
-    platform = context.getPlatform()
-    properties = {
-        name: platform.getPropertyValue(context, name)
-        for name in platform.getPropertyNames()
-    }
     new_context = openmm.Context(
-        system, openmm.VerletIntegrator(1.0), platform, properties
+        system, openmm.VerletIntegrator(1.0), *get_platform_and_properties(context)
     )
     new_context.setPositions(state.getPositions())
     parameters = context.getParameters()

@@ -9,7 +9,6 @@
 
 from __future__ import annotations
 
-import numpy as np
 import openmm
 from numpy.typing import ArrayLike
 from openmm import unit as mmunit
@@ -94,7 +93,7 @@ class TorsionSimilarity(CollectiveVariable, openmm.CustomCompoundBondForce):
         secondList = [list(map(int, second)) for second in secondList]
         if len(firstList) != len(secondList):
             raise ValueError("firstList and secondList must have the same length")
-        function = f"0.5*(1 + cos(min(delta, {2 * np.pi} - delta)))"
+        function = "0.5*(1 + cos(delta))"
         definition = "delta = dihedral(p1, p2, p3, p4) - dihedral(p5, p6, p7, p8)"
         super().__init__(8, f"{function}; {definition}")
         for first, second in zip(firstList, secondList):

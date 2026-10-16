@@ -155,7 +155,9 @@ class MetaCVWriter(CustomWriter):
             for cv in self._values:
                 values.append(inner_values[cv.getName()] / cv.getUnit())
         if self._masses:
-            inner_masses = self._meta_cv.getInnerEffectiveMasses(context)
+            inner_masses = self._meta_cv.getInnerEffectiveMasses(
+                context, [cv.getName() for cv in self._masses]
+            )
             for cv in self._masses:
                 values.append(inner_masses[cv.getName()] / cv.getMassUnit())
         if self._parameters:

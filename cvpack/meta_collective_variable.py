@@ -17,7 +17,11 @@ from openmm import unit as mmunit
 
 from .collective_variable import CollectiveVariable
 from .units import Quantity, ScalarQuantity, VectorQuantity, in_md_units
-from .utils import compute_effective_mass, get_single_force_state
+from .utils import (
+    compute_effective_mass,
+    get_platform_and_properties,
+    get_single_force_state,
+)
 
 
 class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
@@ -178,7 +182,9 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
             for cv, value in zip(self._cvs, values)
         }
 
-    def getInnerEffectiveMasses(self, context: openmm.Context) -> dict[str, Quantity]:
+    def getInnerEffectiveMasses(
+        self, context: openmm.Context, names: t.Iterable[str] | None = None
+    ) -> dict[str, Quantity]:
         """
         Get the effective masses of the collective variables on which the
         meta-collective variable depends. The effective masses are calculated from the
@@ -188,13 +194,27 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
         ----------
         context
             The context in which the collective variables will be evaluated.
+        names
+            The names of the collective variables whose effective masses will be
+            computed. If ``None``, the effective masses of all collective variables
+            are computed.
 
         Returns
         -------
         Dict[str, Quantity]
             A dictionary with the names of the collective variables as keys and their
             effective masses as values.
+
+        Raises
+        ------
+        ValueError
+            If any of the names is not the name of an inner collective variable.
         """
+        all_names = [cv.getName() for cv in self._cvs]
+        names = all_names if names is None else list(names)
+        unknown = set(names) - set(all_names)
+        if unknown:
+            raise ValueError(f"Unknown collective variables: {sorted(unknown)}")
         self.getCollectiveVariableValues(context)  # update the inner context positions
         inner_context = self.getInnerContext(context)
         forces = inner_context.getSystem().getForces()
@@ -204,10 +224,12 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
             # be distributed to the atoms that define them
             inner_context = self._getContextWithVirtualSites(forces, context)
             forces = inner_context.getSystem().getForces()
-        masses = [compute_effective_mass(force, inner_context) for force in forces]
         return {
-            cv.getName(): Quantity(mass, cv.getMassUnit())
-            for cv, mass in zip(self._cvs, masses)
+            cv.getName(): Quantity(
+                compute_effective_mass(force, inner_context), cv.getMassUnit()
+            )
+            for cv, force in zip(self._cvs, forces)
+            if cv.getName() in names
         }
 
     def _getContextWithVirtualSites(
@@ -244,7 +266,7 @@ class MetaCollectiveVariable(CollectiveVariable, openmm.CustomCVForce):
             force_copy.setForceGroup(group)
             system.addForce(force_copy)
         return openmm.Context(
-            system, openmm.VerletIntegrator(1.0), context.getPlatform()
+            system, openmm.VerletIntegrator(1.0), *get_platform_and_properties(context)
         )
 
     def getParameterDefaultValues(self) -> dict[str, Quantity]:
