@@ -69,29 +69,22 @@
 
 <span class="sd">        {\bf r}_c({\bf r}) = \frac{1}{n} \sum_{j=1}^n {\bf r}_j</span>
 
-<span class="sd">    Optionally, the radius of gyration can be computed with respect to the center of</span>
-<span class="sd">    mass of the group. In this case, the geometric center is replaced by:</span>
-
-<span class="sd">    .. math::</span>
-
-<span class="sd">        {\bf r}_m({\bf r}) = \frac{1}{M} \sum_{i=1}^n m_i {\bf r}_i</span>
-
-<span class="sd">    where :math:`M = \sum_{i=1}^n m_i` is the total mass of the group.</span>
-
 <span class="sd">    .. note::</span>
 
-<span class="sd">        This collective variable is better parallelized than :class:`RadiusOfGyration`</span>
-<span class="sd">        and might be preferred over :class:`RadiusOfGyration` when the group of atoms is</span>
-<span class="sd">        large.</span>
+<span class="sd">        The computation is done by OpenMM's :OpenMM:`RGForce`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    group</span>
 <span class="sd">        The indices of the atoms in the group.</span>
 <span class="sd">    pbc</span>
-<span class="sd">        Whether to use periodic boundary conditions.</span>
+<span class="sd">        Deprecated, with no effect. OpenMM does not wrap positions inside a</span>
+<span class="sd">        :OpenMM:`Context`, so the group of atoms must not be split across periodic</span>
+<span class="sd">        images, as was already required for its centroid.</span>
 <span class="sd">    weighByMass</span>
-<span class="sd">        Whether to use the center of mass of the group instead of its geometric center.</span>
+<span class="sd">        No longer supported. It must be False, because ``True`` measured distances from</span>
+<span class="sd">        the center of mass without weighting their average, which is not the usual</span>
+<span class="sd">        mass-weighted radius of gyration.</span>
 <span class="sd">    name</span>
 <span class="sd">        The name of the collective variable.</span>
 
@@ -121,10 +114,7 @@
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"radius_of_gyration_sq"</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">group</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
-        <span class="n">num_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"distance(g1, g2)^2/</span><span class="si">{</span><span class="n">num_atoms</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">pbc</span><span class="p">,</span> <span class="n">weighByMass</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_atoms</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">addBond</span><span class="p">([</span><span class="n">index</span><span class="p">,</span> <span class="n">num_atoms</span><span class="p">])</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">pbc</span><span class="p">,</span> <span class="n">weighByMass</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_registerCV</span><span class="p">(</span>
             <span class="n">name</span><span class="p">,</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">nanometers</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="n">weighByMass</span><span class="o">=</span><span class="n">weighByMass</span>
         <span class="p">)</span></div>
