@@ -96,7 +96,8 @@ GPU platforms lose precision.</p>
 <li><p><strong>numAtoms</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – The total number of atoms in the system, including those that are not in any
 of the groups. This is necessary for the correct initialization of the
 collective variable.</p></li>
-<li><p><strong>beta</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The parameter that controls the degree of approximation.</p></li>
+<li><p><strong>beta</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The parameter that controls the degree of approximation. It must be
+positive.</p></li>
 <li><p><strong>cutoffDistance</strong> (<a class="reference external" href="https://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.6.0)"><em>Quantity</em></a>) – The cutoff distance for evaluating atom pairs.</p></li>
 <li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>) – Whether to use periodic boundary conditions in distance calculations. This
 should be <code class="docutils literal notranslate"><span class="pre">True</span></code> for periodic systems.</p></li>

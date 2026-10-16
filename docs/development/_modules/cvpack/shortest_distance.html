@@ -125,7 +125,8 @@
 <span class="sd">        of the groups. This is necessary for the correct initialization of the</span>
 <span class="sd">        collective variable.</span>
 <span class="sd">    beta</span>
-<span class="sd">        The parameter that controls the degree of approximation.</span>
+<span class="sd">        The parameter that controls the degree of approximation. It must be</span>
+<span class="sd">        positive.</span>
 <span class="sd">    cutoffDistance</span>
 <span class="sd">        The cutoff distance for evaluating atom pairs.</span>
 <span class="sd">    pbc</span>
@@ -176,6 +177,8 @@
         <span class="n">pbc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"shortest_distance"</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">beta</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"beta must be positive"</span><span class="p">)</span>
         <span class="n">rc</span> <span class="o">=</span> <span class="n">cutoffDistance</span>
         <span class="k">if</span> <span class="n">mmunit</span><span class="o">.</span><span class="n">is_quantity</span><span class="p">(</span><span class="n">rc</span><span class="p">):</span>
             <span class="n">rc</span> <span class="o">=</span> <span class="n">rc</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">mmunit</span><span class="o">.</span><span class="n">nanometers</span><span class="p">)</span>

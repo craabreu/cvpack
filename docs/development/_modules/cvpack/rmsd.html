@@ -104,7 +104,8 @@
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
-<span class="sd">        If referencePositions is a dict and numAtoms is not given</span>
+<span class="sd">        If referencePositions is a dict and numAtoms is not given, or if numAtoms</span>
+<span class="sd">        is not positive.</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
@@ -138,9 +139,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">group</span><span class="p">:</span>
             <span class="c1"># OpenMM's RMSDForce would interpret an empty group as all atoms</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"The group of atoms must not be empty"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">numAtoms</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">referencePositions</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"numAtoms is required when referencePositions is a dict"</span><span class="p">)</span>
-        <span class="n">num_atoms</span> <span class="o">=</span> <span class="n">numAtoms</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">referencePositions</span><span class="p">)</span>
+        <span class="n">num_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getNumAtoms</span><span class="p">(</span><span class="n">referencePositions</span><span class="p">,</span> <span class="n">numAtoms</span><span class="p">)</span>
         <span class="n">defined_coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getDefinedCoords</span><span class="p">(</span><span class="n">referencePositions</span><span class="p">,</span> <span class="n">group</span><span class="p">)</span>
         <span class="n">all_coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getAllCoords</span><span class="p">(</span><span class="n">defined_coords</span><span class="p">,</span> <span class="n">num_atoms</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">all_coords</span><span class="p">,</span> <span class="n">group</span><span class="p">)</span>
