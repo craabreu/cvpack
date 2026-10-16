@@ -21,7 +21,7 @@ requirements:
   run:
     - python >=3.10
     - numpy
-    - openmm
+    - openmm >=8.4
     - pyyaml
 
 test:

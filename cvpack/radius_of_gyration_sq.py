@@ -30,29 +30,22 @@ class RadiusOfGyrationSq(BaseRadiusOfGyration):
 
         {\bf r}_c({\bf r}) = \frac{1}{n} \sum_{j=1}^n {\bf r}_j
 
-    Optionally, the radius of gyration can be computed with respect to the center of
-    mass of the group. In this case, the geometric center is replaced by:
-
-    .. math::
-
-        {\bf r}_m({\bf r}) = \frac{1}{M} \sum_{i=1}^n m_i {\bf r}_i
-
-    where :math:`M = \sum_{i=1}^n m_i` is the total mass of the group.
-
     .. note::
 
-        This collective variable is better parallelized than :class:`RadiusOfGyration`
-        and might be preferred over :class:`RadiusOfGyration` when the group of atoms is
-        large.
+        The computation is done by OpenMM's :OpenMM:`RGForce`.
 
     Parameters
     ----------
     group
         The indices of the atoms in the group.
     pbc
-        Whether to use periodic boundary conditions.
+        Deprecated, with no effect. OpenMM does not wrap positions inside a
+        :OpenMM:`Context`, so the group of atoms must not be split across periodic
+        images, as was already required for its centroid.
     weighByMass
-        Whether to use the center of mass of the group instead of its geometric center.
+        No longer supported. It must be False, because ``True`` measured distances from
+        the center of mass without weighting their average, which is not the usual
+        mass-weighted radius of gyration.
     name
         The name of the collective variable.
 
@@ -82,10 +75,7 @@ class RadiusOfGyrationSq(BaseRadiusOfGyration):
         name: str = "radius_of_gyration_sq",
     ) -> None:
         group = list(group)
-        num_atoms = len(group)
-        super().__init__(2, f"distance(g1, g2)^2/{num_atoms}", group, pbc, weighByMass)
-        for index in range(num_atoms):
-            self.addBond([index, num_atoms])
+        super().__init__(True, group, pbc, weighByMass)
         self._registerCV(
             name, mmunit.nanometers**2, group=group, pbc=pbc, weighByMass=weighByMass
         )

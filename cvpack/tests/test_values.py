@@ -373,3 +373,48 @@ def test_rmsd_content_accepts_charmm_terminal_oxygen():
     renamed.addToSystem(model.system)
     context = make_context(model.system, model.positions)
     assert renamed.getValue(context) == reference.getValue(context)
+
+
+def _radius_of_gyration_system():
+    rng = np.random.default_rng(6)
+    positions = rng.uniform(0, 1.5, (10, 3))
+    masses = rng.uniform(1, 30, 10)
+    system = particle_system(10)
+    for atom, mass in enumerate(masses):
+        system.setParticleMass(atom, mass)
+    return system, positions, masses
+
+
+@pytest.mark.parametrize("cls", [cvpack.RadiusOfGyration, cvpack.RadiusOfGyrationSq])
+def test_radius_of_gyration_uses_rgforce(cls):
+    system, positions, _ = _radius_of_gyration_system()
+    group = [8, 1, 5, 3, 0, 6]
+    cv = cls(group)
+    cv.addToSystem(system)
+    context = make_context(system, positions)
+    selected = positions[group]
+    expected = np.mean(np.sum((selected - selected.mean(axis=0)) ** 2, axis=1))
+    if cls is cvpack.RadiusOfGyration:
+        expected = np.sqrt(expected)
+    value = cv.getValue(context)
+    assert value / value.unit == pytest.approx(expected)
+    assert cv.getNumCollectiveVariables() == 1
+    assert isinstance(cv.getCollectiveVariable(0), openmm.RGForce)
+
+
+@pytest.mark.parametrize("cls", [cvpack.RadiusOfGyration, cvpack.RadiusOfGyrationSq])
+def test_radius_of_gyration_rejects_mass_weighting(cls):
+    with pytest.raises(ValueError, match="weighByMass"):
+        cls(range(10), weighByMass=True)
+
+
+@pytest.mark.parametrize("cls", [cvpack.RadiusOfGyration, cvpack.RadiusOfGyrationSq])
+def test_radius_of_gyration_pbc_is_deprecated(cls):
+    system, positions, _ = _radius_of_gyration_system()
+    with pytest.warns(DeprecationWarning, match="pbc"):
+        periodic = cls(range(10), pbc=True, name="periodic")
+    plain = cls(range(10), name="plain")
+    periodic.addToSystem(system)
+    plain.addToSystem(system)
+    context = make_context(system, positions)
+    assert periodic.getValue(context) == plain.getValue(context)

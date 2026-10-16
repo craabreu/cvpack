@@ -54,13 +54,6 @@ jobs:
             openmm-version: "8.4"
             cpp-forces: true
 
-          - os: ubuntu-latest
-            python-version: "3.12"
-            openmm-version: "8.1"
-            # The openmmtools version compatible with OpenMM 8.1 imports pkg_resources,
-            # which setuptools removed in version 82
-            extra-specs: setuptools=81
-
     steps:
       - uses: actions/checkout@v4
         with:
