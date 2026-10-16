@@ -111,7 +111,8 @@ class CompositeRMSD(BaseRMSD, CompositeRMSDForce):
     ValueError
         If ``groups`` is not a sequence of disjoint atom groups.
     ValueError
-        If referencePositions is a dict and numAtoms is not given
+        If referencePositions is a dict and numAtoms is not given, or if numAtoms
+        is not positive.
 
     Example
     -------
@@ -154,9 +155,7 @@ class CompositeRMSD(BaseRMSD, CompositeRMSDForce):
         numAtoms: int | None = None,
         name: str = "composite_rmsd",
     ) -> None:
-        if numAtoms is None and isinstance(referencePositions, dict):
-            raise ValueError("numAtoms is required when referencePositions is a dict")
-        num_atoms = numAtoms or len(referencePositions)
+        num_atoms = self._getNumAtoms(referencePositions, numAtoms)
         groups = [[int(atom) for atom in group] for group in groups]
         if not all(groups):
             # CompositeRMSDForce would interpret an empty group as all atoms

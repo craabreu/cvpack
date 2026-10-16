@@ -51,19 +51,25 @@ def evaluate_in_context(
     forces = [forces] if is_single else list(forces)
     if len(forces) > 32:  # noqa: PLR2004
         raise ValueError("At most 32 forces can be evaluated at once")
+    state = context.getState(getPositions=True)
     system = openmm.System()
     for _ in range(context.getSystem().getNumParticles()):
         system.addParticle(1.0)
+    # The cutoffs of periodic forces are checked against the default box vectors
+    system.setDefaultPeriodicBoxVectors(*state.getPeriodicBoxVectors())
     for i, force in enumerate(forces):
         force_copy = XmlSerializer.deserialize(XmlSerializer.serialize(force))
         force_copy.setForceGroup(i)
         system.addForce(force_copy)
-    state = context.getState(getPositions=True)
+    platform = context.getPlatform()
+    properties = {
+        name: platform.getPropertyValue(context, name)
+        for name in platform.getPropertyNames()
+    }
     new_context = openmm.Context(
-        system, openmm.VerletIntegrator(1.0), context.getPlatform()
+        system, openmm.VerletIntegrator(1.0), platform, properties
     )
     new_context.setPositions(state.getPositions())
-    new_context.setPeriodicBoxVectors(*state.getPeriodicBoxVectors())
     parameters = context.getParameters()
     for name in new_context.getParameters():
         if name in parameters:
@@ -293,7 +299,7 @@ def preprocess_args(func: t.Callable) -> t.Callable:
             items = [convert(item) for item in data]
             return tuple(items) if type(data) is tuple else items
         if isinstance(data, dict):
-            return type(data)((key, convert(value)) for key, value in data.items())
+            return {key: convert(value) for key, value in data.items()}
         return data
 
     @functools.wraps(func)

@@ -5,6 +5,7 @@ Tests for argument validation and unit conversion in cvpack collective variables
 import itertools as it
 import sys
 import types
+from collections import defaultdict
 
 import numpy as np
 import openmm
@@ -14,6 +15,7 @@ from openmmtools import testsystems
 
 import cvpack
 from cvpack.tests.helpers import make_context, single_atom_topology
+from cvpack.utils import preprocess_args
 
 
 def test_openmm_force_wrapper_rejects_non_md_unit():
@@ -123,6 +125,32 @@ def test_composite_rmsd_requires_fixed_openmm_cpp_forces(
     else:
         with pytest.raises(ImportError, match="0.2.0 or later"):
             force_class(None)
+
+
+@pytest.mark.parametrize("cls", ["RMSD", "CompositeRMSD"])
+def test_rmsd_rejects_zero_num_atoms(cls):
+    reference = np.zeros((6, 3))
+    try:
+        with pytest.raises(ValueError, match="numAtoms"):
+            if cls == "RMSD":
+                cvpack.RMSD(reference, [0, 3, 5], numAtoms=0)
+            else:
+                cvpack.CompositeRMSD(reference, [[0, 3], [5]], numAtoms=0)
+    except ImportError:
+        pytest.skip("openmm-cpp-forces is not installed")
+
+
+def test_preprocess_args_accepts_dict_subclasses():
+    # No CV passes a user dict to _registerCV yet, so call the decorator directly
+    convert = preprocess_args(lambda data: data)
+    data = defaultdict(list, {1: np.float64(2.0)})
+    assert convert(data) == {1: 2.0}
+
+
+@pytest.mark.parametrize("beta", [0, -5])
+def test_shortest_distance_rejects_non_positive_beta(beta):
+    with pytest.raises(ValueError, match="beta"):
+        cvpack.ShortestDistance([0, 1], [2, 3], 4, beta=beta)
 
 
 def test_residue_coordination_rejects_overlapping_groups():

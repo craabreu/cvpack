@@ -113,6 +113,42 @@ def test_evaluate_in_context_uses_context_parameters():
     assert evaluate_in_context(force, context) == pytest.approx(1.0)
 
 
+def test_evaluate_in_context_uses_context_box_for_cutoff_check():
+    # The cutoff is valid for the 5 nm box but not for OpenMM's default 2 nm box
+    system = particle_system(2)
+    system.setDefaultPeriodicBoxVectors(*(5 * openmm.Vec3(*v) for v in np.eye(3)))
+    force = openmm.CustomNonbondedForce("r")
+    force.setNonbondedMethod(force.CutoffPeriodic)
+    force.setCutoffDistance(1.5)
+    force.addParticle([])
+    force.addParticle([])
+    system.addForce(force)
+    context = make_context(system, [[0, 0, 0], [1.2, 0, 0]])
+    assert evaluate_in_context(force, context) == pytest.approx(1.2)
+
+
+def test_evaluate_in_context_keeps_platform_properties(monkeypatch):
+    platform = openmm.Platform.getPlatformByName("CPU")
+    system = particle_system(2)
+    force = openmm.CustomBondForce("r")
+    force.addBond(0, 1)
+    system.addForce(force)
+    properties = {"DeterministicForces": "true", "Threads": "1"}
+    context = openmm.Context(system, openmm.VerletIntegrator(0), platform, properties)
+    context.setPositions([[0, 0, 0], [0.5, 0, 0]])
+    created = []
+    context_class = openmm.Context
+
+    def spy(*args):
+        created.append(context_class(*args))
+        return created[-1]
+
+    monkeypatch.setattr(openmm, "Context", spy)
+    assert evaluate_in_context(force, context) == pytest.approx(0.5)
+    for name, value in properties.items():
+        assert platform.getPropertyValue(created[0], name) == value
+
+
 def _simulation(model):
     integrator = openmm.VerletIntegrator(0.001)
     integrator.setIntegrationForceGroups({0})
