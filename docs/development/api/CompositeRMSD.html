@@ -64,10 +64,22 @@ positions of atom <span class="math notranslate nohighlight">\(i\)</span> in the
 \[{\bf c}_j = \frac{1}{n_j} \sum_{i \in {\bf g}_j} {\bf r}_i\]</div>
 <p>and <span class="math notranslate nohighlight">\({\bf c}_j^{\rm ref}\)</span> is the centroid of the reference structure for
 group <span class="math notranslate nohighlight">\(j\)</span>, defined analogously to <span class="math notranslate nohighlight">\({\bf c}_j\)</span>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The computation is done by OpenMM’s <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.RMSDForce.html">openmm.RMSDForce</a>, using reference
+positions shifted so that every group’s centroid lies at the origin. With these
+references, the optimal rotation is the same as above, and the composite RMSD
+follows from</p>
+<div class="math notranslate nohighlight">
+\[d_{\rm crms}^2 = d_{\rm rms}^2 - \frac{1}{n^2} \sum_{j=1}^{m-1}
+    \sum_{k=j+1}^m n_j n_k \left\|{\bf c}_j - {\bf c}_k\right\|^2\]</div>
+<p>where <span class="math notranslate nohighlight">\(d_{\rm rms}\)</span> is the RMSD computed by <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.RMSDForce.html">openmm.RMSDForce</a> and the
+sum is computed by a <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomCentroidBondForce.html">openmm.CustomCentroidBondForce</a>.</p>
+</div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>To use this class, you must install the <a class="reference external" href="https://anaconda.org/mdtools/openmm-cpp-forces">openmm-cpp-forces</a> package,
-version 0.2.0 or later.</p>
+<p>Periodic boundary conditions are not supported. Each group of atoms must not be
+split across periodic images.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -85,9 +97,7 @@ contain all atoms in the system.</p></li>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ImportError" title="(in Python v3.15)"><strong>ImportError</strong></a> – If the <a class="reference external" href="https://anaconda.org/mdtools/openmm-cpp-forces">openmm-cpp-forces</a> package (version 0.2.0 or later) is not
-    installed.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">groups</span></code> is not a sequence of disjoint atom groups.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">groups</span></code> is not a sequence of disjoint, nonempty atom groups.</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If referencePositions is a dict and numAtoms is not given, or if numAtoms
     is not positive.</p></li>
 </ul>
@@ -96,7 +106,6 @@ contain all atoms in the system.</p></li>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">cvpack</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">openmm</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mm</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">openmmtools</span><span class="w"> </span><span class="kn">import</span> <span class="n">testsystems</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">openmm</span><span class="w"> </span><span class="kn">import</span> <span class="n">unit</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">testsystems</span><span class="o">.</span><span class="n">HostGuestVacuum</span><span class="p">()</span>
@@ -104,13 +113,10 @@ contain all atoms in the system.</p></li>
 <span class="gp">... </span>    <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">atoms</span><span class="p">()]</span>
 <span class="gp">... </span>    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">residues</span><span class="p">()</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">composite_rmsd</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">CompositeRMSD</span><span class="p">(</span>
-<span class="gp">... </span>        <span class="n">model</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-<span class="gp">... </span>        <span class="p">[</span><span class="n">host_atoms</span><span class="p">,</span> <span class="n">guest_atoms</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="p">)</span>
-<span class="gp">... </span><span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">pytest</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="s2">"openmm-cpp-forces is not installed"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">composite_rmsd</span> <span class="o">=</span> <span class="n">cvpack</span><span class="o">.</span><span class="n">CompositeRMSD</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">model</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="n">host_atoms</span><span class="p">,</span> <span class="n">guest_atoms</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">composite_rmsd</span><span class="o">.</span><span class="n">addToSystem</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">context</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">Context</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">model</span><span class="o">.</span><span class="n">system</span><span class="p">,</span>
@@ -118,12 +124,12 @@ contain all atoms in the system.</p></li>
 <span class="gp">... </span>    <span class="n">mm</span><span class="o">.</span><span class="n">Platform</span><span class="o">.</span><span class="n">getPlatformByName</span><span class="p">(</span><span class="s1">'Reference'</span><span class="p">),</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">composite_rmsd</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<span class="go">0.0 nm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">composite_rmsd</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span> <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">nanometers</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="go">0.0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">guest_atoms</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">nanometers</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">composite_rmsd</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<span class="go">0.0 nm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">composite_rmsd</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">context</span><span class="p">)</span> <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">nanometers</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="go">0.0</span>
 </pre></div>
 </div>
 <p class="rubric">Methods</p>

@@ -46,50 +46,20 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">t</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">openmm</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">openmm</span><span class="w"> </span><span class="kn">import</span> <span class="n">unit</span> <span class="k">as</span> <span class="n">mmunit</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.base_rmsd</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseRMSD</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">MatrixQuantity</span><span class="p">,</span> <span class="n">VectorQuantity</span>
 
-<span class="c1"># Earlier versions compute wrong forces for groups of different sizes</span>
-<span class="n">MIN_OPENMM_CPP_FORCES_VERSION</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_stub</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">:</span>
-    <span class="k">class</span><span class="w"> </span><span class="nc">Stub</span><span class="p">:</span>
-        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">Stub</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_force_class</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Return CompositeRMSDForce, or a stub that raises an informative ImportError."""</span>
-    <span class="n">requirement</span> <span class="o">=</span> <span class="s2">"openmm-cpp-forces 0.2.0 or later (mdtools conda channel or PyPI)"</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="kn">import</span><span class="w"> </span><span class="nn">openmmcppforces</span>  <span class="c1"># noqa: PLC0415</span>
-    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_stub</span><span class="p">(</span><span class="sa">f</span><span class="s2">"CompositeRMSD requires </span><span class="si">{</span><span class="n">requirement</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-    <span class="n">version</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">openmmcppforces</span><span class="p">,</span> <span class="s2">"__version__"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="n">numbers</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
-        <span class="nb">int</span><span class="p">(</span><span class="n">part</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="p">(</span><span class="n">version</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span> <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span>
-    <span class="p">)</span>
-    <span class="k">if</span> <span class="n">numbers</span> <span class="o">&lt;</span> <span class="n">MIN_OPENMM_CPP_FORCES_VERSION</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_stub</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">"CompositeRMSD requires </span><span class="si">{</span><span class="n">requirement</span><span class="si">}</span><span class="s2">, because earlier versions compute "</span>
-            <span class="sa">f</span><span class="s2">"wrong forces, but version </span><span class="si">{</span><span class="n">version</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">'unknown'</span><span class="si">}</span><span class="s2"> is installed"</span>
-        <span class="p">)</span>
-    <span class="k">return</span> <span class="n">openmmcppforces</span><span class="o">.</span><span class="n">CompositeRMSDForce</span>
-
-
-<span class="n">CompositeRMSDForce</span> <span class="o">=</span> <span class="n">_get_force_class</span><span class="p">()</span>
-
 
 <div class="viewcode-block" id="CompositeRMSD">
 <a class="viewcode-back" href="../../api/CompositeRMSD.html#cvpack.CompositeRMSD">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">CompositeRMSD</span><span class="p">(</span><span class="n">BaseRMSD</span><span class="p">,</span> <span class="n">CompositeRMSDForce</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CompositeRMSD</span><span class="p">(</span><span class="n">BaseRMSD</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomCVForce</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">    The composite root-mean-square deviation (RMSD) between the current and reference</span>
 <span class="sd">    coordinates of :math:`m` groups of atoms:</span>
@@ -119,12 +89,25 @@
 <span class="sd">    and :math:`{\bf c}_j^{\rm ref}` is the centroid of the reference structure for</span>
 <span class="sd">    group :math:`j`, defined analogously to :math:`{\bf c}_j`.</span>
 
+<span class="sd">    .. note::</span>
+
+<span class="sd">        The computation is done by OpenMM's :OpenMM:`RMSDForce`, using reference</span>
+<span class="sd">        positions shifted so that every group's centroid lies at the origin. With these</span>
+<span class="sd">        references, the optimal rotation is the same as above, and the composite RMSD</span>
+<span class="sd">        follows from</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            d_{\rm crms}^2 = d_{\rm rms}^2 - \frac{1}{n^2} \sum_{j=1}^{m-1}</span>
+<span class="sd">                \sum_{k=j+1}^m n_j n_k \left\|{\bf c}_j - {\bf c}_k\right\|^2</span>
+
+<span class="sd">        where :math:`d_{\rm rms}` is the RMSD computed by :OpenMM:`RMSDForce` and the</span>
+<span class="sd">        sum is computed by a :OpenMM:`CustomCentroidBondForce`.</span>
+
 <span class="sd">    .. warning::</span>
 
-<span class="sd">        To use this class, you must install the `openmm-cpp-forces`_ package,</span>
-<span class="sd">        version 0.2.0 or later.</span>
-
-<span class="sd">    .. _openmm-cpp-forces: https://anaconda.org/mdtools/openmm-cpp-forces</span>
+<span class="sd">        Periodic boundary conditions are not supported. Each group of atoms must not be</span>
+<span class="sd">        split across periodic images.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -144,11 +127,8 @@
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
-<span class="sd">    ImportError</span>
-<span class="sd">        If the `openmm-cpp-forces`_ package (version 0.2.0 or later) is not</span>
-<span class="sd">        installed.</span>
 <span class="sd">    ValueError</span>
-<span class="sd">        If ``groups`` is not a sequence of disjoint atom groups.</span>
+<span class="sd">        If ``groups`` is not a sequence of disjoint, nonempty atom groups.</span>
 <span class="sd">    ValueError</span>
 <span class="sd">        If referencePositions is a dict and numAtoms is not given, or if numAtoms</span>
 <span class="sd">        is not positive.</span>
@@ -157,7 +137,6 @@
 <span class="sd">    -------</span>
 <span class="sd">    &gt;&gt;&gt; import cvpack</span>
 <span class="sd">    &gt;&gt;&gt; import openmm as mm</span>
-<span class="sd">    &gt;&gt;&gt; import pytest</span>
 <span class="sd">    &gt;&gt;&gt; from openmmtools import testsystems</span>
 <span class="sd">    &gt;&gt;&gt; from openmm import unit</span>
 <span class="sd">    &gt;&gt;&gt; model = testsystems.HostGuestVacuum()</span>
@@ -165,13 +144,10 @@
 <span class="sd">    ...     [a.index for a in r.atoms()]</span>
 <span class="sd">    ...     for r in model.topology.residues()</span>
 <span class="sd">    ... )</span>
-<span class="sd">    &gt;&gt;&gt; try:</span>
-<span class="sd">    ...     composite_rmsd = cvpack.CompositeRMSD(</span>
-<span class="sd">    ...         model.positions,</span>
-<span class="sd">    ...         [host_atoms, guest_atoms],</span>
-<span class="sd">    ...     )</span>
-<span class="sd">    ... except ImportError:</span>
-<span class="sd">    ...     pytest.skip("openmm-cpp-forces is not installed")</span>
+<span class="sd">    &gt;&gt;&gt; composite_rmsd = cvpack.CompositeRMSD(</span>
+<span class="sd">    ...     model.positions,</span>
+<span class="sd">    ...     [host_atoms, guest_atoms],</span>
+<span class="sd">    ... )</span>
 <span class="sd">    &gt;&gt;&gt; composite_rmsd.addToSystem(model.system)</span>
 <span class="sd">    &gt;&gt;&gt; context = mm.Context(</span>
 <span class="sd">    ...     model.system,</span>
@@ -179,12 +155,12 @@
 <span class="sd">    ...     mm.Platform.getPlatformByName('Reference'),</span>
 <span class="sd">    ... )</span>
 <span class="sd">    &gt;&gt;&gt; context.setPositions(model.positions)</span>
-<span class="sd">    &gt;&gt;&gt; composite_rmsd.getValue(context)</span>
-<span class="sd">    0.0 nm</span>
+<span class="sd">    &gt;&gt;&gt; round(composite_rmsd.getValue(context) / unit.nanometers, 6)</span>
+<span class="sd">    0.0</span>
 <span class="sd">    &gt;&gt;&gt; model.positions[guest_atoms] += 1.0 * unit.nanometers</span>
 <span class="sd">    &gt;&gt;&gt; context.setPositions(model.positions)</span>
-<span class="sd">    &gt;&gt;&gt; composite_rmsd.getValue(context)</span>
-<span class="sd">    0.0 nm</span>
+<span class="sd">    &gt;&gt;&gt; round(composite_rmsd.getValue(context) / unit.nanometers, 6)</span>
+<span class="sd">    0.0</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -197,13 +173,28 @@
         <span class="n">num_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getNumAtoms</span><span class="p">(</span><span class="n">referencePositions</span><span class="p">,</span> <span class="n">numAtoms</span><span class="p">)</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="p">[[</span><span class="nb">int</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">group</span><span class="p">]</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">groups</span><span class="p">):</span>
-            <span class="c1"># CompositeRMSDForce would interpret an empty group as all atoms</span>
+            <span class="c1"># OpenMM's RMSDForce would interpret an empty group as all atoms</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"The groups of atoms must not be empty"</span><span class="p">)</span>
-        <span class="n">defined_coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getDefinedCoords</span><span class="p">(</span><span class="n">referencePositions</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="p">[]))</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">atoms</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"The groups of atoms must be disjoint"</span><span class="p">)</span>
+        <span class="n">defined_coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getDefinedCoords</span><span class="p">(</span><span class="n">referencePositions</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span>
         <span class="n">all_coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getAllCoords</span><span class="p">(</span><span class="n">defined_coords</span><span class="p">,</span> <span class="n">num_atoms</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">all_coords</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">addGroup</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+            <span class="n">all_coords</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">-=</span> <span class="n">all_coords</span><span class="p">[</span><span class="n">group</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">sizes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">)</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">])</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">sizes</span><span class="p">,</span> <span class="n">sizes</span><span class="p">)</span> <span class="o">/</span> <span class="n">sizes</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">spread</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomCentroidBondForce</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">"w*distance(g1, g2)^2"</span><span class="p">)</span>
+        <span class="n">spread</span><span class="o">.</span><span class="n">addPerBondParameter</span><span class="p">(</span><span class="s2">"w"</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
+            <span class="n">spread</span><span class="o">.</span><span class="n">addGroup</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)),</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">spread</span><span class="o">.</span><span class="n">addBond</span><span class="p">([</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">],</span> <span class="p">[</span><span class="n">weights</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]])</span>
+        <span class="c1"># Roundoff can make the squared value slightly negative, and the select call</span>
+        <span class="c1"># avoids an infinite derivative of sqrt(d2) at d2 = 0</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">"select(d2, sqrt(d2), 0); d2 = max(0, rmsd^2 - spread)"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addCollectiveVariable</span><span class="p">(</span><span class="s2">"rmsd"</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">RMSDForce</span><span class="p">(</span><span class="n">all_coords</span><span class="p">,</span> <span class="n">atoms</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addCollectiveVariable</span><span class="p">(</span><span class="s2">"spread"</span><span class="p">,</span> <span class="n">spread</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_registerCV</span><span class="p">(</span>
             <span class="n">name</span><span class="p">,</span>
             <span class="n">mmunit</span><span class="o">.</span><span class="n">nanometers</span><span class="p">,</span>
