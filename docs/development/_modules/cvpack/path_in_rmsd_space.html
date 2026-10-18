@@ -90,6 +90,14 @@
 <span class="sd">        The kernel width :math:`\sigma` is related to the parameter :math:`\lambda` of</span>
 <span class="sd">        Ref. :cite:`Branduardi_2007` by :math:`\sigma = \frac{1}{\sqrt{2\lambda}}`.</span>
 
+<span class="sd">    .. note::</span>
+
+<span class="sd">        An OpenMM :OpenMM:`CustomCVForce` holds at most 32 collective variables. For</span>
+<span class="sd">        longer paths, the milestones are split into chunks, each evaluated by an inner</span>
+<span class="sd">        :OpenMM:`CustomCVForce`. The result is exact, but the progress metric computes</span>
+<span class="sd">        every RMSD twice in this case. Paths can have up to 1024 milestones for the</span>
+<span class="sd">        deviation metric and up to 512 for the progress metric.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    metric</span>

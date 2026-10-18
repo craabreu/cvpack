@@ -66,6 +66,14 @@ and <span class="math notranslate nohighlight">\(\sigma\)</span> sets the width 
 <p>The kernel width <span class="math notranslate nohighlight">\(\sigma\)</span> is related to the parameter <span class="math notranslate nohighlight">\(\lambda\)</span> of
 Ref. <span class="bibtex-citation" id="id2">[<a class="reference internal" href="../references.html#id2" title="Davide Branduardi, Francesco Luigi Gervasio, and Michele Parrinello. From A to B in free energy space. The Journal of Chemical Physics, 126(5):054103, February 2007. doi:10.1063/1.2432340.">6</a>]</span> by <span class="math notranslate nohighlight">\(\sigma = \frac{1}{\sqrt{2\lambda}}\)</span>.</p>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>An OpenMM <a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomCVForce.html">openmm.CustomCVForce</a> holds at most 32 collective variables. For
+longer paths, the milestones are split into chunks, each evaluated by an inner
+<a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomCVForce.html">openmm.CustomCVForce</a>. The result is exact, but the progress metric computes
+every RMSD twice in this case. Paths can have up to 1024 milestones for the
+deviation metric and up to 512 for the progress metric.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
