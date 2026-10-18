@@ -89,10 +89,7 @@ TOLERANCES["single"] = TOLERANCES["mixed"]
 @pytest.mark.parametrize("name, precision", PLATFORMS)
 @pytest.mark.parametrize("case", CASES)
 def test_cv_matches_reference(case, name, precision):
-    try:
-        cv, system, positions = CASES[case]()
-    except ImportError:
-        pytest.skip("openmm-cpp-forces is not installed")
+    cv, system, positions = CASES[case]()
     cv.addToSystem(system)
     value, forces = _value_and_forces(cv, _context(system, positions, name, precision))
     expected, reference = _value_and_forces(

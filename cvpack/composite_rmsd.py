@@ -9,48 +9,18 @@
 
 from __future__ import annotations
 
+import itertools
 import typing as t
 
+import numpy as np
+import openmm
 from openmm import unit as mmunit
 
 from .base_rmsd import BaseRMSD
 from .units import MatrixQuantity, VectorQuantity
 
-# Earlier versions compute wrong forces for groups of different sizes
-MIN_OPENMM_CPP_FORCES_VERSION = (0, 2, 0)
 
-
-def _stub(message: str) -> type:
-    class Stub:
-        def __init__(self, *_):
-            raise ImportError(message)
-
-    return Stub
-
-
-def _get_force_class() -> type:
-    """Return CompositeRMSDForce, or a stub that raises an informative ImportError."""
-    requirement = "openmm-cpp-forces 0.2.0 or later (mdtools conda channel or PyPI)"
-    try:
-        import openmmcppforces  # noqa: PLC0415
-    except ImportError:
-        return _stub(f"CompositeRMSD requires {requirement}")
-    version = getattr(openmmcppforces, "__version__", None)
-    numbers = tuple(
-        int(part) for part in (version or "").split(".")[:3] if part.isdigit()
-    )
-    if numbers < MIN_OPENMM_CPP_FORCES_VERSION:
-        return _stub(
-            f"CompositeRMSD requires {requirement}, because earlier versions compute "
-            f"wrong forces, but version {version or 'unknown'} is installed"
-        )
-    return openmmcppforces.CompositeRMSDForce
-
-
-CompositeRMSDForce = _get_force_class()
-
-
-class CompositeRMSD(BaseRMSD, CompositeRMSDForce):
+class CompositeRMSD(BaseRMSD, openmm.CustomCVForce):
     r"""
     The composite root-mean-square deviation (RMSD) between the current and reference
     coordinates of :math:`m` groups of atoms:
@@ -80,12 +50,25 @@ class CompositeRMSD(BaseRMSD, CompositeRMSDForce):
     and :math:`{\bf c}_j^{\rm ref}` is the centroid of the reference structure for
     group :math:`j`, defined analogously to :math:`{\bf c}_j`.
 
+    .. note::
+
+        The computation is done by OpenMM's :OpenMM:`RMSDForce`, using reference
+        positions shifted so that every group's centroid lies at the origin. With these
+        references, the optimal rotation is the same as above, and the composite RMSD
+        follows from
+
+        .. math::
+
+            d_{\rm crms}^2 = d_{\rm rms}^2 - \frac{1}{n^2} \sum_{j=1}^{m-1}
+                \sum_{k=j+1}^m n_j n_k \left\|{\bf c}_j - {\bf c}_k\right\|^2
+
+        where :math:`d_{\rm rms}` is the RMSD computed by :OpenMM:`RMSDForce` and the
+        sum is computed by a :OpenMM:`CustomCentroidBondForce`.
+
     .. warning::
 
-        To use this class, you must install the `openmm-cpp-forces`_ package,
-        version 0.2.0 or later.
-
-    .. _openmm-cpp-forces: https://anaconda.org/mdtools/openmm-cpp-forces
+        Periodic boundary conditions are not supported. Each group of atoms must not be
+        split across periodic images.
 
     Parameters
     ----------
@@ -105,11 +88,8 @@ class CompositeRMSD(BaseRMSD, CompositeRMSDForce):
 
     Raises
     ------
-    ImportError
-        If the `openmm-cpp-forces`_ package (version 0.2.0 or later) is not
-        installed.
     ValueError
-        If ``groups`` is not a sequence of disjoint atom groups.
+        If ``groups`` is not a sequence of disjoint, nonempty atom groups.
     ValueError
         If referencePositions is a dict and numAtoms is not given, or if numAtoms
         is not positive.
@@ -118,7 +98,6 @@ class CompositeRMSD(BaseRMSD, CompositeRMSDForce):
     -------
     >>> import cvpack
     >>> import openmm as mm
-    >>> import pytest
     >>> from openmmtools import testsystems
     >>> from openmm import unit
     >>> model = testsystems.HostGuestVacuum()
@@ -126,13 +105,10 @@ class CompositeRMSD(BaseRMSD, CompositeRMSDForce):
     ...     [a.index for a in r.atoms()]
     ...     for r in model.topology.residues()
     ... )
-    >>> try:
-    ...     composite_rmsd = cvpack.CompositeRMSD(
-    ...         model.positions,
-    ...         [host_atoms, guest_atoms],
-    ...     )
-    ... except ImportError:
-    ...     pytest.skip("openmm-cpp-forces is not installed")
+    >>> composite_rmsd = cvpack.CompositeRMSD(
+    ...     model.positions,
+    ...     [host_atoms, guest_atoms],
+    ... )
     >>> composite_rmsd.addToSystem(model.system)
     >>> context = mm.Context(
     ...     model.system,
@@ -140,12 +116,12 @@ class CompositeRMSD(BaseRMSD, CompositeRMSDForce):
     ...     mm.Platform.getPlatformByName('Reference'),
     ... )
     >>> context.setPositions(model.positions)
-    >>> composite_rmsd.getValue(context)
-    0.0 nm
+    >>> round(composite_rmsd.getValue(context) / unit.nanometers, 6)
+    0.0
     >>> model.positions[guest_atoms] += 1.0 * unit.nanometers
     >>> context.setPositions(model.positions)
-    >>> composite_rmsd.getValue(context)
-    0.0 nm
+    >>> round(composite_rmsd.getValue(context) / unit.nanometers, 6)
+    0.0
     """
 
     def __init__(
@@ -158,13 +134,28 @@ class CompositeRMSD(BaseRMSD, CompositeRMSDForce):
         num_atoms = self._getNumAtoms(referencePositions, numAtoms)
         groups = [[int(atom) for atom in group] for group in groups]
         if not all(groups):
-            # CompositeRMSDForce would interpret an empty group as all atoms
+            # OpenMM's RMSDForce would interpret an empty group as all atoms
             raise ValueError("The groups of atoms must not be empty")
-        defined_coords = self._getDefinedCoords(referencePositions, sum(groups, []))
+        atoms = sum(groups, [])
+        if len(set(atoms)) != len(atoms):
+            raise ValueError("The groups of atoms must be disjoint")
+        defined_coords = self._getDefinedCoords(referencePositions, atoms)
         all_coords = self._getAllCoords(defined_coords, num_atoms)
-        super().__init__(all_coords)
         for group in groups:
-            self.addGroup(group)
+            all_coords[group] -= all_coords[group].mean(axis=0)
+        sizes = np.array([len(group) for group in groups])
+        weights = np.outer(sizes, sizes) / sizes.sum() ** 2
+        spread = openmm.CustomCentroidBondForce(2, "w*distance(g1, g2)^2")
+        spread.addPerBondParameter("w")
+        for group in groups:
+            spread.addGroup(group, [1.0] * len(group))
+        for j, k in itertools.combinations(range(len(groups)), 2):
+            spread.addBond([j, k], [weights[j, k]])
+        # Roundoff can make the squared value slightly negative, and the select call
+        # avoids an infinite derivative of sqrt(d2) at d2 = 0
+        super().__init__("select(d2, sqrt(d2), 0); d2 = max(0, rmsd^2 - spread)")
+        self.addCollectiveVariable("rmsd", openmm.RMSDForce(all_coords, atoms))
+        self.addCollectiveVariable("spread", spread)
         self._registerCV(
             name,
             mmunit.nanometers,

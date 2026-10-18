@@ -3,8 +3,6 @@ Tests for argument validation and unit conversion in cvpack collective variables
 """
 
 import itertools as it
-import sys
-import types
 from collections import defaultdict
 
 import numpy as np
@@ -93,51 +91,21 @@ def test_atomic_function_rejects_wrong_parameter_length(k):
 @pytest.mark.parametrize("cls", ["RMSD", "CompositeRMSD"])
 def test_rmsd_dict_reference_requires_num_atoms(cls):
     reference = {0: [0, 0, 0], 3: [1, 0, 0], 5: [0, 1, 0]}
-    try:
-        with pytest.raises(ValueError, match="numAtoms"):
-            if cls == "RMSD":
-                cvpack.RMSD(reference, [0, 3, 5])
-            else:
-                cvpack.CompositeRMSD(reference, [[0, 3], [5]])
-    except ImportError:
-        pytest.skip("openmm-cpp-forces is not installed")
-
-
-@pytest.mark.parametrize(
-    "version, accepted",
-    [("0.1.1", False), (None, False), ("0.2.0", True), ("0.2.0.post2", True)],
-)
-def test_composite_rmsd_requires_fixed_openmm_cpp_forces(
-    monkeypatch, version, accepted
-):
-    # Versions before 0.2.0 compute wrong forces for groups of different sizes
-    class FakeForce:
-        pass
-
-    fake = types.ModuleType("openmmcppforces")
-    fake.CompositeRMSDForce = FakeForce
-    if version is not None:
-        fake.__version__ = version
-    monkeypatch.setitem(sys.modules, "openmmcppforces", fake)
-    force_class = cvpack.composite_rmsd._get_force_class()
-    if accepted:
-        assert force_class is FakeForce
-    else:
-        with pytest.raises(ImportError, match="0.2.0 or later"):
-            force_class(None)
+    with pytest.raises(ValueError, match="numAtoms"):
+        if cls == "RMSD":
+            cvpack.RMSD(reference, [0, 3, 5])
+        else:
+            cvpack.CompositeRMSD(reference, [[0, 3], [5]])
 
 
 @pytest.mark.parametrize("cls", ["RMSD", "CompositeRMSD"])
 def test_rmsd_rejects_zero_num_atoms(cls):
     reference = np.zeros((6, 3))
-    try:
-        with pytest.raises(ValueError, match="numAtoms"):
-            if cls == "RMSD":
-                cvpack.RMSD(reference, [0, 3, 5], numAtoms=0)
-            else:
-                cvpack.CompositeRMSD(reference, [[0, 3], [5]], numAtoms=0)
-    except ImportError:
-        pytest.skip("openmm-cpp-forces is not installed")
+    with pytest.raises(ValueError, match="numAtoms"):
+        if cls == "RMSD":
+            cvpack.RMSD(reference, [0, 3, 5], numAtoms=0)
+        else:
+            cvpack.CompositeRMSD(reference, [[0, 3], [5]], numAtoms=0)
 
 
 def test_preprocess_args_accepts_dict_subclasses():
@@ -275,10 +243,7 @@ def test_composite_rmsd_value():
         [a.index for a in r.atoms()] for r in it.islice(model.topology.residues(), 0, 2)
     )
     reference = model.positions.value_in_unit(unit.nanometers)
-    try:
-        cv = cvpack.CompositeRMSD(reference, [host, guest])
-    except ImportError:
-        pytest.skip("openmm-cpp-forces is not installed")
+    cv = cvpack.CompositeRMSD(reference, [host, guest])
     cv.addToSystem(model.system)
     rng = np.random.default_rng(7)
     current = reference + rng.normal(0, 0.02, reference.shape)
@@ -307,6 +272,12 @@ def test_composite_rmsd_rejects_empty_groups():
     reference = np.zeros((4, 3))
     with pytest.raises(ValueError, match="empty"):
         cvpack.CompositeRMSD(reference, [[0, 1], []])
+
+
+def test_composite_rmsd_rejects_overlapping_groups():
+    reference = np.zeros((4, 3))
+    with pytest.raises(ValueError, match="disjoint"):
+        cvpack.CompositeRMSD(reference, [[0, 1], [1, 2]])
 
 
 def test_meta_cv_rejects_duplicate_names():
