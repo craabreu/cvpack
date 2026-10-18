@@ -47,8 +47,5 @@ def assert_forces_match_finite_differences(cv, system, positions):
 
 @pytest.mark.parametrize("name", CASES)
 def test_cv_forces(name):
-    try:
-        cv, system, positions = CASES[name]()
-    except ImportError:
-        pytest.skip("openmm-cpp-forces is not installed")
+    cv, system, positions = CASES[name]()
     assert_forces_match_finite_differences(cv, system, positions)

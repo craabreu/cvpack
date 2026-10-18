@@ -146,7 +146,6 @@ def _attraction_strength():
 
 
 def _composite_rmsd():
-    """Raises ImportError if openmm-cpp-forces is not installed."""
     model, positions = _dipeptide()
     cv = cvpack.CompositeRMSD(model.positions, [range(0, 10), range(10, 22)])
     return cv, particle_system(22), positions

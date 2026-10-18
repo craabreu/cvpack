@@ -328,16 +328,13 @@ def test_composite_rmsd():
     host_atoms, guest_atoms = (
         [a.index for a in r.atoms()] for r in it.islice(model.topology.residues(), 0, 2)
     )
-    try:
-        crmsd1 = cvpack.CompositeRMSD(model.positions, [host_atoms, guest_atoms])
-        atoms = host_atoms + guest_atoms
-        crmsd2 = cvpack.CompositeRMSD(
-            dict(zip(atoms, model.positions[atoms])),
-            [host_atoms, guest_atoms],
-            numAtoms=model.system.getNumParticles(),
-        )
-    except ImportError:
-        pytest.skip("openmm-cpp-forces is not installed")
+    crmsd1 = cvpack.CompositeRMSD(model.positions, [host_atoms, guest_atoms])
+    atoms = host_atoms + guest_atoms
+    crmsd2 = cvpack.CompositeRMSD(
+        dict(zip(atoms, model.positions[atoms])),
+        [host_atoms, guest_atoms],
+        numAtoms=model.system.getNumParticles(),
+    )
     crmsd1.addToSystem(model.system)
     crmsd2.addToSystem(model.system)
     context = make_context(model.system, model.positions)
