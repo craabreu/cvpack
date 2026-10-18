@@ -847,6 +847,80 @@ def test_path_in_rmsd_space(metric: cvpack.path.Metric):
     perform_common_tests(path_cv, context)
 
 
+def _random_rmsd_path(num_milestones, num_atoms=22, seed=3):
+    rng = np.random.default_rng(seed)
+    start = rng.normal(0, 0.3, (num_atoms, 3))
+    frames = [
+        start + 0.01 * k * rng.normal(size=start.shape) for k in range(num_milestones)
+    ]
+    return frames, start + 0.05 * rng.normal(size=start.shape)
+
+
+def _path_value_and_forces(metric, frames, positions, sigma):
+    num_atoms = len(positions)
+    milestones = [dict(enumerate(frame)) for frame in frames]
+    cv = cvpack.PathInRMSDSpace(metric, milestones, num_atoms, sigma)
+    system = openmm.System()
+    for _ in range(num_atoms):
+        system.addParticle(1.0)
+    cv.addToSystem(system)
+    context = make_context(system, positions)
+    state = context.getState(getForces=True)
+    return cv, context, cv.getValue(context), state.getForces(asNumpy=True)
+
+
+@pytest.mark.parametrize("metric", [cvpack.path.progress, cvpack.path.deviation])
+def test_path_split_into_chunks_matches_flat_path(monkeypatch, metric):
+    frames, positions = _random_rmsd_path(7)
+    *_, value, forces = _path_value_and_forces(metric, frames, positions, 0.05)
+    monkeypatch.setattr(cvpack.base_path_cv, "MAX_CVS", 4)
+    cv, _, chunked_value, chunked_forces = _path_value_and_forces(
+        metric, frames, positions, 0.05
+    )
+    assert cv.getNumCollectiveVariables() == (
+        2 if metric is cvpack.path.deviation else 4
+    )
+    assert chunked_value / chunked_value.unit == pytest.approx(value / value.unit)
+    assert chunked_forces / chunked_forces.unit == pytest.approx(
+        forces / forces.unit, rel=1e-8, abs=1e-10
+    )
+
+
+@pytest.mark.parametrize(
+    "metric, max_milestones",
+    [(cvpack.path.progress, 8), (cvpack.path.deviation, 16)],
+)
+def test_path_rejects_too_many_milestones(monkeypatch, metric, max_milestones):
+    monkeypatch.setattr(cvpack.base_path_cv, "MAX_CVS", 4)
+    frames, _ = _random_rmsd_path(max_milestones + 1)
+    milestones = [dict(enumerate(frame)) for frame in frames]
+    cvpack.PathInRMSDSpace(metric, milestones[:-1], len(frames[0]), 0.05)
+    with pytest.raises(ValueError, match=f"at most {max_milestones} milestones"):
+        cvpack.PathInRMSDSpace(metric, milestones, len(frames[0]), 0.05)
+
+
+@pytest.mark.parametrize("metric", [cvpack.path.progress, cvpack.path.deviation])
+def test_path_in_rmsd_space_with_many_milestones(metric):
+    num_milestones, sigma = 70, 0.05
+    frames, positions = _random_rmsd_path(num_milestones)
+    cv, context, value, _ = _path_value_and_forces(metric, frames, positions, sigma)
+    topology = app.Topology()
+    residue = topology.addResidue("X", topology.addChain())
+    for _ in range(len(positions)):
+        topology.addAtom("C", app.element.carbon, residue)
+    traj = mdtraj.Trajectory(np.array(frames), mdtraj.Topology.from_openmm(topology))
+    reference = mdtraj.Trajectory(positions, traj.topology)
+    exponents = -0.5 * (mdtraj.rmsd(traj, reference, precentered=False) / sigma) ** 2
+    if metric is cvpack.path.progress:
+        expected = np.exp(
+            logsumexp(exponents, b=np.arange(num_milestones)) - logsumexp(exponents)
+        ) / (num_milestones - 1)
+    else:
+        expected = -2 * sigma**2 * logsumexp(exponents)
+    assert value / value.unit == pytest.approx(expected, rel=1e-4)
+    perform_common_tests(cv, context)
+
+
 def test_openmm_force_wrapper():
     """
     Test whether an OpenMM force wrapper is computed correctly.

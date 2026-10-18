@@ -104,6 +104,16 @@ DIPEPTIDE_CVS = {
         22,
         0.05,
     ),
+    # More milestones than a CustomCVForce can hold, so they are split into chunks
+    "ChunkedPathInRMSDSpace": lambda model: cvpack.PathInRMSDSpace(
+        cvpack.path.progress,
+        [
+            dict(enumerate(model.positions / unit.nanometer + noise))
+            for noise in np.random.default_rng(37).normal(0, 0.02, (40, 22, 3))
+        ],
+        22,
+        0.05,
+    ),
     "MetaCollectiveVariable": lambda model: cvpack.MetaCollectiveVariable(
         "cos(phi)*sin(psi)", _phi_psi(), unit.dimensionless
     ),

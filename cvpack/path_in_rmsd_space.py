@@ -51,6 +51,14 @@ class PathInRMSDSpace(BasePathCV):
         The kernel width :math:`\sigma` is related to the parameter :math:`\lambda` of
         Ref. :cite:`Branduardi_2007` by :math:`\sigma = \frac{1}{\sqrt{2\lambda}}`.
 
+    .. note::
+
+        An OpenMM :OpenMM:`CustomCVForce` holds at most 32 collective variables. For
+        longer paths, the milestones are split into chunks, each evaluated by an inner
+        :OpenMM:`CustomCVForce`. The result is exact, but the progress metric computes
+        every RMSD twice in this case. Paths can have up to 1024 milestones for the
+        deviation metric and up to 512 for the progress metric.
+
     Parameters
     ----------
     metric
