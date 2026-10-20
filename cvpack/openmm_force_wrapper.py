@@ -9,6 +9,8 @@
 
 from __future__ import annotations
 
+import functools
+import importlib
 import typing as t
 
 import openmm
@@ -40,6 +42,13 @@ class OpenMMForceWrapper(CollectiveVariable, openmm.Force):
         it is not.
     name
         The name of the collective variable.
+    forceClass
+        The Python class of the wrapped force, as ``"module:QualifiedName"``. It is
+        detected automatically and only needs to be recorded when OpenMM's generic
+        :OpenMM:`XmlSerializer` would deserialize the force as a base class, as it
+        does for forces from plugins (e.g. a ``SlicedNonbondedForce`` comes back as a
+        ``NonbondedForce``). The force is then rebuilt by the ``__setstate__`` method of
+        this class, so that its plugin-specific methods remain available.
 
     Example
     -------
@@ -73,11 +82,18 @@ class OpenMMForceWrapper(CollectiveVariable, openmm.Force):
         unit: mmunit.Unit,
         periodicBounds: VectorQuantity | None = None,
         name: str = "openmm_force_wrapper",
+        forceClass: str | None = None,
     ) -> None:
         if isinstance(openmmForce, openmm.Force):
+            cls = type(openmmForce)
+            is_cv = isinstance(openmmForce, CollectiveVariable)
             openmmForce = openmm.XmlSerializer.serialize(openmmForce)
+            if forceClass is None and not is_cv:
+                generic = openmm.XmlSerializer.deserialize(openmmForce)
+                if not isinstance(generic, cls):
+                    forceClass = f"{cls.__module__}:{cls.__qualname__}"
         unit = Unit(unit)
-        self._wrapped_force = openmm.XmlSerializer.deserialize(openmmForce)
+        self._wrapped_force = self._deserialize(openmmForce, forceClass)
         self.this = self._wrapped_force.this
         self._registerCV(
             name,
@@ -85,9 +101,22 @@ class OpenMMForceWrapper(CollectiveVariable, openmm.Force):
             openmmForce=openmmForce,
             unit=unit,
             periodicBounds=periodicBounds,
+            **({} if forceClass is None else {"forceClass": forceClass}),
         )
         if periodicBounds is not None:
             self._registerPeriodicBounds(*periodicBounds)
+
+    @staticmethod
+    def _deserialize(xml: str, forceClass: str | None) -> openmm.Force:
+        if forceClass is None:
+            return openmm.XmlSerializer.deserialize(xml)
+        module, _, qualname = forceClass.partition(":")
+        cls = functools.reduce(
+            getattr, qualname.split("."), importlib.import_module(module)
+        )
+        force = cls.__new__(cls)
+        force.__setstate__(xml)
+        return force
 
     def __getattr__(self, name: str) -> t.Any:
         return getattr(self._wrapped_force, name)

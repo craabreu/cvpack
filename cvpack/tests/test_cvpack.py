@@ -14,6 +14,7 @@ import networkx as nx
 import numpy as np
 import openmm
 import pytest
+import yaml
 from openmm import app, unit
 from openmmtools import testsystems
 from openmmtools.constants import ONE_4PI_EPS0
@@ -943,6 +944,50 @@ def test_openmm_force_wrapper():
     angle_value = state.getPotentialEnergy().value_in_unit(unit.kilojoule_per_mole)
     assert cv.getValue(context) / unit.radians == pytest.approx(angle_value)
     perform_common_tests(cv, context)
+
+
+class _PluginLikeForce(openmm.CustomAngleForce):
+    """
+    Stands in for a force from an OpenMM plugin, which OpenMM's generic XmlSerializer
+    deserializes as one of its base classes.
+
+    """
+
+    def pluginMethod(self):
+        return self.getNumAngles()
+
+
+def test_openmm_force_wrapper_keeps_plugin_force_type():
+    """
+    Test whether a wrapped plugin force keeps its Python class, including after
+    copying and YAML serialization.
+
+    """
+    force = _PluginLikeForce("theta")
+    force.addAngle(0, 1, 2)
+    xml = openmm.XmlSerializer.serialize(force)
+    assert not isinstance(openmm.XmlSerializer.deserialize(xml), _PluginLikeForce)
+    cv = cvpack.OpenMMForceWrapper(force, unit.radian)
+    assert isinstance(cv._wrapped_force, _PluginLikeForce)
+    assert cv.pluginMethod() == 1
+    forceClass = f"{__name__}:_PluginLikeForce"
+    assert yaml.safe_load(yaml.safe_dump(cv))._args["forceClass"] == forceClass
+    for clone in (copy.copy(cv), copy.deepcopy(cv)):
+        assert isinstance(clone._wrapped_force, _PluginLikeForce)
+        assert clone.pluginMethod() == 1
+
+
+def test_openmm_force_wrapper_omits_force_class_for_openmm_forces():
+    """
+    Test whether the class of a force that OpenMM deserializes with its own type is
+    not recorded.
+
+    """
+    angle = openmm.CustomAngleForce("theta")
+    angle.addAngle(0, 1, 2)
+    cv = cvpack.OpenMMForceWrapper(angle, unit.radian)
+    assert "forceClass" not in cv._args
+    assert "forceClass" not in yaml.safe_dump(cv)
 
 
 def test_openmm_force_wrapper_delegates_to_wrapped_force():
