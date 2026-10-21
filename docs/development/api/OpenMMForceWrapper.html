@@ -42,7 +42,7 @@
 <h1>OpenMMForceWrapper<a class="headerlink" href="#openmmforcewrapper" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="cvpack.OpenMMForceWrapper">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">cvpack.</span></span><span class="sig-name descname"><span class="pre">OpenMMForceWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">openmmForce</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodicBounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'openmm_force_wrapper'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cvpack/openmm_force_wrapper.html#OpenMMForceWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cvpack.OpenMMForceWrapper" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">cvpack.</span></span><span class="sig-name descname"><span class="pre">OpenMMForceWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">openmmForce</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodicBounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'openmm_force_wrapper'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forceClass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cvpack/openmm_force_wrapper.html#OpenMMForceWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cvpack.OpenMMForceWrapper" title="Link to this definition">¶</a></dt>
 <dd><p>A collective variable whose numerical value is computed from the potential energy,
 in kJ/mol, of an OpenMM force object.</p>
 <dl class="field-list simple">
@@ -59,6 +59,12 @@ angle in <cite>radians</cite>). If the collective variable does not have a unit,
 <li><p><strong>periodicBounds</strong> (<a class="reference internal" href="../type_aliases.html#cvpack.units.VectorQuantity" title="cvpack.units.VectorQuantity"><em>VectorQuantity</em></a><em> | </em><em>None</em>) – The periodic bounds of the collective variable if it is periodic, or <cite>None</cite> if
 it is not.</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The name of the collective variable.</p></li>
+<li><p><strong>forceClass</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> | </em><em>None</em>) – The Python class of the wrapped force, as <code class="docutils literal notranslate"><span class="pre">&quot;module:QualifiedName&quot;</span></code>. It is
+detected automatically and only needs to be recorded when OpenMM’s generic
+<a class="extlink-OpenMM reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.XmlSerializer.html">openmm.XmlSerializer</a> would deserialize the force as a base class, as it
+does for forces from plugins (e.g. a <code class="docutils literal notranslate"><span class="pre">SlicedNonbondedForce</span></code> comes back as a
+<code class="docutils literal notranslate"><span class="pre">NonbondedForce</span></code>). The force is then rebuilt by the <code class="docutils literal notranslate"><span class="pre">__setstate__</span></code> method of
+this class, so that its plugin-specific methods remain available.</p></li>
 </ul>
 </dd>
 </dl>
@@ -352,7 +358,7 @@ the radius of gyration of an alanine dipeptide molecule in water:</p>
       &#169;2024 C. Abreu & Redesign Science.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.2.0</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
